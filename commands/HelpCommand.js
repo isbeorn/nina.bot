@@ -31,7 +31,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!help': {
-        message.reply('Available commands: !logs, !docs, !tracker, !issue, !repository, !troubleshoot, !help');
+        message.reply('Available commands: !logs, !docs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !help');
         break;
       }
       default:
