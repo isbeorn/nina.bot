@@ -17,8 +17,13 @@ class HelpCommand extends BaseCommand {
         message.reply('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open');
         break;
       }
-      case '!repository': {
+      case '!repository':
+      case '!nina': {
         message.reply('https://bitbucket.org/Isbeorn/nina');
+        break;
+      }
+      case '!nina.docs': {
+        message.reply('https://bitbucket.org/Isbeorn/nina.docs');
         break;
       }
       case '!troubleshoot': {
