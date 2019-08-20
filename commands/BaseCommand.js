@@ -1,17 +1,19 @@
 class BaseCommand {
-    constructor(client) {
-        this.client = client;
-    }
-    getClient() {
-        return this.client;
-    }
-    execute(message) {        
-        this.process(message);
-        
-    }
-    process(message) {
-        //overwrite in extended class
-    }
+  constructor(client) {
+    this.client = client;
+  }
+
+  getClient() {
+    return this.client;
+  }
+
+  execute(message) {
+    this.process(message);
+  }
+
+  process(message) {
+    this.currentMessage = message.content;
+  }
 }
 
 module.exports = BaseCommand;
