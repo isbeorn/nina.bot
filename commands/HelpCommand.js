@@ -11,6 +11,15 @@ class HelpCommand extends BaseCommand {
                 message.reply('https://nighttime-imaging.eu/docs/develop/site/');
                 break;
             }
+            case '!tracker':
+            case '!issue': {
+                message.reply('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open');
+                break;
+            }
+            case '!repository': {
+                message.reply('https://bitbucket.org/Isbeorn/nina');
+                break;
+            }
         }
     }
 }
