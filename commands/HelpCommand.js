@@ -4,7 +4,7 @@ class HelpCommand extends BaseCommand {
     process(message) {
         switch(message.content) {
             case '!logs': {
-                message.reply('%LOCALAPPDATA%\NINA\Logs');
+                message.reply('%LOCALAPPDATA%\\NINA\\Logs');
                 break;
             }
             case '!docs': {
