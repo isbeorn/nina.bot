@@ -4,6 +4,10 @@ class HelpCommand extends BaseCommand {
   process(message) {
     this.currentMessage = message.content;
     switch (message.content) {
+      case '!donate': {
+        message.reply('Thank you for considering a donation! Please find more information about how to donate on the homepage at https://nighttime-imaging.eu/donate/');
+        break;
+      }
       case '!logs': {
         message.reply('%LOCALAPPDATA%\\NINA\\Logs');
         break;
@@ -35,7 +39,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!help': {
-        message.reply('Available commands: !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !help');
+        message.reply('Available commands: !donate, !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !help');
         break;
       }
       default:
