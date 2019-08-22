@@ -9,6 +9,10 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!docs': {
+        message.reply('https://nighttime-imaging.eu/docs/master/site/');
+        break;
+      }
+      case '!devdocs': {
         message.reply('https://nighttime-imaging.eu/docs/develop/site/');
         break;
       }
@@ -31,7 +35,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!help': {
-        message.reply('Available commands: !logs, !docs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !help');
+        message.reply('Available commands: !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !help');
         break;
       }
       default:
