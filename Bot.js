@@ -72,10 +72,12 @@ class Bot {
       N.I.N.A. is a free open-source project, that is maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
       Everybody is welcome to participate and have an impact on the project.
       Suggestions and feedback for improval are welcome, but please try to be detailed with your request and don't expect it to be worked upon right away.
-      Remember that this is a volunteer project, so it will take some volunteer to be convinced that a particular request is worth their time!      
+      Remember that this is a volunteer project, so it will take some volunteer to be convinced that a particular request is worth their time and that it fits to the general project's vision!      
       `)
       .addField('Project Homepage', 'https://nighttime-imaging.eu')
       .addField('Donate', 'If you like the project and want to support me with a donation have a look at https://nighttime-imaging.eu/donate/')
+      .addField('Download', 'You can find the latest official builds of N.I.N.A. at https://nighttime-imaging.eu/download/')
+      .addField('Rules & News', 'Server rules and latest news can be found inside the channel #announcements on the left side')
       .setFooter('If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to see and post messages in the channels.');
 
     const channel = member.guild.channels.get(channelId);
