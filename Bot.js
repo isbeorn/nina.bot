@@ -59,23 +59,33 @@ class Bot {
   }
 
   async onGuildMemberAdd(member) {
+    this.a = 1;
     const channelId = '633460410007420959';
     const role = '633465970836504579';
 
     const embed = new Discord.RichEmbed()
-      .setTitle('Welcome to the server')
-      .setAuthor('Isbeorn')
+      .setTitle('Welcome to the N.I.N.A. - Nighttime Imaging \'N\' Astronomy community discord!')
+      .setAuthor('Isbeorn', 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
+      .setURL('https://nighttime-imaging.eu')
       .setColor('0x00AE86')
-      .setDescription('blablabla');
+      .setDescription(`
+      N.I.N.A. is a free open-source project, that is maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
+      Everybody is welcome to participate and have an impact on the project.
+      Suggestions and feedback for improval are welcome, but please try to be detailed with your request and don't expect it to be worked upon right away.
+      Remember that this is a volunteer project, so it will take some volunteer to be convinced that a particular request is worth their time!      
+      `)
+      .addField('Project Homepage', 'https://nighttime-imaging.eu')
+      .addField('Donate', 'If you like the project and want to support me with a donation have a look at https://nighttime-imaging.eu/donate/')
+      .setFooter('If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to see and post messages in the channels.');
 
     const channel = member.guild.channels.get(channelId);
 
-    const msg1 = await channel.send(`Welcome ${member}`);
+    const msg1 = await channel.send(`Hello ${member}`);
     channel.send({ embed }).then(async (msg) => {
       await msg.react('☑');
       const filter = (reaction, user) => reaction.emoji.name === '☑' && user.id === member.id;
       try {
-        const collected = await msg.awaitReactions(filter, { max: 1 });
+        await msg.awaitReactions(filter, { max: 1 });
 
         await member.addRole(role);
         msg.delete();
