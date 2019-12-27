@@ -49,9 +49,9 @@ class Bot {
   }
 
   onMessage(message) {
-    if (message.content == '$$TESTREACTION$$') {
+    /*if (message.content === '$$TESTREACTION$$') {
       this.onGuildMemberAdd(message.member);
-    }
+    }*/
 
     this.getCommands().forEach((command) => {
       command.execute(message);
@@ -60,8 +60,8 @@ class Bot {
 
   async onGuildMemberAdd(member) {
     this.a = 1;
-    const channelId = '633460410007420959';
-    const role = '633465970836504579';
+    const channelId = process.env.WELCOME_CHANNEL;
+    const role = process.env.MEMBER_ROLE;
 
     const embed = new Discord.RichEmbed()
       .setTitle('Welcome to the N.I.N.A. - Nighttime Imaging \'N\' Astronomy community discord!')
@@ -69,9 +69,9 @@ class Bot {
       .setURL('https://nighttime-imaging.eu')
       .setColor('0x00AE86')
       .setDescription(`
-      N.I.N.A. is a free open-source project, that is maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
+      N.I.N.A. is a free and open-source project, that is maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
       Everybody is welcome to participate and have an impact on the project.
-      Suggestions and feedback for improval are welcome, but please try be constructive with your request and don't expect it to be worked upon right away.
+      Suggestions and feedback for improval are appreciated, but please be constructive with your request and don't expect something be worked upon right away.
       Remember that this is a volunteer project, so it will take some volunteer to be convinced that a particular request is worth their time and that it fits to the general project's vision!      
       `)
       .addField('Rules & News', 'Server rules and latest news can be found inside the channel #announcements on the left side')
@@ -79,11 +79,11 @@ class Bot {
       .addField('Donate', 'If you like the project and want to support me with a donation have a look at https://nighttime-imaging.eu/donate/')
       .addField('Download', 'You can find the latest official builds of N.I.N.A. at https://nighttime-imaging.eu/download/')
       .addField('Contributing', 'A detailed guide on code contribution can be found at https://bitbucket.org/Isbeorn/nina/src/master/CONTRIBUTING.md')
-      .setFooter('If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to see and post messages in the channels.');
+      .setFooter('If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to post messages in the channels.');
 
     const channel = member.guild.channels.get(channelId);
 
-    const msg1 = await channel.send(`Hello ${member}`);
+    const welcomeMention = await channel.send(`Hello ${member}`);
     channel.send({ embed }).then(async (msg) => {
       await msg.react('☑');
       const filter = (reaction, user) => reaction.emoji.name === '☑' && user.id === member.id;
@@ -92,7 +92,7 @@ class Bot {
 
         await member.addRole(role);
         msg.delete();
-        msg1.delete();
+        welcomeMention.delete();
       } catch (ex) {
         console.log(ex.message);
       }
