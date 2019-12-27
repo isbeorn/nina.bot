@@ -54,11 +54,21 @@ class HelpCommand extends BaseCommand {
         message.reply(embed);
         break;
       }
-      case '!help': {
-
+      case '!32bitascom': {
+        const embed = new Discord.RichEmbed()
+        .setTitle('How to use 32bit COM objects in 64bit environments')          
+        .setURL('https://techtalk.gfi.com/32bit-object-64bit-environment/')
+        .setThumbnail('https://www.techtalk.gfi.com/wp-content/uploads/2009/09/Using-32bit-COM-in-64bit-environment-300x300.jpg')
+        .setColor('0x00AE86')
+        .setDescription(`
+        Some ASCOM drivers are only provided as 32bit. Using the above linked method it is possible to make this 32bit ASCOM driver accessible to a 64bit N.I.N.A. application.
+        `)
+        message.reply(embed);
+        break;
         
-
-        message.reply('Available commands: !donate, !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !help, !conform');
+      }
+      case '!help': {
+        message.reply('Available commands: !donate, !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !conform, !32bitascom');
         break;
       }
       default:
