@@ -1,12 +1,15 @@
 const express = require('express');
 const helmet = require('helmet');
+const bodyParser = require('body-parser');
 
 const app = express();
 
 app.use(helmet());
+app.use(bodyParser.json())
 
-app.get('/', function(req, res, next) {
-    res.send('Hello');
+app.post('/crowdin/to/discord', function(req, res, next) {
+    console.log(req.body);
+    res.send('Ok');
 });
 
 const port = process.env.PORT || 5000;
