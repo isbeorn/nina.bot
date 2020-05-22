@@ -10,20 +10,56 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!logs': {
-        message.reply('%LOCALAPPDATA%\\NINA\\Logs');
+        const embed = new Discord.RichEmbed()
+        .setTitle('N.I.N.A. Logs')          
+        .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
+        .setColor('0x00AE86')
+        .setDescription(`
+        The logs written by N.I.N.A. can be found at "%LOCALAPPDATA%\\NINA\\Logs".
+        Furthermore the logs can be opened directly inside the application via the button next to Options->Log Level
+        `)
+        .setFooter('You can drag and drop the log file into N.I.N.A. discord to report problems')
+        message.reply(embed);
         break;
       }
       case '!docs': {
-        message.reply('https://nighttime-imaging.eu/docs/master/site/');
+        const embed = new Discord.RichEmbed()
+        .setTitle('N.I.N.A. Documentation')          
+        .setURL('https://nighttime-imaging.eu/docs/master/site/')
+        .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
+        .setColor('0x00AE86')
+        .setDescription(`
+        Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
+        `)
+        .setFooter('This documentation covers the current release build')
+        message.reply(embed);
         break;
       }
       case '!devdocs': {
-        message.reply('https://nighttime-imaging.eu/docs/develop/site/');
+        const embed = new Discord.RichEmbed()
+        .setTitle('N.I.N.A. Documentation')          
+        .setURL('https://nighttime-imaging.eu/docs/develop/site/')
+        .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
+        .setColor('0x00AE86')
+        .setDescription(`
+        Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
+        `)
+        .setFooter('This documentation covers the current nightly build')
+        message.reply(embed);
         break;
       }
       case '!tracker':
       case '!issue': {
-        message.reply('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open');
+        const embed = new Discord.RichEmbed()
+        .setTitle('N.I.N.A. Issue Tracker')          
+        .setURL('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open')
+        .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
+        .setColor('0x00AE86')
+        .setDescription(`
+        Please use the issue tracker for bug reports. The more details you put into the report, the more likely it is that someone can fix it quickly.
+        Furthermore the tracker can be used for suggestions and improvements.
+        `)
+        message.reply(embed);
         break;
       }
       case '!repository':
@@ -32,7 +68,15 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!nina.docs': {
-        message.reply('https://bitbucket.org/Isbeorn/nina.docs');
+        const embed = new Discord.RichEmbed()
+        .setTitle('N.I.N.A. Documentation Repository')          
+        .setURL('https://bitbucket.org/Isbeorn/nina.docs')
+        .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
+        .setColor('0x00AE86')
+        .setDescription(`
+        This repository covers the source code for the N.I.N.A. documentation. If you want to improve the documentation, this is the place to go to.        
+        `)
+        message.reply(embed);
         break;
       }
       case '!troubleshoot': {
