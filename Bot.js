@@ -48,15 +48,41 @@ class Bot {
     this.ready = true;
   }
 
-  onMessage(message) {
-    /*if (message.content === '$$TESTREACTION$$') {
-      this.onGuildMemberAdd(message.member);
-    }*/
+  async onMessage(message) {
+    try {
+      
 
-    this.getCommands().forEach((command) => {
-      command.execute(message);
-    });
+      await this.galleryWatchdog(message);
+
+      /*if (message.content === '$$TESTREACTION$$') {
+        this.onGuildMemberAdd(message.member);
+      }*/
+
+      const promises = [];
+      this.getCommands().forEach((command) => {
+        promises.push(command.execute(message));
+      });
+
+      await Promise.all(promises);
+    } catch (ex) {
+      console.log(ex.message);
+    }
   }
+
+
+  async galleryWatchdog(message) {
+    if (message.channel.id == process.env.GALLERY_CHANNEL) {
+      if (message.attachments.size === 0) {
+        await message.delete();
+
+        const member = message.member;
+
+        const channel = member.guild.channels.get(process.env.PROCESSING_CHANNEL);
+        await channel.send(`${member} please don't chat inside gallery. Only post pictures and acquisition details there in one single post. If you need to add more details please edit the original post. Thank you.`);
+      }
+    }
+  }
+
 
   async onGuildMemberAdd(member) {
     this.a = 1;

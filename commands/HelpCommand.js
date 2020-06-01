@@ -2,11 +2,11 @@ const Discord = require('discord.js');
 const BaseCommand = require('./BaseCommand');
 
 class HelpCommand extends BaseCommand {
-  process(message) {
+  async process(message) {
     this.currentMessage = message.content;
     switch (message.content) {
       case '!donate': {
-        message.reply('Thank you for considering a donation! Please find more information about how to donate on the homepage at https://nighttime-imaging.eu/donate/');
+        await message.reply('Thank you for considering a donation! Please find more information about how to donate on the homepage at https://nighttime-imaging.eu/donate/');
         break;
       }
       case '!logs': {
@@ -19,7 +19,7 @@ class HelpCommand extends BaseCommand {
         Furthermore the logs can be opened directly inside the application via the button next to Options->Log Level
         `)
         .setFooter('You can drag and drop the log file into N.I.N.A. discord to report problems')
-        message.reply(embed);
+        await message.reply(embed);
         break;
       }
       case '!docs': {
@@ -32,7 +32,7 @@ class HelpCommand extends BaseCommand {
         Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
         `)
         .setFooter('This documentation covers the current release build')
-        message.reply(embed);
+        await message.reply(embed);
         break;
       }
       case '!devdocs': {
@@ -45,7 +45,7 @@ class HelpCommand extends BaseCommand {
         Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
         `)
         .setFooter('This documentation covers the current nightly build')
-        message.reply(embed);
+        await message.reply(embed);
         break;
       }
       case '!tracker':
@@ -59,12 +59,12 @@ class HelpCommand extends BaseCommand {
         Please use the issue tracker for bug reports. The more details you put into the report, the more likely it is that someone can fix it quickly.
         Furthermore the tracker can be used for suggestions and improvements.
         `)
-        message.reply(embed);
+        await message.reply(embed);
         break;
       }
       case '!repository':
       case '!nina': {
-        message.reply('https://bitbucket.org/Isbeorn/nina');
+        await message.reply('https://bitbucket.org/Isbeorn/nina');
         break;
       }
       case '!nina.docs': {
@@ -76,11 +76,11 @@ class HelpCommand extends BaseCommand {
         .setDescription(`
         This repository covers the source code for the N.I.N.A. documentation. If you want to improve the documentation, this is the place to go to.        
         `)
-        message.reply(embed);
+        await message.reply(embed);
         break;
       }
       case '!troubleshoot': {
-        message.reply('https://nighttime-imaging.eu/docs/develop/site/troubleshooting/');
+        await message.reply('https://nighttime-imaging.eu/docs/develop/site/troubleshooting/');
         break;
       }
       case '!conform': {
@@ -95,7 +95,7 @@ class HelpCommand extends BaseCommand {
         It is adviced to run the conformance checker against those drivers and report issues to the driver manufacturer to fix these issues.
         `)
         .setFooter('Make sure to select the correct driver prior to testing under Options->Select Driver')
-        message.reply(embed);
+        await message.reply(embed);
         break;
       }
       case '!32bitascom': {
@@ -107,12 +107,12 @@ class HelpCommand extends BaseCommand {
         .setDescription(`
         Some ASCOM drivers are only provided as 32bit. Using the above linked method it is possible to make this 32bit ASCOM driver accessible to a 64bit N.I.N.A. application.
         `)
-        message.reply(embed);
+        await message.reply(embed);
         break;
         
       }
       case '!help': {
-        message.reply('Available commands: !donate, !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !conform, !32bitascom');
+        await message.reply('Available commands: !donate, !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !conform, !32bitascom');
         break;
       }
       default:
