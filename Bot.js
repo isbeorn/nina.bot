@@ -4,6 +4,7 @@ const log4js = require('log4js');
 const logger = log4js.getLogger();
 
 const HelpCommand = require('./commands/HelpCommand');
+const AFGraphCommand = require('./commands/AFGraphCommand');
 
 class Bot {
   constructor(token) {
@@ -15,6 +16,7 @@ class Bot {
     // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
 
     this.registerCommand(new HelpCommand(this.client));
+    this.registerCommand(new AFGraphCommand(this.client));
   }
 
   getToken() {
