@@ -132,15 +132,7 @@ class AFGraphCommand extends BaseCommand {
                     
 
                     const configuration = getChartConfig();
-
-                    let stepsize = 0;
-
                     autoFocusData.MeasurePoints.forEach(point => {
-
-                        if(stepsize == 0 || stepsize == Math.abs(point.Position)) {
-                            stepsize = Math.abs(stepsize - point.Position);
-                        }
-
                         //configuration.data.labels.push(point.Position);
                         configuration.data.datasets[0].labels.push(point.Position);
                         configuration.data.datasets[0].data.push({
@@ -181,7 +173,15 @@ class AFGraphCommand extends BaseCommand {
                     });                   
                     
                     
-                    configuration.data.labels = _(configuration.data.labels).sort().sortedUniq().value();
+                    const sortedArray = _(configuration.data.datasets[0].data.map(x => x.x))                        
+                        .sort()
+                        .sortedUniq()
+                        .value();
+                    
+                    let stepsize = 0;
+                    if(sortedArray.length > 1) {
+                        stepsize = sortedArray[1] - sortedArray[0];
+                    }
 
                     const stream = canvasRenderService.renderToStream(configuration);
                     stream.pipe(fs.createWriteStream('output.png'));
@@ -202,8 +202,8 @@ class AFGraphCommand extends BaseCommand {
                         .addField('Method', autoFocusData.Method, true )
                         .addField('Fitting', autoFocusData.Fitting, true)
                         .addField('Temperature', temperature, true)
-                        .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true)
-                        .addField('Step Size', stepsize, true);
+                        .addField('Step Size', stepsize, true)
+                        .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true);
 
                         
 
