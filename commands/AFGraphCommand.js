@@ -188,9 +188,13 @@ class AFGraphCommand extends BaseCommand {
                         });
                     });
                     
+                    const date = new Date(autoFocusData.Timestamp);
                     const embed = new Discord.RichEmbed();
                     embed.attachFile('./output.png')
-                        .setDescription('Here is your rendered autofocus chart');
+                        .addField('Method', autoFocusData.Method, true )
+                        .addField('Fitting', autoFocusData.Fitting, true)
+                        .addField('Temperature', autoFocusData.Temperature.toFixed(2), true)
+                        .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true);
 
                         
 
