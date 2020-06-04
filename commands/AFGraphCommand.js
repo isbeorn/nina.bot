@@ -191,13 +191,13 @@ class AFGraphCommand extends BaseCommand {
                     const date = new Date(autoFocusData.Timestamp);
                     const temperature = "n.A.";
                     if(autoFocusData.Temperature !== "NaN") {
-                        temperature = autoFocusData.Temperature;
+                        temperature = autoFocusData.Temperature.toFixed(2);
                     }
                     const embed = new Discord.RichEmbed();
                     embed.attachFile('./output.png')
                         .addField('Method', autoFocusData.Method, true )
                         .addField('Fitting', autoFocusData.Fitting, true)
-                        .addField('Temperature', temperature.toFixed(2), true)
+                        .addField('Temperature', temperature, true)
                         .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true);
 
                         
