@@ -189,7 +189,7 @@ class AFGraphCommand extends BaseCommand {
                     });
                     
                     const date = new Date(autoFocusData.Timestamp);
-                    const temperature = Number.NaN;
+                    const temperature = "n.A.";
                     if(autoFocusData.Temperature !== "NaN") {
                         temperature = autoFocusData.Temperature;
                     }
