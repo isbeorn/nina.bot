@@ -132,7 +132,15 @@ class AFGraphCommand extends BaseCommand {
                     
 
                     const configuration = getChartConfig();
+
+                    let stepsize = 0;
+
                     autoFocusData.MeasurePoints.forEach(point => {
+
+                        if(stepsize == 0 || stepsize == Math.abs(point.Position)) {
+                            stepsize = Math.abs(stepsize - point.Position);
+                        }
+
                         //configuration.data.labels.push(point.Position);
                         configuration.data.datasets[0].labels.push(point.Position);
                         configuration.data.datasets[0].data.push({
@@ -170,11 +178,7 @@ class AFGraphCommand extends BaseCommand {
                     configuration.data.datasets[4].data.push({
                         x: focus.Position,
                         y: focus.Value
-                    });
-                
-                    
-                    
-                    
+                    });                   
                     
                     
                     configuration.data.labels = _(configuration.data.labels).sort().sortedUniq().value();
@@ -198,7 +202,8 @@ class AFGraphCommand extends BaseCommand {
                         .addField('Method', autoFocusData.Method, true )
                         .addField('Fitting', autoFocusData.Fitting, true)
                         .addField('Temperature', temperature, true)
-                        .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true);
+                        .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true)
+                        .addField('Step Size', stepsize, true);
 
                         
 
