@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
-var Ajv = require('ajv');
+const Ajv = require('ajv');
 const fs = require('fs');
 const _ = require('lodash');
 const Discord = require('discord.js');
