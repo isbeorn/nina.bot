@@ -60,9 +60,8 @@ class Bot {
         this.onGuildMemberAdd(message.member);
       }*/
 
-      const promises = [];
-      this.getCommands().forEach((command) => {
-        promises.push(command.execute(message));
+      const promises = this.getCommands().map((command) => {
+        return command.execute(message);
       });
 
       await Promise.all(promises);

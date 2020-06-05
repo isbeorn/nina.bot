@@ -7,11 +7,11 @@ class BaseCommand {
     return this.client;
   }
 
-  execute(message) {
-    this.process(message);
+  async execute(message) {
+    await this.process(message);
   }
 
-  process(message) {
+  async process(message) {
     this.currentMessage = message.content;
   }
 }
