@@ -1,8 +1,10 @@
 const fetch = require('node-fetch');
+var Ajv = require('ajv');
 const fs = require('fs');
 const _ = require('lodash');
 const Discord = require('discord.js');
 const BaseCommand = require('./BaseCommand');
+const schema = require('./AFGraphSchema');
 
 const { CanvasRenderService } = require('chartjs-node-canvas');
 
@@ -23,6 +25,11 @@ const chartCallback = (ChartJS) => {
         // chart implementation
     });
 };
+
+const validateSchema = json => {
+    const ajv = new Ajv();
+    return ajv.validate(schema, json);
+}
 
 const getChartConfig = () => {
     //see https://www.chartjs.org/docs/latest/charts/line.html
@@ -126,7 +133,9 @@ class AFGraphCommand extends BaseCommand {
                 const response = await fetch(attachment.url, { method: 'Get' });
                 const autoFocusData = await response.json();
 
-                if(autoFocusData.CalculatedFocusPoint && autoFocusData.MeasurePoints && autoFocusData.Intersections) {
+                const valid = validateSchema(autoFocusData);
+
+                if(valid) {
                     const canvasRenderService = new CanvasRenderService(width, height, chartCallback);
 
                     const sortedPoints = _.sortBy(autoFocusData.MeasurePoints, x => x.Position);
@@ -210,8 +219,8 @@ class AFGraphCommand extends BaseCommand {
                     await message.channel.send(embed);
 
                     fs.unlinkSync('output.png');
-
-                    console.log('ok');
+                } else{
+                    console.log('Invalid schema for Auto Focus graph');
                 }
             }
             
