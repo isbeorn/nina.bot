@@ -5,6 +5,7 @@ const logger = log4js.getLogger();
 
 const HelpCommand = require('./commands/HelpCommand');
 const AFGraphCommand = require('./commands/AFGraphCommand');
+const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
   constructor(token) {
@@ -15,6 +16,7 @@ class Bot {
 
     // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
 
+    this.registerCommand(new GalleryWatchdogCommand(this.client));
     this.registerCommand(new HelpCommand(this.client));
     this.registerCommand(new AFGraphCommand(this.client));
   }
@@ -51,11 +53,7 @@ class Bot {
   }
 
   async onMessage(message) {
-    try {
-      
-
-      await this.galleryWatchdog(message);
-
+    try {      
       /*if (message.content === '$$TESTREACTION$$') {
         this.onGuildMemberAdd(message.member);
       }*/
@@ -71,17 +69,7 @@ class Bot {
   }
 
 
-  async galleryWatchdog(message) {
-    if (message.channel.id == process.env.GALLERY_CHANNEL) {
-      if (message.attachments.size === 0) {
-        await message.delete();
-
-        const member = message.member;
-        
-        await message.author.send(`${member} please don't chat inside gallery. Only post pictures and acquisition details there in one single post. If you need to add more details please edit the original post. Thank you.`);
-      }
-    }
-  }
+  
 
 
   async onGuildMemberAdd(member) {
