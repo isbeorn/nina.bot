@@ -129,10 +129,10 @@ class AFGraphCommand extends BaseCommand {
                 if(autoFocusData.CalculatedFocusPoint && autoFocusData.MeasurePoints && autoFocusData.Intersections) {
                     const canvasRenderService = new CanvasRenderService(width, height, chartCallback);
 
-                    
+                    const sortedPoints = _.sortBy(autoFocusData.MeasurePoints, x => x.Position);
 
                     const configuration = getChartConfig();
-                    autoFocusData.MeasurePoints.forEach(point => {
+                    sortedPoints.forEach(point => {
                         //configuration.data.labels.push(point.Position);
                         configuration.data.datasets[0].labels.push(point.Position);
                         configuration.data.datasets[0].data.push({
