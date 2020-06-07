@@ -3,8 +3,14 @@ const Ajv = require('ajv');
 const fs = require('fs');
 const _ = require('lodash');
 const Discord = require('discord.js');
+const mathjs = require('mathjs');
+
 const BaseCommand = require('./BaseCommand');
-const schema = require('./AFGraphSchema');
+
+const baseSchema = require('./AFGraphSchema');
+const versionSchema = require('./AFGraphVersionSchema');
+const v1Schema = require('./AFGraphSchemaV1');
+const v2Schema = require('./AFGraphSchemaV2');
 
 const { CanvasRenderService } = require('chartjs-node-canvas');
 
@@ -31,9 +37,18 @@ const chartCallback = (ChartJS) => {
     });
 };
 
-const validateSchema = json => {
+const validateV1Schema = json => {
+    return validateSchema(v1Schema, json);
+}
+
+const validateV2Schema = json => {
+    return validateSchema(v2Schema, json);
+}
+
+const validateSchema = (schema, json) => {
     const ajv = new Ajv();
-    return ajv.validate(schema, json);
+    const validate = ajv.addSchema(baseSchema).compile(schema);
+    return validate(json);
 }
 
 const getChartConfig = () => {
@@ -138,97 +153,153 @@ class AFGraphCommand extends BaseCommand {
                 const response = await fetch(attachment.url, { method: 'Get' });
                 const autoFocusData = await response.json();
 
-                const valid = validateSchema(autoFocusData);
+                const validVersion = validateSchema(versionSchema, autoFocusData);
+                if (validVersion) {
 
-                if (valid) {
-                    const canvasRenderService = new CanvasRenderService(width, height, chartCallback);
-
-                    const sortedPoints = _.sortBy(autoFocusData.MeasurePoints, x => x.Position);
-
-                    const configuration = getChartConfig();
-                    sortedPoints.forEach(point => {
-                        //configuration.data.labels.push(point.Position);
-                        configuration.data.datasets[0].labels.push(point.Position);
-                        configuration.data.datasets[0].data.push({
-                            x: point.Position,
-                            y: point.Value
-                        });
-                    });
-
-                    const trend = autoFocusData.Intersections.TrendLineIntersection;
-                    //configuration.data.labels.push(trend.Position);
-                    configuration.data.datasets[1].data.push({
-                        x: trend.Position,
-                        y: trend.Value
-                    });
-
-
-                    const quadratic = autoFocusData.Intersections.QuadraticMinimum;
-                    // configuration.data.labels.push(quadratic.Position);
-                    configuration.data.datasets[2].data.push({
-                        x: quadratic.Position,
-                        y: quadratic.Value
-                    });
-
-
-                    const hyperbole = autoFocusData.Intersections.HyperbolicMinimum;
-                    //configuration.data.labels.push(hyperbole.Position);
-                    configuration.data.datasets[3].data.push({
-                        x: hyperbole.Position,
-                        y: hyperbole.Value
-                    });
-
-
-                    const focus = autoFocusData.CalculatedFocusPoint;
-                    //configuration.data.labels.push(focus.Position);
-                    configuration.data.datasets[4].data.push({
-                        x: focus.Position,
-                        y: focus.Value
-                    });
-
-
-                    const sortedArray = _(configuration.data.datasets[0].data.map(x => x.x))
-                        .sort()
-                        .sortedUniq()
-                        .value();
-
-                    let stepsize = 0;
-                    if (sortedArray.length > 1) {
-                        stepsize = sortedArray[1] - sortedArray[0];
+                    if (!autoFocusData.Version) {
+                        await this.generateV1(message, autoFocusData);
+                    } else if (autoFocusData.Version === 2) {
+                        await this.generateV2(message, autoFocusData);
                     }
-
-                    const stream = canvasRenderService.renderToStream(configuration);
-                    stream.pipe(fs.createWriteStream('output.png'));
-
-                    await new Promise((res, rej) => {
-                        stream.on('end', () => {
-                            res();
-                        });
-                    });
-
-                    const date = new Date(autoFocusData.Timestamp);
-                    let temperature = "n.A.";
-                    if (autoFocusData.Temperature !== "NaN") {
-                        temperature = autoFocusData.Temperature.toFixed(2);
-                    }
-                    const embed = new Discord.RichEmbed();
-                    embed.attachFile('./output.png')
-                        .addField('Method', autoFocusData.Method, true)
-                        .addField('Fitting', autoFocusData.Fitting, true)
-                        .addField('Temperature', temperature, true)
-                        .addField('Step Size', stepsize, true)
-                        .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true);
-
-
-
-                    await message.channel.send(embed);
-
-                    fs.unlinkSync('output.png');
                 } else {
-                    console.log('Invalid schema for Auto Focus graph');
+                    console.log("Invalid version for Auto Focus data");
                 }
             }
+        }
+    }
 
+    async generateAndSend(message, autoFocusData, configuration) {
+        const sortedArray = _(configuration.data.datasets[0].data.map(x => x.x))
+            .sort()
+            .sortedUniq()
+            .value();
+
+        let stepsize = 0;
+        if (sortedArray.length > 1) {
+            stepsize = sortedArray[1] - sortedArray[0];
+        }
+
+        const canvasRenderService = new CanvasRenderService(width, height, chartCallback);
+        const stream = canvasRenderService.renderToStream(configuration);
+        stream.pipe(fs.createWriteStream('output.png'));
+
+        await new Promise((res, rej) => {
+            stream.on('end', () => {
+                res();
+            });
+        });
+
+        const date = new Date(autoFocusData.Timestamp);
+        let temperature = "n.A.";
+        if (autoFocusData.Temperature !== "NaN") {
+            temperature = autoFocusData.Temperature.toFixed(2);
+        }
+        const embed = new Discord.RichEmbed();
+        embed.attachFile('./output.png')
+            .addField('Method', autoFocusData.Method, true)
+            .addField('Fitting', autoFocusData.Fitting, true)
+            .addField('Temperature', temperature, true)
+            .addField('Step Size', stepsize, true)
+            .addField('Calculated Focus Position', autoFocusData.CalculatedFocusPoint.Position, true);
+
+
+
+        await message.channel.send(embed);
+
+        fs.unlinkSync('output.png');
+    }
+
+    generateBaseGraph(autoFocusData) {
+        const sortedPoints = _.sortBy(autoFocusData.MeasurePoints, x => x.Position);
+
+        const configuration = getChartConfig();
+        sortedPoints.forEach(point => {
+            //configuration.data.labels.push(point.Position);
+            configuration.data.datasets[0].labels.push(point.Position);
+            configuration.data.datasets[0].data.push({
+                x: point.Position,
+                y: point.Value
+            });
+        });
+
+        const trend = autoFocusData.Intersections.TrendLineIntersection;
+        //configuration.data.labels.push(trend.Position);
+        configuration.data.datasets[1].data.push({
+            x: trend.Position,
+            y: trend.Value
+        });
+
+
+        const quadratic = autoFocusData.Intersections.QuadraticMinimum;
+        // configuration.data.labels.push(quadratic.Position);
+        configuration.data.datasets[2].data.push({
+            x: quadratic.Position,
+            y: quadratic.Value
+        });
+
+
+        const hyperbole = autoFocusData.Intersections.HyperbolicMinimum;
+        //configuration.data.labels.push(hyperbole.Position);
+        configuration.data.datasets[3].data.push({
+            x: hyperbole.Position,
+            y: hyperbole.Value
+        });
+
+
+        const focus = autoFocusData.CalculatedFocusPoint;
+        //configuration.data.labels.push(focus.Position);
+        configuration.data.datasets[4].data.push({
+            x: focus.Position,
+            y: focus.Value
+        });
+
+        return configuration;
+    }
+
+    addHyperbola(autoFocusData, configuration) {
+        configuration.data.datasets[3].data = [];
+        const min = _.minBy(autoFocusData.MeasurePoints, x => x.Position);
+        const max = _.maxBy(autoFocusData.MeasurePoints, x => x.Position);
+
+        const hyperbolfn = mathjs.compile(autoFocusData.Fittings.Hyperbolic);
+
+        const steps = (max.Position - min.Position) / 100;
+        for (let i = min.Position; i <= max.Position; i += steps) {
+            configuration.data.datasets[3].data.push({
+                x: i,
+                y: hyperbolfn.evaluate({ x: i })
+            });
+        }
+
+    }
+
+    async generateV1(message, autoFocusData) {
+        const valid = validateV1Schema(autoFocusData);
+
+        if (valid) {
+
+            const configuration = this.generateBaseGraph();
+
+            await this.generateAndSend(message, autoFocusData, configuration);
+
+        } else {
+            console.log('Invalid schema for Auto Focus graph');
+        }
+    }
+
+    async generateV2(message, autoFocusData) {
+        const valid = validateV2Schema(autoFocusData);
+
+        if (valid) {
+
+            const configuration = this.generateBaseGraph(autoFocusData);
+
+            this.addHyperbola(autoFocusData, configuration);
+
+            await this.generateAndSend(message, autoFocusData, configuration);
+
+        } else {
+            console.log('Invalid schema for Auto Focus graph');
         }
     }
 }
