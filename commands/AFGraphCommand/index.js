@@ -222,20 +222,6 @@ class AFGraphCommand extends BaseCommand {
                 pointRadius: 3,
                 pointBorderColor: 'transparent'
             });
-
-            config.data.datasets.push({
-                label: 'Focus Points',
-                pointBackgroundColor: 'rgba(255, 99, 132, 1)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                data: [{
-                    x: report.FocusPoint.Position,
-                    y: report.FocusPoint.Value
-                }],
-                fill: false,
-                pointRadius: 4,
-                pointBorderColor: 'transparent'
-            });
-
         } else {
             const data = report.GaussianFitting.getPoints(report.MinimumStep, report.MaximumStep);
             config.data.datasets.push({
@@ -250,6 +236,19 @@ class AFGraphCommand extends BaseCommand {
                 pointBorderColor: 'transparent'
             });
         }
+
+        config.data.datasets.push({
+            label: 'Focus Position',
+            pointBackgroundColor: 'rgba(255, 99, 132, 1)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            data: [{
+                x: report.FocusPoint.Position,
+                y: report.FocusPoint.Value
+            }],
+            fill: false,
+            pointRadius: 4,
+            pointBorderColor: 'transparent'
+        });
 
         return config;
     }
