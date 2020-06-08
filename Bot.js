@@ -1,7 +1,12 @@
 const Discord = require('discord.js');
 const log4js = require('log4js');
+log4js.configure({
+  appenders: { console: { type: 'console' } },
+  categories: { default: { appenders: ['console'], level: 'debug' } }
+})
 
 const logger = log4js.getLogger();
+
 
 const HelpCommand = require('./commands/HelpCommand');
 const AFGraphCommand = require('./commands/AFGraphCommand');
@@ -13,6 +18,8 @@ class Bot {
     this.client = new Discord.Client();
     this.client.on('ready', this.onReady.bind(this));
     this.client.on('message', this.onMessage.bind(this));
+    this.client.on('messageReactionAdd', this.onMessageReactionAdd.bind(this));
+    //this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
 
     // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
 
@@ -38,7 +45,11 @@ class Bot {
 
   async connect() {
     try {
-      await this.getClient().login(this.getToken());
+      const client = this.getClient();
+
+      logger.info('Logging in client');
+      await client.login(this.getToken());
+
     } catch (ex) {
       logger.error(ex.message);
     }
@@ -48,69 +59,90 @@ class Bot {
     this.getCommands().push(command);
   }
 
-  onReady() {
-    this.ready = true;
+  async onReady() {
+    logger.info('Client ready');
+
+    try {
+      //Retrieve old message to be stored inside the cache to listen to for welcome role reactor
+      const client = this.getClient();
+      const channelId = process.env.WELCOME_CHANNEL;
+      const messageId = process.env.WELCOME_MESSAGE_ID;
+
+      logger.info(`Fetching channel with id ${channelId}`);
+      const channel = await client.channels.fetch(channelId);
+
+
+
+      
+      // const guild = await client.guilds.resolve("436650817295089664");
+      // const members = await guild.members.fetch();
+
+      // for(const [snowflake, member] of members) {
+
+      //   await member.roles.add("719602376092156046");
+      // }
+
+      // const embed = new Discord.MessageEmbed()
+      //   .setTitle('Welcome to the N.I.N.A. - Nighttime Imaging \'N\' Astronomy community chat!')
+      //   .setThumbnail('https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
+      //   .setAuthor('Isbeorn', 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
+      //   .setURL('https://nighttime-imaging.eu')
+      //   .setColor('0x00AE86')
+      //   .setDescription(`
+      // N.I.N.A. is a free open source project dedicated to deep sky astrophotography.
+      // The software is created and maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
+      // Everybody is welcome to participate and have an impact on the project.
+      // Suggestions and feedback for improval are appreciated, but please be constructive with your request and don't expect something be worked upon right away.
+      // `)
+      //   .addField('__**Project Homepage**__', 'https://nighttime-imaging.eu')
+      //   .addField('__**Donate**__', 'If N.I.N.A. helps you on your journey for amazing images, please consider a [donation](https://nighttime-imaging.eu/donate/)')
+      //   .addField('__**Download**__', 'The latest official builds can be found at the [download page](https://nighttime-imaging.eu/download/)')
+      //   .addField('__**Contributing**__', 'Interested in contributing? Refer to the [contributing guide](https://bitbucket.org/Isbeorn/nina/src/master/CONTRIBUTING.md)!')
+      //   .addField('__**Application Support**__', 'Please use the appropriate support channels in case you need help. The community can then try to help you out!')
+      //   .addField('\u200b', '\u200b')
+      //   .addField('__**Role assignment**__', 'If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to see and post messages in the channels.')
+      //   .setFooter('');
+
+      // await channel.send({ embed });
+
+      logger.info(`Fetching message with id ${messageId}`);
+      const message = await channel.messages.fetch(messageId);
+      await message.react('☑');
+    } catch (ex) {
+      logger.error(ex.message);
+    }
+
   }
 
   async onMessage(message) {
-    try {      
-      /*if (message.content === '$$TESTREACTION$$') {
-        this.onGuildMemberAdd(message.member);
-      }*/
-
+    try {
       const promises = this.getCommands().map((command) => {
         return command.execute(message);
       });
 
       await Promise.all(promises);
     } catch (ex) {
-      console.log(ex.message);
+      logger.error(ex.message);
     }
   }
 
-
-  
-
-
-  async onGuildMemberAdd(member) {
-    this.a = 1;
-    const channelId = process.env.WELCOME_CHANNEL;
-    const role = process.env.MEMBER_ROLE;
-
-    const embed = new Discord.RichEmbed()
-      .setTitle('Welcome to the N.I.N.A. - Nighttime Imaging \'N\' Astronomy community discord!')
-      .setAuthor('Isbeorn', 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
-      .setURL('https://nighttime-imaging.eu')
-      .setColor('0x00AE86')
-      .setDescription(`
-      N.I.N.A. is a free and open-source project, that is maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
-      Everybody is welcome to participate and have an impact on the project.
-      Suggestions and feedback for improval are appreciated, but please be constructive with your request and don't expect something be worked upon right away.
-      Remember that this is a volunteer project, so it will take some volunteer to be convinced that a particular request is worth their time and that it fits to the general project's vision!      
-      `)
-      .addField('Rules & News', 'Server rules and latest news can be found inside the channel #announcements on the left side')
-      .addField('Project Homepage', 'https://nighttime-imaging.eu')
-      .addField('Donate', 'If you like the project and want to support me with a donation have a look at https://nighttime-imaging.eu/donate/')
-      .addField('Download', 'You can find the latest official builds of N.I.N.A. at https://nighttime-imaging.eu/download/')
-      .addField('Contributing', 'A detailed guide on code contribution can be found at https://bitbucket.org/Isbeorn/nina/src/master/CONTRIBUTING.md')
-      .setFooter('If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to post messages in the channels.');
-
-    const channel = member.guild.channels.get(channelId);
-
-    const welcomeMention = await channel.send(`Hello ${member}`);
-    channel.send({ embed }).then(async (msg) => {
-      await msg.react('☑');
-      const filter = (reaction, user) => reaction.emoji.name === '☑' && user.id === member.id;
-      try {
-        await msg.awaitReactions(filter, { max: 1 });
-
-        await member.addRole(role);
-        msg.delete();
-        welcomeMention.delete();
-      } catch (ex) {
-        console.log(ex.message);
+  async onMessageReactionAdd(reaction, user) {
+    try {
+      const messageId = process.env.WELCOME_MESSAGE_ID;
+      const message = reaction.message;
+      if (user.bot === false
+        && message.id === messageId
+        && reaction.emoji.name === '☑') {
+        logger.info(`Assigning member role to user ${user.tag}`)
+        const memberRoleId = process.env.MEMBER_ROLE;
+        const member = await message.guild.member(user);
+        const role = await message.guild.roles.fetch(memberRoleId);
+        await member.roles.add(role);
+        await reaction.users.remove(user.id);
       }
-    });
+    } catch (ex) {
+      logger.error(ex.message);
+    }
   }
 }
 

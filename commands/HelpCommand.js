@@ -10,7 +10,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!logs': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('N.I.N.A. Logs')          
         .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
         .setColor('0x00AE86')
@@ -23,7 +23,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!docs': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('N.I.N.A. Documentation')          
         .setURL('https://nighttime-imaging.eu/docs/master/site/')
         .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
@@ -36,7 +36,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!devdocs': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('N.I.N.A. Documentation')          
         .setURL('https://nighttime-imaging.eu/docs/develop/site/')
         .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
@@ -50,7 +50,7 @@ class HelpCommand extends BaseCommand {
       }
       case '!tracker':
       case '!issue': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('N.I.N.A. Issue Tracker')          
         .setURL('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open')
         .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
@@ -68,7 +68,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!nina.docs': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('N.I.N.A. Documentation Repository')          
         .setURL('https://bitbucket.org/Isbeorn/nina.docs')
         .setThumbnail('https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png')
@@ -84,7 +84,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!conform': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('ASCOM Conformance check')          
         .setURL('https://github.com/ASCOMInitiative/Conform/releases/')
         .setThumbnail('https://avatars3.githubusercontent.com/u/38851363?s=400&v=4')
@@ -99,7 +99,7 @@ class HelpCommand extends BaseCommand {
         break;
       }
       case '!32bitascom': {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.MessageEmbed()
         .setTitle('How to use 32bit COM objects in 64bit environments')          
         .setURL('https://techtalk.gfi.com/32bit-object-64bit-environment/')
         .setThumbnail('https://www.techtalk.gfi.com/wp-content/uploads/2009/09/Using-32bit-COM-in-64bit-environment-300x300.jpg')

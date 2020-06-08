@@ -103,7 +103,7 @@ class AFGraphCommand extends BaseCommand {
     async process(message) {
         if (message.attachments.size > 0) {
             const attachment = message.attachments.first();
-            if (attachment.filename.endsWith(".json")) {
+            if (attachment.attachment.endsWith(".json")) {
                 const response = await fetch(attachment.url, { method: 'Get' });
                 const autoFocusData = await response.json();
 
@@ -142,8 +142,8 @@ class AFGraphCommand extends BaseCommand {
     }
 
     async sendMessage(message, report) {
-        const embed = new Discord.RichEmbed();
-        embed.attachFile('./output.png')
+        const embed = new Discord.MessageEmbed();
+        embed.attachFiles(['./output.png'])
             .addField('Method', report.Method, true)
             .addField('Fitting', report.Fitting, true)
             .addField('Temperature', report.Temperature, true)
