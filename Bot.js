@@ -73,7 +73,7 @@ class Bot {
 
 
 
-      
+
       // const guild = await client.guilds.resolve("436650817295089664");
       // const members = await guild.members.fetch();
 
@@ -107,6 +107,20 @@ class Bot {
 
       logger.info(`Fetching message with id ${messageId}`);
       const message = await channel.messages.fetch(messageId);
+      //const reactions = await message.reactions.fetch();
+
+      for (const [, reaction] of message.reactions.cache) {
+        const users = await reaction.users.fetch();
+        for (const [, user] of users) {
+          if (user.tag !== 'NINA.Bot#9210') {
+
+            await this.assignMemberRole(message, user);
+
+            await reaction.users.remove(user.id);
+          }
+        }
+      }
+
       await message.react('☑');
     } catch (ex) {
       logger.error(ex.message);
@@ -126,18 +140,26 @@ class Bot {
     }
   }
 
+  async assignMemberRole(message, user) {
+    const memberRoleId = process.env.MEMBER_ROLE;
+    const oldMemberRoleId = process.env.OLD_MEMBER_ROLE;
+    const role = await message.guild.roles.fetch(memberRoleId);
+    const oldRole = await message.guild.roles.fetch(oldMemberRoleId);
+    const member = await message.guild.member(user);
+    await member.roles.add(role);
+    await member.roles.remove(oldRole);
+  }
+
   async onMessageReactionAdd(reaction, user) {
     try {
       const messageId = process.env.WELCOME_MESSAGE_ID;
       const message = reaction.message;
-      if (user.bot === false
+      if (user.tag !== 'NINA.Bot#9210'
         && message.id === messageId
         && reaction.emoji.name === '☑') {
         logger.info(`Assigning member role to user ${user.tag}`)
-        const memberRoleId = process.env.MEMBER_ROLE;
-        const member = await message.guild.member(user);
-        const role = await message.guild.roles.fetch(memberRoleId);
-        await member.roles.add(role);
+
+        await this.assignMemberRole(message, user);
         await reaction.users.remove(user.id);
       }
     } catch (ex) {
