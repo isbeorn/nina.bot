@@ -62,6 +62,11 @@ class Bot {
   async onReady() {
     logger.info('Client ready');
 
+    await this.initializeRoleManager();
+
+  }
+
+  async initializeRoleManager() {
     try {
       //Retrieve old message to be stored inside the cache to listen to for welcome role reactor
       const client = this.getClient();
@@ -109,23 +114,25 @@ class Bot {
       const message = await channel.messages.fetch(messageId);
       //const reactions = await message.reactions.fetch();
 
+      logger.info('Migrating users to roles that happened during downtime');
       for (const [, reaction] of message.reactions.cache) {
         const users = await reaction.users.fetch();
         for (const [, user] of users) {
           if (user.tag !== 'NINA.Bot#9210') {
-
-            await this.assignMemberRole(message, user);
-
+            if (reaction.emoji.name === '☑') {
+              await this.assignMemberRole(message, user);
+            }
+            logger.info(`Removing emoji ${reaction.emoji.name} by ${user.id} from message`);
             await reaction.users.remove(user.id);
           }
         }
       }
 
       await message.react('☑');
+      logger.info(`Role Manager initialized`);
     } catch (ex) {
       logger.error(ex.message);
     }
-
   }
 
   async onMessage(message) {
@@ -146,7 +153,11 @@ class Bot {
     const role = await message.guild.roles.fetch(memberRoleId);
     const oldRole = await message.guild.roles.fetch(oldMemberRoleId);
     const member = await message.guild.member(user);
+
+    logger.info(`Assigning member role to user ${user.tag}`)
     await member.roles.add(role);
+
+    logger.info(`Removing old member role from user ${user.tag}`)
     await member.roles.remove(oldRole);
   }
 
@@ -155,11 +166,11 @@ class Bot {
       const messageId = process.env.WELCOME_MESSAGE_ID;
       const message = reaction.message;
       if (user.tag !== 'NINA.Bot#9210'
-        && message.id === messageId
-        && reaction.emoji.name === '☑') {
-        logger.info(`Assigning member role to user ${user.tag}`)
-
-        await this.assignMemberRole(message, user);
+        && message.id === messageId) {
+        if (reaction.emoji.name === '☑') {
+          await this.assignMemberRole(message, user);
+        }
+        logger.info(`Removing emoji ${reaction.emoji.name} by ${user.id} from message`);
         await reaction.users.remove(user.id);
       }
     } catch (ex) {
