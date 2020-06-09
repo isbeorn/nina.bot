@@ -122,7 +122,7 @@ class Bot {
             if (reaction.emoji.name === '☑') {
               await this.assignMemberRole(message, user);
             }
-            logger.info(`Removing emoji ${reaction.emoji.name} by ${user.id} from message`);
+            logger.info(`Removing emoji ${reaction.emoji.name} by ${user.tag} from message`);
             await reaction.users.remove(user.id);
           }
         }
@@ -170,7 +170,7 @@ class Bot {
         if (reaction.emoji.name === '☑') {
           await this.assignMemberRole(message, user);
         }
-        logger.info(`Removing emoji ${reaction.emoji.name} by ${user.id} from message`);
+        logger.info(`Removing emoji ${reaction.emoji.name} by ${user.tag} from message`);
         await reaction.users.remove(user.id);
       }
     } catch (ex) {
