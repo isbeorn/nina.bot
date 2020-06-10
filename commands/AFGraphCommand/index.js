@@ -52,7 +52,7 @@ const validateSchema = (schema, json) => {
     return validate(json);
 }
 
-const getChartConfig = () => {
+const getChartConfig = (yAxisLabel) => {
     //see https://www.chartjs.org/docs/latest/charts/line.html
     const configuration = {
         type: 'line',
@@ -78,7 +78,7 @@ const getChartConfig = () => {
                     },
                     scaleLabel: {
                         display: true,
-                        labelString: 'HFR'
+                        labelString: yAxisLabel
                     }
                 }],
                 xAxes: [{
@@ -161,7 +161,8 @@ class AFGraphCommand extends BaseCommand {
     }
 
     generateGraphConfiguration(report) {
-        const config = getChartConfig();
+        const yAxisLabel = report.Method === "STARHFR" ? "HFR" : "Contrast";
+        const config = getChartConfig(yAxisLabel);
 
         const measurePoints = report.MeasurePoints.map(p => {
             return { x: p.Position, y: p.Value }
