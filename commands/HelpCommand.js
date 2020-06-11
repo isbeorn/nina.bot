@@ -175,6 +175,10 @@ class HelpCommand extends BaseCommand {
                 await message.reply(embed);
                 break;
             }
+            case '!docking': {
+                await message.reply('https://www.youtube.com/watch?v=OEJUya9_LWA');
+                break;
+            }
             case '!help': {
                 await message.reply(
                     'Available commands: !donate, !logs, !docs, !devdocs, !tracker, !issue, !repository, !nina, !nina.docs, !troubleshoot, !conform, !32bitascom, !stars'
