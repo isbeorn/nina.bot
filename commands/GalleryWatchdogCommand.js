@@ -8,7 +8,9 @@ class GalleryWatchdogCommand extends BaseCommand {
 
                 const member = message.member;
 
-                await message.author.send(`${member} please don't chat inside gallery. Only post pictures and acquisition details there in one single post. If you need to add more details please edit the original post. Thank you.`);
+                await message.author.send(
+                    `${member} please don't chat inside gallery. Only post pictures and acquisition details there in one single post. If you need to add more details please edit the original post. Thank you.`
+                );
             }
         }
     }

@@ -5,14 +5,13 @@ const { MeasurePoint } = require('./MeasurePoint');
 
 class AutoFocusReport {
     /**
-     * 
+     *
      * @param {object} data json data according to AFGraphSchema
      */
     constructor(data) {
-
         const points = [];
 
-        data.MeasurePoints.forEach(p => {
+        data.MeasurePoints.forEach((p) => {
             points.push(new MeasurePoint(p));
         });
 
@@ -22,13 +21,14 @@ class AutoFocusReport {
             return 0;
         });
 
-        this.measurePoints = _.uniqBy(points, x => x.Position);
+        this.measurePoints = _.uniqBy(points, (x) => x.Position);
 
-        this.stepSize = this.measurePoints[1].Position - this.measurePoints[0].Position;
-        this.minimumStep = _.minBy(points, x => x.Position).Position;
-        this.maximumStep = _.maxBy(points, x => x.Position).Position;
+        this.stepSize =
+            this.measurePoints[1].Position - this.measurePoints[0].Position;
+        this.minimumStep = _.minBy(points, (x) => x.Position).Position;
+        this.maximumStep = _.maxBy(points, (x) => x.Position).Position;
 
-        if (data.Temperature !== "NaN") {
+        if (data.Temperature !== 'NaN') {
             this.temperature = data.Temperature.toFixed(2);
         } else {
             this.temperature = Number.NaN;
@@ -40,11 +40,26 @@ class AutoFocusReport {
 
         this.filter = data.Filter || 'n.A.';
 
-        this.quadraticFitting = new Fitting(_.get(data, 'Fittings.Quadratic'), data.Intersections.QuadraticMinimum);
-        this.hyperbolicFitting = new Fitting(_.get(data, 'Fittings.Hyperbolic'), data.Intersections.HyperbolicMinimum);
-        this.gaussianFitting = new Fitting(_.get(data, 'Fittings.Gaussian'), data.Intersections.GaussianMaximum);
-        this.leftTrendFitting = new Fitting(_.get(data, 'Fittings.LeftTrend'), data.Intersections.TrendLineIntersection);
-        this.rightTrendFitting = new Fitting(_.get(data, 'Fittings.RightTrend'), data.Intersections.TrendLineIntersection);
+        this.quadraticFitting = new Fitting(
+            _.get(data, 'Fittings.Quadratic'),
+            data.Intersections.QuadraticMinimum
+        );
+        this.hyperbolicFitting = new Fitting(
+            _.get(data, 'Fittings.Hyperbolic'),
+            data.Intersections.HyperbolicMinimum
+        );
+        this.gaussianFitting = new Fitting(
+            _.get(data, 'Fittings.Gaussian'),
+            data.Intersections.GaussianMaximum
+        );
+        this.leftTrendFitting = new Fitting(
+            _.get(data, 'Fittings.LeftTrend'),
+            data.Intersections.TrendLineIntersection
+        );
+        this.rightTrendFitting = new Fitting(
+            _.get(data, 'Fittings.RightTrend'),
+            data.Intersections.TrendLineIntersection
+        );
     }
 
     get MinimumStep() {

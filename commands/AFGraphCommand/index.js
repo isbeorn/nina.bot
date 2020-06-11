@@ -1,9 +1,7 @@
 const fetch = require('node-fetch');
 const Ajv = require('ajv');
 const fs = require('fs');
-const _ = require('lodash');
 const Discord = require('discord.js');
-const mathjs = require('mathjs');
 
 const BaseCommand = require('../BaseCommand');
 
@@ -18,7 +16,6 @@ const { CanvasRenderService } = require('chartjs-node-canvas');
 const width = 400;
 const height = 300;
 const chartCallback = (ChartJS) => {
-
     // Global config example: https://www.chartjs.org/docs/latest/configuration/
     ChartJS.defaults.global.elements.rectangle.borderWidth = 2;
     ChartJS.defaults.global.defaultColor = 'rgba(54, 162, 235, 1)';
@@ -29,7 +26,12 @@ const chartCallback = (ChartJS) => {
         beforeDraw: function (chartInstance) {
             var ctx = chartInstance.chart.ctx;
             ctx.fillStyle = '#37393f';
-            ctx.fillRect(0, 0, chartInstance.chart.width, chartInstance.chart.height);
+            ctx.fillRect(
+                0,
+                0,
+                chartInstance.chart.width,
+                chartInstance.chart.height
+            );
         }
     });
     // New chart type example: https://www.chartjs.org/docs/latest/developers/charts.html
@@ -38,19 +40,19 @@ const chartCallback = (ChartJS) => {
     });
 };
 
-const validateV1Schema = json => {
+const validateV1Schema = (json) => {
     return validateSchema(v1Schema, json);
-}
+};
 
-const validateV2Schema = json => {
+const validateV2Schema = (json) => {
     return validateSchema(v2Schema, json);
-}
+};
 
 const validateSchema = (schema, json) => {
     const ajv = new Ajv();
     const validate = ajv.addSchema(baseSchema).compile(schema);
     return validate(json);
-}
+};
 
 const getChartConfig = (yAxisLabel) => {
     //see https://www.chartjs.org/docs/latest/charts/line.html
@@ -70,44 +72,49 @@ const getChartConfig = (yAxisLabel) => {
                 fontSize: 8
             },
             scales: {
-                yAxes: [{
-                    type: 'linear',
-                    position: 'left',
-                    ticks: {
-                        fontColor: 'white'
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: yAxisLabel
+                yAxes: [
+                    {
+                        type: 'linear',
+                        position: 'left',
+                        ticks: {
+                            fontColor: 'white'
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: yAxisLabel
+                        }
                     }
-                }],
-                xAxes: [{
-                    type: 'linear',
-                    position: 'bottom',
-                    ticks: {
-                        fontColor: 'white'
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Position'
+                ],
+                xAxes: [
+                    {
+                        type: 'linear',
+                        position: 'bottom',
+                        ticks: {
+                            fontColor: 'white'
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Position'
+                        }
                     }
-                }]
+                ]
             }
         }
     };
     return configuration;
-}
-
+};
 
 class AFGraphCommand extends BaseCommand {
     async process(message) {
         if (message.attachments.size > 0) {
             const attachment = message.attachments.first();
-            if (attachment.attachment.endsWith(".json")) {
+            if (attachment.attachment.endsWith('.json')) {
                 const response = await fetch(attachment.url, { method: 'Get' });
                 const autoFocusData = await response.json();
 
-                const valid = validateV1Schema(autoFocusData) || validateV2Schema(autoFocusData);
+                const valid =
+                    validateV1Schema(autoFocusData) ||
+                    validateV2Schema(autoFocusData);
 
                 if (valid) {
                     try {
@@ -121,7 +128,6 @@ class AFGraphCommand extends BaseCommand {
                     } finally {
                         this.destroy();
                     }
-
                 } else {
                     console.log('Invalid JSON for auto focus report');
                 }
@@ -130,11 +136,15 @@ class AFGraphCommand extends BaseCommand {
     }
 
     async render(configuration) {
-        const canvasRenderService = new CanvasRenderService(width, height, chartCallback);
+        const canvasRenderService = new CanvasRenderService(
+            width,
+            height,
+            chartCallback
+        );
         const stream = canvasRenderService.renderToStream(configuration);
         stream.pipe(fs.createWriteStream('output.png'));
 
-        await new Promise((res, rej) => {
+        await new Promise((res) => {
             stream.on('end', () => {
                 res();
             });
@@ -143,15 +153,18 @@ class AFGraphCommand extends BaseCommand {
 
     async sendMessage(message, report) {
         const embed = new Discord.MessageEmbed();
-        embed.attachFiles(['./output.png'])
+        embed
+            .attachFiles(['./output.png'])
             .addField('Method', report.Method, true)
             .addField('Fitting', report.Fitting, true)
             .addField('Temperature', report.Temperature, true)
             .addField('Step Size', report.StepSize, true)
-            .addField('Calculated Focus Position', report.FocusPoint.Position, true)
+            .addField(
+                'Calculated Focus Position',
+                report.FocusPoint.Position,
+                true
+            )
             .addField('Filter', report.Filter, true);
-
-
 
         await message.channel.send(embed);
     }
@@ -161,11 +174,11 @@ class AFGraphCommand extends BaseCommand {
     }
 
     generateGraphConfiguration(report) {
-        const yAxisLabel = report.Method === "STARHFR" ? "HFR" : "Contrast";
+        const yAxisLabel = report.Method === 'STARHFR' ? 'HFR' : 'Contrast';
         const config = getChartConfig(yAxisLabel);
 
-        const measurePoints = report.MeasurePoints.map(p => {
-            return { x: p.Position, y: p.Value }
+        const measurePoints = report.MeasurePoints.map((p) => {
+            return { x: p.Position, y: p.Value };
         });
 
         config.data.datasets.push({
@@ -178,28 +191,35 @@ class AFGraphCommand extends BaseCommand {
             pointBorderColor: 'transparent'
         });
 
-        if (report.Method === "STARHFR") {
-
-            let data = report.QuadraticFitting.getPoints(report.MinimumStep, report.MaximumStep);
+        if (report.Method === 'STARHFR') {
+            let data = report.QuadraticFitting.getPoints(
+                report.MinimumStep,
+                report.MaximumStep
+            );
             config.data.datasets.push({
                 label: 'Quadratic',
-                pointBackgroundColor: data.length > 1 ? 'transparent' : 'rgba(75, 192, 192, 1)',
+                pointBackgroundColor:
+                    data.length > 1 ? 'transparent' : 'rgba(75, 192, 192, 1)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 data: data,
-                borderDash: [5,5],
+                borderDash: [5, 5],
                 borderWidth: 1,
                 fill: false,
                 pointRadius: 3,
                 pointBorderColor: 'transparent'
             });
 
-            data = report.HyperbolicFitting.getPoints(report.MinimumStep, report.MaximumStep);
+            data = report.HyperbolicFitting.getPoints(
+                report.MinimumStep,
+                report.MaximumStep
+            );
             config.data.datasets.push({
                 label: 'Hyperbolic',
-                pointBackgroundColor: data.length > 1 ? 'transparent' : 'rgba(153, 102, 255, 1)',
+                pointBackgroundColor:
+                    data.length > 1 ? 'transparent' : 'rgba(153, 102, 255, 1)',
                 borderColor: 'rgba(153, 102, 255, 1)',
                 data: data,
-                borderDash: [5,5],
+                borderDash: [5, 5],
                 borderWidth: 1,
                 fill: false,
                 pointRadius: 3,
@@ -207,16 +227,28 @@ class AFGraphCommand extends BaseCommand {
             });
 
             data = [
-                ...report.LeftTrendFitting.getPoints(report.MinimumStep, report.LeftTrendFitting.PointOfInterest.Position + report.StepSize),
-                { x: report.LeftTrendFitting.PointOfInterest.Position, y: report.LeftTrendFitting.PointOfInterest.Value },
-                ...report.RightTrendFitting.getPoints(report.LeftTrendFitting.PointOfInterest.Position - report.StepSize, report.MaximumStep)
+                ...report.LeftTrendFitting.getPoints(
+                    report.MinimumStep,
+                    report.LeftTrendFitting.PointOfInterest.Position +
+                        report.StepSize
+                ),
+                {
+                    x: report.LeftTrendFitting.PointOfInterest.Position,
+                    y: report.LeftTrendFitting.PointOfInterest.Value
+                },
+                ...report.RightTrendFitting.getPoints(
+                    report.LeftTrendFitting.PointOfInterest.Position -
+                        report.StepSize,
+                    report.MaximumStep
+                )
             ];
             config.data.datasets.push({
                 label: 'Trendlines',
-                pointBackgroundColor: data.length > 1 ? 'transparent' : 'rgba(255, 159, 64, 1)',
+                pointBackgroundColor:
+                    data.length > 1 ? 'transparent' : 'rgba(255, 159, 64, 1)',
                 borderColor: 'rgba(255, 159, 64, 1)',
                 data: data,
-                borderDash: [2,2],
+                borderDash: [2, 2],
                 borderWidth: 1,
                 lineTension: 0,
                 fill: false,
@@ -224,13 +256,20 @@ class AFGraphCommand extends BaseCommand {
                 pointBorderColor: 'transparent'
             });
         } else {
-            const data = report.GaussianFitting.getPoints(report.MinimumStep, report.MaximumStep);
+            const data = report.GaussianFitting.getPoints(
+                report.MinimumStep,
+                report.MaximumStep
+            );
             config.data.datasets.push({
                 label: 'Gaussian',
-                pointBackgroundColor: data.length > 1 ? 'transparent' :'rgba(255, 159, 64, 1)',
+                pointBackgroundColor:
+                    data.length > 1 ? 'transparent' : 'rgba(255, 159, 64, 1)',
                 borderColor: 'rgba(255, 159, 64, 1)',
-                data: report.GaussianFitting.getPoints(report.MinimumStep, report.MaximumStep),
-                borderDash: [5,5],
+                data: report.GaussianFitting.getPoints(
+                    report.MinimumStep,
+                    report.MaximumStep
+                ),
+                borderDash: [5, 5],
                 borderWidth: 1,
                 fill: false,
                 pointRadius: 2,
@@ -242,10 +281,12 @@ class AFGraphCommand extends BaseCommand {
             label: 'Focus Position',
             pointBackgroundColor: 'rgba(255, 99, 132, 1)',
             borderColor: 'rgba(255, 99, 132, 1)',
-            data: [{
-                x: report.FocusPoint.Position,
-                y: report.FocusPoint.Value
-            }],
+            data: [
+                {
+                    x: report.FocusPoint.Position,
+                    y: report.FocusPoint.Value
+                }
+            ],
             fill: false,
             pointRadius: 4,
             pointBorderColor: 'transparent'

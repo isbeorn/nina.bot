@@ -4,9 +4,11 @@ module.exports = {
     title: 'AF Graph',
     type: 'object',
 
-    allOf: [{
-        '$ref': 'https://nighttime-imaging.eu/afgraph.schema.json'
-    }],
+    allOf: [
+        {
+            $ref: 'https://nighttime-imaging.eu/afgraph.schema.json'
+        }
+    ],
 
     properties: {
         Fittings: {
@@ -28,8 +30,14 @@ module.exports = {
                     type: 'string'
                 }
             },
-            required: ['Quadratic', 'Hyperbolic', 'Gaussian', 'LeftTrend', 'RightTrend']
+            required: [
+                'Quadratic',
+                'Hyperbolic',
+                'Gaussian',
+                'LeftTrend',
+                'RightTrend'
+            ]
         }
     },
     required: ['Version', 'Filter', 'Fittings']
-}
+};

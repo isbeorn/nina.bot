@@ -4,7 +4,6 @@ const log4js = require('log4js');
 const logger = log4js.getLogger();
 
 const Bot = require('./Bot');
-const server = require('./webservice/server');
 
 (async () => {
   try {

@@ -3,8 +3,10 @@ module.exports = {
     $schema: 'http://json-schema.org/draft-07/schema#',
     title: 'AF Graph',
     type: 'object',
-    
-    allOf: [{
-        '$ref': 'https://nighttime-imaging.eu/afgraph.schema.json'
-    }]
-}
+
+    allOf: [
+        {
+            $ref: 'https://nighttime-imaging.eu/afgraph.schema.json'
+        }
+    ]
+};

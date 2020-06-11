@@ -1,4 +1,3 @@
-
 const mathjs = require('mathjs');
 
 class Fitting {
@@ -41,8 +40,6 @@ class Fitting {
     get PointOfInterest() {
         return this.pointOfInterest;
     }
-
-
 }
 
 module.exports.Fitting = Fitting;

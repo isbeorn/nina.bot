@@ -64,9 +64,21 @@ module.exports = {
                 GaussianMaximum: {
                     $ref: '#/definitions/point'
                 }
-            },            
-            required: ['TrendLineIntersection', 'HyperbolicMinimum', 'QuadraticMinimum', 'GaussianMaximum']
+            },
+            required: [
+                'TrendLineIntersection',
+                'HyperbolicMinimum',
+                'QuadraticMinimum',
+                'GaussianMaximum'
+            ]
         }
-    },    
-    required: ['Temperature','Method','Fitting','CalculatedFocusPoint','MeasurePoints', 'Intersections']
-}
+    },
+    required: [
+        'Temperature',
+        'Method',
+        'Fitting',
+        'CalculatedFocusPoint',
+        'MeasurePoints',
+        'Intersections'
+    ]
+};
