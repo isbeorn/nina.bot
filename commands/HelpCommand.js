@@ -175,7 +175,7 @@ class HelpCommand extends BaseCommand {
                 await message.reply(embed);
                 break;
             }
-            case '!docking': {
+            case '!dock': {
                 await message.reply('https://www.youtube.com/watch?v=OEJUya9_LWA');
                 break;
             }
