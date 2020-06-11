@@ -1,6 +1,7 @@
 const { BitAscomCommand } = require('./BitAscomCommand');
 const { ConformCommand } = require('./ConformCommand');
 const { DevDocsCommand } = require('./DevDocsCommand');
+const { DiscordPatreonCommand } = require('./DiscordPatreonCommand');
 const { DockCommand } = require('./DockCommand');
 const { DocsRepositoryCommand } = require('./DocsRepositoryCommand');
 const { DocsCommand } = require('./DocsCommand');
@@ -14,6 +15,7 @@ const { TroubleshootCommand } = require('./TroubleshootCommand');
 module.exports = {
     BitAscomCommand,
     ConformCommand,
+    DiscordPatreonCommand,
     DocsCommand,
     DevDocsCommand,
     DockCommand,
