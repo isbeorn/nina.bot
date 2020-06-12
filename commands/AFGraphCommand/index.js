@@ -77,7 +77,8 @@ const getChartConfig = (yAxisLabel) => {
                         type: 'linear',
                         position: 'left',
                         ticks: {
-                            fontColor: 'white'
+                            fontColor: 'white',
+                            min: 0
                         },
                         scaleLabel: {
                             display: true,
