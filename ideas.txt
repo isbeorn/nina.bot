@@ -1,3 +1,1 @@
 - command to explain autofocus graph
-- command to explain overshoot
-    - https://media.discordapp.net/attachments/437173823675170816/717152179151962172/nina-af.gif

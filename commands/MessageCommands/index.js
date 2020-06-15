@@ -11,6 +11,7 @@ const { RepositoryCommand } = require('./RepositoryCommand');
 const { StarsCommand } = require('./StarsCommand');
 const { TrackerCommand } = require('./TrackerCommand');
 const { TroubleshootCommand } = require('./TroubleshootCommand');
+const { OvershootCommand } = require('./OvershootCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -25,5 +26,6 @@ module.exports = {
     RepositoryCommand,
     StarsCommand,
     TrackerCommand,
-    TroubleshootCommand
+    TroubleshootCommand,
+    OvershootCommand
 };
