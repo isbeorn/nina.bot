@@ -2,6 +2,8 @@ const fetch = require('node-fetch');
 const Ajv = require('ajv');
 const fs = require('fs');
 const Discord = require('discord.js');
+const mathjs = require('mathjs');
+const _ = require('lodash');
 
 const BaseCommand = require('../BaseCommand');
 
@@ -125,7 +127,9 @@ class AFGraphCommand extends BaseCommand {
 
                         await this.render(config);
 
-                        await this.sendMessage(message, report);
+                        const analysis = this.analyze(report);
+
+                        await this.sendMessage(message, report, analysis);
                     } finally {
                         this.destroy();
                     }
@@ -134,6 +138,25 @@ class AFGraphCommand extends BaseCommand {
                 }
             }
         }
+    }
+
+    analyze(report) {
+        const analysis = [];
+        const measurePoints = report.MeasurePoints.map((p) => {
+            return { x: p.Position, y: p.Value };
+        });
+
+        const hfrStdDev = mathjs.std(_.filter(measurePoints, x=> x.y > 0).map(x => x.y));
+        if(hfrStdDev < 1) {
+            analysis.push(`- HFR standard deviation is low (${mathjs.round(hfrStdDev,2)}). This indicates that the step size might be too low`);
+        } 
+
+        const hasZeroStars = _.filter(measurePoints, x => x.y === 0).length > 0;        
+        if(hasZeroStars) {
+            analysis.push(`- Datapoints contain HFR values of 0. Stepsize might be too large and image getting too much out of focus or clouds prevented finding stars`);
+        }
+
+        return analysis;
     }
 
     async render(configuration) {
@@ -152,7 +175,7 @@ class AFGraphCommand extends BaseCommand {
         });
     }
 
-    async sendMessage(message, report) {
+    async sendMessage(message, report, analysis) {
         const embed = new Discord.MessageEmbed();
         embed
             .attachFiles(['./output.png'])
@@ -166,6 +189,10 @@ class AFGraphCommand extends BaseCommand {
                 true
             )
             .addField('Filter', report.Filter, true);
+        
+        if(analysis.length > 0) {
+            embed.addField('Potential Issues', analysis.join('\n'));
+        }
 
         await message.channel.send(embed);
     }
