@@ -148,7 +148,7 @@ class AFGraphCommand extends BaseCommand {
 
         const hfrStdDev = mathjs.std(_.filter(measurePoints, x=> x.y > 0).map(x => x.y));
         if(hfrStdDev < 1) {
-            analysis.push(`- HFR standard deviation is low (${mathjs.round(hfrStdDev,2)}). This indicates that the step size might be too low`);
+            analysis.push(`- HFR standard deviation is low (${mathjs.round(hfrStdDev,2)}). This indicates that the step size might be too small`);
         } 
 
         const hasZeroStars = _.filter(measurePoints, x => x.y === 0).length > 0;        
