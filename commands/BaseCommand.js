@@ -8,7 +8,9 @@ class BaseCommand {
     }
 
     async execute(message) {
-        await this.process(message);
+        if(message.author.tag !== 'NINA.Bot#9210') {
+            await this.process(message);
+        }
     }
 
     async process(message) {
