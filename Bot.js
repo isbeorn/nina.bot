@@ -10,6 +10,7 @@ const logger = log4js.getLogger();
 const MessageCommands = require('./commands/MessageCommands');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
+const { NotifyOutdatedRoleCommand } = require('./commands/NotifyOutdatedRoleCommand');
 const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
@@ -30,6 +31,7 @@ class Bot {
         //this.registerCommand(new HelpCommand(this.client));
         this.registerCommand(new AFGraphCommand(this.client));
         this.registerCommand(new HelpCommand());
+        this.registerCommand(new NotifyOutdatedRoleCommand());
 
         for (const key in MessageCommands) {
             this.registerCommand(new MessageCommands[key]());
