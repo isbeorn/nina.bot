@@ -9,17 +9,21 @@ class MessageCommand {
         return this.triggerMessages;
     }
 
-    async execute(message) {      
-        if(typeof message.content === 'string') {
+    async execute(message) {
+        if (typeof message.content === 'string') {
             const start = message.content.split(' ')[0];
-            if(this.TriggerMessages.findIndex(x => x.startsWith(start)) > -1) {
-                return this.process(message);
+            if (start.length > 1) {
+                if (
+                    this.TriggerMessages.findIndex(x => x.startsWith(start)) >
+                    -1
+                ) {
+                    return this.process(message);
+                }
             }
             // if (_.includes(this.TriggerMessages, message.content)) {
             //     return this.process(message);
             // }
         }
-        
     }
 
     async process(message) {
