@@ -16,8 +16,8 @@ class AFLogsCommand extends MessageCommand {
             .setDescription(
                 `
                 Each time an auto focus is completed it will generate a json log about the complete run.
-                The report be found at "%LOCALAPPDATA%\\NINA\\AutoFocus".
-                These logs can be dragged into discord and the bot will generate a visual represantion of the autofocus run
+                The report can be found at "%LOCALAPPDATA%\\NINA\\AutoFocus".
+                These logs can be dragged into discord and the bot will generate a visual representation of the autofocus run
                 `
             );
         await message.reply(embed);
