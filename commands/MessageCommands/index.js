@@ -12,6 +12,7 @@ const { StarsCommand } = require('./StarsCommand');
 const { TrackerCommand } = require('./TrackerCommand');
 const { TroubleshootCommand } = require('./TroubleshootCommand');
 const { OvershootCommand } = require('./OvershootCommand');
+const { AFLogsCommand } = require('./AFLogsCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -27,5 +28,6 @@ module.exports = {
     StarsCommand,
     TrackerCommand,
     TroubleshootCommand,
-    OvershootCommand
+    OvershootCommand,
+    AFLogsCommand
 };
