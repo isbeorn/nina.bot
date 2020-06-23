@@ -13,6 +13,7 @@ const { TrackerCommand } = require('./TrackerCommand');
 const { TroubleshootCommand } = require('./TroubleshootCommand');
 const { OvershootCommand } = require('./OvershootCommand');
 const { AFLogsCommand } = require('./AFLogsCommand');
+const { UnitConversionCommand } = require('./UnitConversionCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -29,5 +30,6 @@ module.exports = {
     TrackerCommand,
     TroubleshootCommand,
     OvershootCommand,
-    AFLogsCommand
+    AFLogsCommand,
+    UnitConversionCommand
 };
