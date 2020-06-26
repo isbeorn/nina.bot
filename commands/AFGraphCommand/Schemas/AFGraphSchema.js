@@ -22,6 +22,9 @@ module.exports = {
         }
     },
     properties: {
+        Filter: {
+            type: 'string'
+        },
         Temperature: {
             anyOf: [
                 {

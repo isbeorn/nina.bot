@@ -39,5 +39,5 @@ module.exports = {
             ]
         }
     },
-    required: ['Version', 'Filter', 'Fittings']
+    required: ['Filter', 'Fittings']
 };
