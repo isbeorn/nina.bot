@@ -13,8 +13,9 @@ class MessageCommand {
         if (typeof message.content === 'string') {
             const start = message.content.split(' ')[0];
             if (start.length > 1) {
+                let lower = start.toLowerCase();
                 if (
-                    this.TriggerMessages.findIndex(x => x.startsWith(start)) >
+                    this.TriggerMessages.findIndex(x => x.startsWith(lower)) >
                     -1
                 ) {
                     return this.process(message);
