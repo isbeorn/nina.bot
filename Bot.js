@@ -10,7 +10,9 @@ const logger = log4js.getLogger();
 const MessageCommands = require('./commands/MessageCommands');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
-const { NotifyOutdatedRoleCommand } = require('./commands/NotifyOutdatedRoleCommand');
+const {
+    NotifyOutdatedRoleCommand
+} = require('./commands/NotifyOutdatedRoleCommand');
 const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
@@ -163,11 +165,19 @@ class Bot {
         const oldRole = await message.guild.roles.fetch(oldMemberRoleId);
         const member = await message.guild.member(user);
 
-        logger.info(`Assigning member role to user ${user.tag}`);
-        await member.roles.add(role);
+        try {
+            logger.info(`Assigning member role to user ${user.tag}`);
+            await member.roles.add(role);
+        } catch (e) {
+            logger.error(e.message);
+        }
 
-        logger.info(`Removing old member role from user ${user.tag}`);
-        await member.roles.remove(oldRole);
+        try {
+            logger.info(`Removing old member role from user ${user.tag}`);
+            await member.roles.remove(oldRole);
+        } catch (e) {
+            logger.error(e.message);
+        }
     }
 
     async onMessageReactionAdd(reaction, user) {
