@@ -10,9 +10,6 @@ const logger = log4js.getLogger();
 const MessageCommands = require('./commands/MessageCommands');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
-const {
-    NotifyOutdatedRoleCommand
-} = require('./commands/NotifyOutdatedRoleCommand');
 const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
@@ -33,7 +30,6 @@ class Bot {
         //this.registerCommand(new HelpCommand(this.client));
         this.registerCommand(new AFGraphCommand(this.client));
         this.registerCommand(new HelpCommand());
-        this.registerCommand(new NotifyOutdatedRoleCommand());
 
         for (const key in MessageCommands) {
             this.registerCommand(new MessageCommands[key]());
@@ -160,21 +156,12 @@ class Bot {
 
     async assignMemberRole(message, user) {
         const memberRoleId = process.env.MEMBER_ROLE;
-        const oldMemberRoleId = process.env.OLD_MEMBER_ROLE;
         const role = await message.guild.roles.fetch(memberRoleId);
-        const oldRole = await message.guild.roles.fetch(oldMemberRoleId);
         const member = await message.guild.member(user);
 
         try {
             logger.info(`Assigning member role to user ${user.tag}`);
             await member.roles.add(role);
-        } catch (e) {
-            logger.error(e.message);
-        }
-
-        try {
-            logger.info(`Removing old member role from user ${user.tag}`);
-            await member.roles.remove(oldRole);
         } catch (e) {
             logger.error(e.message);
         }

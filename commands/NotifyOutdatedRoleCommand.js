@@ -1,6 +1,7 @@
 //const Discord = require('discord.js');
 const BaseCommand = require('./BaseCommand');
 
+//Deprecated
 class NotifyOutdatedRoleCommand extends BaseCommand {
     async process(message) {
         const oldRole = await this.getRole(message);
