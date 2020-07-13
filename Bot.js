@@ -155,15 +155,16 @@ class Bot {
     }
 
     async assignMemberRole(message, user) {
+        logger.info(`Assigning member role to user ${user.tag}`);
+
         const memberRoleId = process.env.MEMBER_ROLE;
         const role = await message.guild.roles.fetch(memberRoleId);
         const member = await message.guild.member(user);
 
         try {
-            logger.info(`Assigning member role to user ${user.tag}`);
             await member.roles.add(role);
         } catch (e) {
-            logger.error(e.message);
+            logger.error(`Failed to assign role to user ${user.tag} due to ${e.message}`);
         }
     }
 
