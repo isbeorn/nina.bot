@@ -205,8 +205,6 @@ class AFGraphCommand extends BaseCommand {
         const yAxisLabel = report.Method === 'STARHFR' ? 'HFR' : 'Contrast';
         const config = getChartConfig(yAxisLabel);
 
-        const version = report.version || 1;
-
         const measurePoints = report.MeasurePoints.map((p) => {
             return { x: p.Position, y: p.Value };
         });
@@ -214,7 +212,7 @@ class AFGraphCommand extends BaseCommand {
         config.data.datasets.push({
             label: 'Focus Points',
             pointBackgroundColor: 'rgba(255, 99, 132, 1)',
-            borderColor: version > 1 ? 'transparent' :'rgba(54, 162, 235, 1)',
+            borderColor: 'rgba(54, 162, 235, 1)',
             data: measurePoints,
             fill: false,
             pointRadius: 2,
