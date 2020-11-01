@@ -15,6 +15,7 @@ const { OvershootCommand } = require('./OvershootCommand');
 const { AFLogsCommand } = require('./AFLogsCommand');
 const { UnitConversionCommand } = require('./UnitConversionCommand');
 const { ProfilesCommand } = require('./ProfilesCommand');
+const { StellariumCommand } = require('./StellariumCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -33,5 +34,6 @@ module.exports = {
     OvershootCommand,
     AFLogsCommand,
     UnitConversionCommand,
-    ProfilesCommand
+    ProfilesCommand,
+    StellariumCommand
 };
