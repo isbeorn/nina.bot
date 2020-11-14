@@ -159,7 +159,7 @@ class Bot {
 
         const memberRoleId = process.env.MEMBER_ROLE;
         const role = await message.guild.roles.fetch(memberRoleId);
-        const member = await message.guild.member(user);
+        const member = await message.guild.members.fetch({ user, cache: false });
 
         try {
             await member.roles.add(role);
