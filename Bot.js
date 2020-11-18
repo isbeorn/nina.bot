@@ -70,6 +70,8 @@ class Bot {
         logger.info('Client ready');
 
         await this.initializeRoleManager();
+
+        setInterval(this.initializeRoleManager.bind(this), 5*60*1000);
     }
 
     async initializeRoleManager() {
@@ -118,7 +120,7 @@ class Bot {
             //const reactions = await message.reactions.fetch();
 
             logger.info(
-                'Migrating users to roles that happened during downtime'
+                'Checking message for reactions'
             );
             for (const [, reaction] of message.reactions.cache) {
                 const users = await reaction.users.fetch();
@@ -136,7 +138,7 @@ class Bot {
             }
 
             await message.react('☑');
-            logger.info(`Role Manager initialized`);
+            logger.info(`Finished checking for reactions`);
         } catch (ex) {
             logger.error(ex.message);
         }
