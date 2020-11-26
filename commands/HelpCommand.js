@@ -11,7 +11,7 @@ class HelpCommand extends MessageCommand {
         for (const key in MessageCommands) {
             triggers.push(...(new MessageCommands[key]()).TriggerMessages);
         }
-        await message.reply(`Available commands: ${triggers.join(', ')}`);
+        await message.reply(`Available commands: ${triggers.sort().join(', ')}`);
     }
 }
 
