@@ -188,7 +188,10 @@ class AFGraphCommand extends BaseCommand {
                 report.FocusPoint.Position,
                 true
             )
-            .addField('Filter', report.Filter, true);
+            .addField('Filter', report.Filter, true)
+            .addField('Backlash Method', report.BacklashCompensationModel, true)
+            .addField('BacklashIN', report.BacklashIN, true)
+            .addField('BacklashOUT', report.BacklashOUT, true)
         
         if(analysis.length > 0) {
             embed.addField('Potential Issues', analysis.join('\n'));

@@ -60,6 +60,12 @@ class AutoFocusReport {
             _.get(data, 'Fittings.RightTrend'),
             data.Intersections.TrendLineIntersection
         );
+
+        if(data.BacklashCompensation) {
+            this.backlashCompensationModel = data.BacklashCompensation.BacklashCompensationModel;
+            this.backlashIN = data.BacklashCompensation.BacklashIN;
+            this.backlashOUT = data.BacklashCompensation.BacklashOUT;
+        }
     }
 
     get MinimumStep() {
@@ -116,6 +122,21 @@ class AutoFocusReport {
 
     get RightTrendFitting() {
         return this.rightTrendFitting;
+    }
+
+    get BacklashCompensationModel() {
+        return this.backlashCompensationModel;
+
+    }
+
+    get BacklashIN() {
+        return this.backlashIN;
+
+    }
+    
+    get BacklashOUT() {
+        return this.backlashOUT;
+
     }
 }
 
