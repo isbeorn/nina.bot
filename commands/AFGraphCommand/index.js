@@ -156,6 +156,10 @@ class AFGraphCommand extends BaseCommand {
             analysis.push(`- Datapoints contain HFR values of 0. Stepsize might be too large and image getting too much out of focus or clouds prevented finding stars`);
         }
 
+        if(report.BacklashCompensationModel === 'OVERSHOOT' && report.BacklashIN > 0 && report.BacklashOUT > 0) {
+            analysis.push(`Backlash compensation method is set to OVERSHOOT, but both IN and OUT values are non zero. For this backlash compensation method only one direction must be compensated!`);
+        }
+
         return analysis;
     }
 
