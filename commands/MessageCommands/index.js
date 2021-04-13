@@ -17,6 +17,7 @@ const { UnitConversionCommand } = require('./UnitConversionCommand');
 const { ProfilesCommand } = require('./ProfilesCommand');
 const { StellariumCommand } = require('./StellariumCommand');
 const { QHYDriverCommand } = require('./QHYDriverCommand');
+const { SupportCommand } = require('./SupportCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -37,5 +38,6 @@ module.exports = {
     UnitConversionCommand,
     ProfilesCommand,
     StellariumCommand,
-    QHYDriverCommand
+    QHYDriverCommand,
+    SupportCommand
 };
