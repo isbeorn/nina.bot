@@ -99,18 +99,23 @@ class Bot {
             //   .setURL('https://nighttime-imaging.eu')
             //   .setColor('0x00AE86')
             //   .setDescription(`
-            // N.I.N.A. is a free open source project dedicated to deep sky astrophotography.
-            // The software is created and maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
-            // Everybody is welcome to participate and have an impact on the project.
-            // Suggestions and feedback for improval are appreciated, but please be constructive with your request and don't expect something be worked upon right away.
+            //     This server is for support and general discussion about the open source astrophotography alternative.
+            //     If you have questions, suggestions or want to chitchat about the software in general feel free to use the appropriate channels.
+
+            //     Please keep the discussion friendly and civil. NSFW content is not allowed.                
             // `)
+            //   .addField('__**About N.I.N.A.**__', `N.I.N.A. is a free open source project dedicated to deep sky astrophotography.
+            //   The software is created and maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
+            //   Everybody is welcome to participate and have an impact on the project.
+            //   Suggestions and feedback for improval are appreciated, but please be constructive with your request and don't expect something be worked upon right away.`)
             //   .addField('__**Project Homepage**__', 'https://nighttime-imaging.eu')
             //   .addField('__**Donate**__', 'If N.I.N.A. helps you on your journey for amazing images, please consider a [donation](https://nighttime-imaging.eu/donate/)')
             //   .addField('__**Download**__', 'The latest official builds can be found at the [download page](https://nighttime-imaging.eu/download/)')
             //   .addField('__**Contributing**__', 'Interested in contributing? Refer to the [contributing guide](https://bitbucket.org/Isbeorn/nina/src/master/CONTRIBUTING.md)!')
             //   .addField('__**Application Support**__', 'Please use the appropriate support channels in case you need help. The community can then try to help you out!')
+            //   .addField('__**Invite a friend**__', 'In case you want to invite a friend to our server you can use this link: https://discord.gg/rWRbVbw')
             //   .addField('\u200b', '\u200b')
-            //   .addField('__**Role assignment**__', 'If you read the above text thoroughly, please click on the ☑ icon below to be assigend a member role which enables you to see and post messages in the channels.')
+            //   .addField('__**Role assignment**__', 'If you read the above text thoroughly, please **click on the ☑ icon below** to be assigend a member role which enables you to see and post messages in the channels.')
             //   .setFooter('');
 
             // await channel.send({ embed });
