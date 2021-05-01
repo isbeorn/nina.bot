@@ -69,9 +69,9 @@ class Bot {
     async onReady() {
         logger.info('Client ready');
 
-        await this.initializeRoleManager();
+        //await this.initializeRoleManager();
 
-        setInterval(this.initializeRoleManager.bind(this), 5*60*1000);
+        //setInterval(this.initializeRoleManager.bind(this), 5*60*1000);
     }
 
     async initializeRoleManager() {
@@ -104,6 +104,13 @@ class Bot {
 
             //     Please keep the discussion friendly and civil. NSFW content is not allowed.                
             // `)
+            //   .addField('__**Rules**__', `
+            //   1. Treat everyone with respect. Absolutely no harassment, witch hunting, sexism, racism, or hate speech will be tolerated.
+            //   2. No NSFW or obscene content. This includes text, images, or links featuring nudity, sex, hard violence, or other graphically disturbing content.
+            //   3. No spam or self-promotion (server invites, advertisements, etc) without permission from a staff member. This includes DMing fellow members.
+            //   4. Please do not DM the creator, moderators or contributors for support queries. Use the appropriate support channels in case you need help. The community can then try to help you out!
+            //   5. Support is given on a volunteer basis, free of charge, and cannot be guaranteed. Please be respectful of the time given to you for any support query.
+            //   `)
             //   .addField('__**About N.I.N.A.**__', `N.I.N.A. is a free open source project dedicated to deep sky astrophotography.
             //   The software is created and maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
             //   Everybody is welcome to participate and have an impact on the project.
@@ -111,11 +118,9 @@ class Bot {
             //   .addField('__**Project Homepage**__', 'https://nighttime-imaging.eu')
             //   .addField('__**Donate**__', 'If N.I.N.A. helps you on your journey for amazing images, please consider a [donation](https://nighttime-imaging.eu/donate/)')
             //   .addField('__**Download**__', 'The latest official builds can be found at the [download page](https://nighttime-imaging.eu/download/)')
-            //   .addField('__**Contributing**__', 'Interested in contributing? Refer to the [contributing guide](https://bitbucket.org/Isbeorn/nina/src/master/CONTRIBUTING.md)!')
+            //   .addField('__**Contributing**__', 'Interested in contributing? Refer to the [contributing guide](https://bitbucket.org/Isbeorn/nina/src/develop/CONTRIBUTING.md)!')
             //   .addField('__**Application Support**__', 'Please use the appropriate support channels in case you need help. The community can then try to help you out!')
             //   .addField('__**Invite a friend**__', 'In case you want to invite a friend to our server you can use this link: https://discord.gg/rWRbVbw')
-            //   .addField('\u200b', '\u200b')
-            //   .addField('__**Role assignment**__', 'If you read the above text thoroughly, please **click on the ☑ icon below** to be assigend a member role which enables you to see and post messages in the channels.')
             //   .setFooter('');
 
             // await channel.send({ embed });
