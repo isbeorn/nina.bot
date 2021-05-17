@@ -161,23 +161,23 @@ class AFGraphCommand extends BaseCommand {
         }
 
         if(report.Fitting === 'HYPERBOLIC' || report.Fitting === 'TRENDHYPERBOLIC') {
-            if(report.HyperbolicFitting.CorrelationCoefficient && report.HyperbolicFitting.CorrelationCoefficient < 0.7) {
-                analysis.push(`Correlation coefficient is low for hyperbolic fitting (${report.HyperbolicFitting.CorrelationCoefficient})`)
+            if(report.HyperbolicFitting.RSquared && report.HyperbolicFitting.RSquared < 0.7) {
+                analysis.push(`R² (Coefficient of determination) is low for hyperbolic fitting (${report.HyperbolicFitting.RSquared})`)
             }
         }
 
         if(report.Fitting === 'PARABOLIC' || report.Fitting === 'TRENDPARABOLIC') {
-            if(report.QuadraticFitting.CorrelationCoefficient && report.QuadraticFitting.CorrelationCoefficient < 0.7) {
-                analysis.push(`Correlation coefficient is low for parabolic fitting (${report.QuadraticFitting.CorrelationCoefficient})`)
+            if(report.QuadraticFitting.RSquared && report.QuadraticFitting.RSquared < 0.7) {
+                analysis.push(`R² (Coefficient of determination) is low for parabolic fitting (${report.QuadraticFitting.RSquared})`)
             }
         }
 
         if(report.Fitting === 'TRENDLINES'|| report.Fitting === 'TRENDHYPERBOLIC' || report.Fitting === 'TRENDPARABOLIC') {
-            if(report.LeftTrendFitting.CorrelationCoefficient && report.LeftTrendFitting.CorrelationCoefficient < 0.7) {
-                analysis.push(`Correlation coefficient is low for left trend fitting (${report.LeftTrendFitting.CorrelationCoefficient})`)
+            if(report.LeftTrendFitting.RSquared && report.LeftTrendFitting.RSquared < 0.7) {
+                analysis.push(`R² (Coefficient of determination) is low for left trend fitting (${report.LeftTrendFitting.RSquared})`)
             }
-            if(report.RightTrendFitting.CorrelationCoefficient && report.RightTrendFitting.CorrelationCoefficient < 0.7) {
-                analysis.push(`Correlation coefficient is low for right trend fitting (${report.RightTrendFitting.CorrelationCoefficient})`)
+            if(report.RightTrendFitting.RSquared && report.RightTrendFitting.RSquared < 0.7) {
+                analysis.push(`R² (Coefficient of determination) is low for right trend fitting (${report.RightTrendFitting.RSquared})`)
             }
         }
 

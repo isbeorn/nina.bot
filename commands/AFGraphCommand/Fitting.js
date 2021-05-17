@@ -88,7 +88,7 @@ class Fitting {
         return this.pointOfInterest;
     }
 
-    get CorrelationCoefficient() {
+    get RSquared() {
         return Math.round(this.coefficient * 100) / 100;
     }
 }
