@@ -21,24 +21,26 @@ class Fitting {
      * @returns {Object}
      */
     getRSquared(dataX, yAxis) {
-        const meanValue = mathjs.mean(yAxis);        
-        
-        let SStot = 0; // total sum of squares
-        let SSres = 0; // residual sum of squares        
-        for (let n = 0; n < dataX.length; n++) {
-            const actualY = yAxis[n];            
-            SStot += Math.pow(actualY - meanValue, 2);
-            
-            const x = dataX[n];
-            const prediction = this.f(x);
+        if (yAxis.length > 0) {
+            const meanValue = mathjs.mean(yAxis);
 
-            SSres += Math.pow(prediction - actualY, 2);
+            let SStot = 0; // total sum of squares
+            let SSres = 0; // residual sum of squares
+            for (let n = 0; n < dataX.length; n++) {
+                const actualY = yAxis[n];
+                SStot += Math.pow(actualY - meanValue, 2);
+
+                const x = dataX[n];
+                const prediction = this.f(x);
+
+                SSres += Math.pow(prediction - actualY, 2);
+            }
+
+            // R²
+            let rSquared = 1 - SSres / SStot;
+            if(rSquared > 1 || rSquared < -1) { rSquared = NaN; }
+            return rSquared;
         }
-
-        // R²
-        let rSquared = 1 - SSres / SStot;
-
-        return rSquared;
     }
 
     getPoints(min, max) {

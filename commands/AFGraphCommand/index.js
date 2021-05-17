@@ -144,40 +144,83 @@ class AFGraphCommand extends BaseCommand {
         const analysis = [];
         const measurePoints = report.MeasurePoints.map((p) => {
             return { x: p.Position, y: p.Value };
-        });        
+        });
 
-        const hfrStdDev = mathjs.std(_.filter(measurePoints, x=> x.y > 0).map(x => x.y));
-        if(hfrStdDev < 1) {
-            analysis.push(`- Overall HFR change is low. This indicates that the step size might be too small`);
-        } 
-
-        const hasZeroStars = _.filter(measurePoints, x => x.y === 0).length > 0;        
-        if(hasZeroStars) {
-            analysis.push(`- Datapoints contain HFR values of 0. Stepsize might be too large and image getting too much out of focus or clouds prevented finding stars`);
+        const hfrStdDev = mathjs.std(
+            _.filter(measurePoints, (x) => x.y > 0).map((x) => x.y)
+        );
+        if (hfrStdDev < 1) {
+            analysis.push(
+                `- Overall HFR change is low. This indicates that the step size might be too small`
+            );
         }
 
-        if(report.BacklashCompensationModel === 'OVERSHOOT' && report.BacklashIN > 0 && report.BacklashOUT > 0) {
-            analysis.push(`Backlash compensation method is set to OVERSHOOT, but both IN and OUT values are non zero. For this backlash compensation method only one direction must be compensated!`);
+        const hasZeroStars =
+            _.filter(measurePoints, (x) => x.y === 0).length > 0;
+        if (hasZeroStars) {
+            analysis.push(
+                `- Datapoints contain HFR values of 0. Stepsize might be too large and image getting too much out of focus or clouds prevented finding stars`
+            );
         }
 
-        if(report.Fitting === 'HYPERBOLIC' || report.Fitting === 'TRENDHYPERBOLIC') {
-            if(report.HyperbolicFitting.RSquared && report.HyperbolicFitting.RSquared < 0.7) {
-                analysis.push(`R² (Coefficient of determination) is low for hyperbolic fitting (${report.HyperbolicFitting.RSquared})`)
+        if (
+            report.BacklashCompensationModel === 'OVERSHOOT' &&
+            report.BacklashIN > 0 &&
+            report.BacklashOUT > 0
+        ) {
+            analysis.push(
+                `- Backlash compensation method is set to OVERSHOOT, but both IN and OUT values are non zero. For this backlash compensation method only one direction must be compensated!`
+            );
+        }
+
+        if (
+            report.Fitting === 'HYPERBOLIC' ||
+            report.Fitting === 'TRENDHYPERBOLIC'
+        ) {
+            if (
+                report.HyperbolicFitting.RSquared &&
+                Math.abs(report.HyperbolicFitting.RSquared) < 0.7
+            ) {
+                analysis.push(
+                    `- R² is low for hyperbolic fitting (${report.HyperbolicFitting.RSquared})`
+                );
             }
         }
 
-        if(report.Fitting === 'PARABOLIC' || report.Fitting === 'TRENDPARABOLIC') {
-            if(report.QuadraticFitting.RSquared && report.QuadraticFitting.RSquared < 0.7) {
-                analysis.push(`R² (Coefficient of determination) is low for parabolic fitting (${report.QuadraticFitting.RSquared})`)
+        if (
+            report.Fitting === 'PARABOLIC' ||
+            report.Fitting === 'TRENDPARABOLIC'
+        ) {
+            if (
+                report.QuadraticFitting.RSquared &&
+                Math.abs(report.QuadraticFitting.RSquared) < 0.7
+            ) {
+                analysis.push(
+                    `- R² is low for parabolic fitting (${report.QuadraticFitting.RSquared})`
+                );
             }
         }
 
-        if(report.Fitting === 'TRENDLINES'|| report.Fitting === 'TRENDHYPERBOLIC' || report.Fitting === 'TRENDPARABOLIC') {
-            if(report.LeftTrendFitting.RSquared && report.LeftTrendFitting.RSquared < 0.7) {
-                analysis.push(`R² (Coefficient of determination) is low for left trend fitting (${report.LeftTrendFitting.RSquared})`)
+        if (
+            report.Fitting === 'TRENDLINES' ||
+            report.Fitting === 'TRENDHYPERBOLIC' ||
+            report.Fitting === 'TRENDPARABOLIC'
+        ) {
+            if (
+                report.LeftTrendFitting.RSquared &&
+                Math.abs(report.LeftTrendFitting.RSquared) < 0.7
+            ) {
+                analysis.push(
+                    `- R² is low for left trend fitting (${report.LeftTrendFitting.RSquared})`
+                );
             }
-            if(report.RightTrendFitting.RSquared && report.RightTrendFitting.RSquared < 0.7) {
-                analysis.push(`R² (Coefficient of determination) is low for right trend fitting (${report.RightTrendFitting.RSquared})`)
+            if (
+                report.RightTrendFitting.RSquared &&
+                Math.abs(report.RightTrendFitting.RSquared) < 0.7
+            ) {
+                analysis.push(
+                    `- R² is low for right trend fitting (${report.RightTrendFitting.RSquared})`
+                );
             }
         }
 
@@ -215,13 +258,44 @@ class AFGraphCommand extends BaseCommand {
             )
             .addField('Filter', report.Filter, true);
 
-        if(report.BacklashCompensationModel) {
-            embed.addField('Backlash Method', report.BacklashCompensationModel, true)
-            .addField('BacklashIN', report.BacklashIN, true)
-            .addField('BacklashOUT', report.BacklashOUT, true);
+        if (report.BacklashCompensationModel) {
+            embed
+                .addField(
+                    'Backlash Method',
+                    report.BacklashCompensationModel,
+                    true
+                )
+                .addField('BacklashIN', report.BacklashIN, true)
+                .addField('BacklashOUT', report.BacklashOUT, true);
         }
-        
-        if(analysis.length > 0) {
+
+        if (
+            report.HyperbolicFitting.RSquared &&
+            !isNaN(report.HyperbolicFitting.RSquared)
+        ) {
+            const rSquares = [];
+
+            rSquares.push(`Quadratic: ${report.QuadraticFitting.RSquared}`);
+            rSquares.push(`Hyperbolic: ${report.HyperbolicFitting.RSquared}`);
+            rSquares.push(
+                `Left Trend: ${
+                    isNaN(report.LeftTrendFitting.RSquared)
+                        ? 'Unknown'
+                        : report.LeftTrendFitting.RSquared
+                } | Right Trend: ${
+                    isNaN(report.RightTrendFitting.RSquared)
+                        ? 'Unknown'
+                        : report.RightTrendFitting.RSquared
+                }`
+            );
+
+            embed.addField(
+                'R² - Coefficient of determination',
+                rSquares.join('\n')
+            );
+        }
+
+        if (analysis.length > 0) {
             embed.addField('Potential Issues', analysis.join('\n'));
         }
 
