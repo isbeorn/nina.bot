@@ -11,7 +11,7 @@ class Fitting {
             const actualXs = measurePoints.map((x) => x.Position);
             const actualYs = measurePoints.map((x) => x.Value);
 
-            this.coefficient = this.getRSquared(actualXs, actualYs).rSquared;
+            this.coefficient = this.getRSquared(actualXs, actualYs);
         }
     }
 
@@ -20,41 +20,25 @@ class Fitting {
      * @param {Array} data
      * @returns {Object}
      */
-    getRSquared(dataX, dataY) {
-        var yAxis = dataY;
-        var rPrediction = [];
-
-        var meanValue = 0; // MEAN VALUE
-        var SStot = 0; // THE TOTAL SUM OF THE SQUARES
-        var SSres = 0; // RESIDUAL SUM OF SQUARES
-        var rSquared = 0;
-
-        // SUM ALL VALUES
-        for (let n in yAxis) {
-            meanValue += yAxis[n];
-        }
-
-        // GET MEAN VALUE
-        meanValue = meanValue / yAxis.length;
+    getRSquared(dataX, yAxis) {
+        const meanValue = mathjs.mean(yAxis);        
+        
+        let SStot = 0; // total sum of squares
+        let SSres = 0; // residual sum of squares        
         for (let n = 0; n < dataX.length; n++) {
-            //for (var n in yAxis) {
-            // CALCULATE THE SSTOTAL
-            SStot += Math.pow(yAxis[n] - meanValue, 2);
-            // REGRESSION PREDICTION
-            rPrediction.push(this.f(dataX[n]));
-            // CALCULATE THE SSRES
-            SSres += Math.pow(rPrediction[n] - yAxis[n], 2);
+            const actualY = yAxis[n];            
+            SStot += Math.pow(actualY - meanValue, 2);
+            
+            const x = dataX[n];
+            const prediction = this.f(x);
+
+            SSres += Math.pow(prediction - actualY, 2);
         }
 
-        // R SQUARED
-        rSquared = 1 - SSres / SStot;
+        // R²
+        let rSquared = 1 - SSres / SStot;
 
-        return {
-            meanValue: meanValue,
-            SStot: SStot,
-            SSres: SSres,
-            rSquared: rSquared
-        };
+        return rSquared;
     }
 
     getPoints(min, max) {
