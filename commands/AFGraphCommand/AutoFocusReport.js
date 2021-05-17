@@ -42,23 +42,33 @@ class AutoFocusReport {
 
         this.quadraticFitting = new Fitting(
             _.get(data, 'Fittings.Quadratic'),
-            data.Intersections.QuadraticMinimum
+            data.Intersections.QuadraticMinimum,
+            this.measurePoints
         );
         this.hyperbolicFitting = new Fitting(
             _.get(data, 'Fittings.Hyperbolic'),
-            data.Intersections.HyperbolicMinimum
+            data.Intersections.HyperbolicMinimum,
+            this.measurePoints
         );
         this.gaussianFitting = new Fitting(
             _.get(data, 'Fittings.Gaussian'),
-            data.Intersections.GaussianMaximum
+            data.Intersections.GaussianMaximum,
+            this.measurePoints
         );
+
+        const min = _.minBy(points, (x) => x.Value);
+        const left = this.measurePoints.filter(x => x.Position < min.Position && x.Value > (min.Value + 0.1));
+        const right = this.measurePoints.filter(x => x.Position > min.Position && x.Value > (min.Value + 0.1));
+
         this.leftTrendFitting = new Fitting(
             _.get(data, 'Fittings.LeftTrend'),
-            data.Intersections.TrendLineIntersection
+            data.Intersections.TrendLineIntersection,
+            left
         );
         this.rightTrendFitting = new Fitting(
             _.get(data, 'Fittings.RightTrend'),
-            data.Intersections.TrendLineIntersection
+            data.Intersections.TrendLineIntersection,
+            right
         );
 
         if(data.BacklashCompensation) {

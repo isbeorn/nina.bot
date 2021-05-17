@@ -144,7 +144,7 @@ class AFGraphCommand extends BaseCommand {
         const analysis = [];
         const measurePoints = report.MeasurePoints.map((p) => {
             return { x: p.Position, y: p.Value };
-        });
+        });        
 
         const hfrStdDev = mathjs.std(_.filter(measurePoints, x=> x.y > 0).map(x => x.y));
         if(hfrStdDev < 1) {
@@ -158,6 +158,27 @@ class AFGraphCommand extends BaseCommand {
 
         if(report.BacklashCompensationModel === 'OVERSHOOT' && report.BacklashIN > 0 && report.BacklashOUT > 0) {
             analysis.push(`Backlash compensation method is set to OVERSHOOT, but both IN and OUT values are non zero. For this backlash compensation method only one direction must be compensated!`);
+        }
+
+        if(report.Fitting === 'HYPERBOLIC' || report.Fitting === 'TRENDHYPERBOLIC') {
+            if(report.HyperbolicFitting.CorrelationCoefficient && report.HyperbolicFitting.CorrelationCoefficient < 0.7) {
+                analysis.push(`Correlation coefficient is low for hyperbolic fitting (${report.HyperbolicFitting.CorrelationCoefficient})`)
+            }
+        }
+
+        if(report.Fitting === 'PARABOLIC' || report.Fitting === 'TRENDPARABOLIC') {
+            if(report.QuadraticFitting.CorrelationCoefficient && report.QuadraticFitting.CorrelationCoefficient < 0.7) {
+                analysis.push(`Correlation coefficient is low for parabolic fitting (${report.QuadraticFitting.CorrelationCoefficient})`)
+            }
+        }
+
+        if(report.Fitting === 'TRENDLINES'|| report.Fitting === 'TRENDHYPERBOLIC' || report.Fitting === 'TRENDPARABOLIC') {
+            if(report.LeftTrendFitting.CorrelationCoefficient && report.LeftTrendFitting.CorrelationCoefficient < 0.7) {
+                analysis.push(`Correlation coefficient is low for left trend fitting (${report.LeftTrendFitting.CorrelationCoefficient})`)
+            }
+            if(report.RightTrendFitting.CorrelationCoefficient && report.RightTrendFitting.CorrelationCoefficient < 0.7) {
+                analysis.push(`Correlation coefficient is low for right trend fitting (${report.RightTrendFitting.CorrelationCoefficient})`)
+            }
         }
 
         return analysis;
