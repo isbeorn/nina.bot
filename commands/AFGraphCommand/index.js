@@ -179,7 +179,7 @@ class AFGraphCommand extends BaseCommand {
         ) {
             if (
                 report.HyperbolicFitting.RSquared &&
-                Math.abs(report.HyperbolicFitting.RSquared) < 0.7
+                report.HyperbolicFitting.RSquared < 0.7
             ) {
                 analysis.push(
                     `- R² is low for hyperbolic fitting (${report.HyperbolicFitting.RSquared})`
@@ -193,7 +193,7 @@ class AFGraphCommand extends BaseCommand {
         ) {
             if (
                 report.QuadraticFitting.RSquared &&
-                Math.abs(report.QuadraticFitting.RSquared) < 0.7
+                report.QuadraticFitting.RSquared < 0.7
             ) {
                 analysis.push(
                     `- R² is low for parabolic fitting (${report.QuadraticFitting.RSquared})`
@@ -208,7 +208,7 @@ class AFGraphCommand extends BaseCommand {
         ) {
             if (
                 report.LeftTrendFitting.RSquared &&
-                Math.abs(report.LeftTrendFitting.RSquared) < 0.7
+                report.LeftTrendFitting.RSquared < 0.7
             ) {
                 analysis.push(
                     `- R² is low for left trend fitting (${report.LeftTrendFitting.RSquared})`
@@ -216,7 +216,7 @@ class AFGraphCommand extends BaseCommand {
             }
             if (
                 report.RightTrendFitting.RSquared &&
-                Math.abs(report.RightTrendFitting.RSquared) < 0.7
+                report.RightTrendFitting.RSquared < 0.7
             ) {
                 analysis.push(
                     `- R² is low for right trend fitting (${report.RightTrendFitting.RSquared})`
