@@ -38,7 +38,7 @@ class Fitting {
 
             // R²
             let rSquared = 1 - SSres / SStot;
-            if(rSquared > 1 || rSquared < -1) { rSquared = NaN; }
+            if(rSquared > 1) { rSquared = NaN; }
             return rSquared;
         }
     }
