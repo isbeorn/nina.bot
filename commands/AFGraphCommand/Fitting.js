@@ -1,7 +1,7 @@
 const mathjs = require('mathjs');
 
 class Fitting {
-    constructor(formula, pointOfInterest, measurePoints) {
+    constructor(formula, pointOfInterest, measurePoints, rSquare) {
         this.pointOfInterest = pointOfInterest;
 
         if (formula) {
@@ -11,7 +11,11 @@ class Fitting {
             const actualXs = measurePoints.map((x) => x.Position);
             const actualYs = measurePoints.map((x) => x.Value);
 
-            this.coefficient = this.getRSquared(actualXs, actualYs);
+            if(rSquare) {
+                this.coefficient = rSquare;
+            } else {
+                this.coefficient = this.getRSquared(actualXs, actualYs);
+            }            
         }
     }
 

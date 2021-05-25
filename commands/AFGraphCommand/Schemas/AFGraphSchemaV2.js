@@ -37,6 +37,30 @@ module.exports = {
                 'LeftTrend',
                 'RightTrend'
             ]
+        },
+        RSquares: {
+            type: 'object',
+            properties: {
+                Quadratic: {
+                    type: 'number'
+                },
+                Hyperbolic: {
+                    type: 'number'
+                },
+                LeftTrend: {
+                    type: 'number'
+                },
+                RightTrend: {
+                    type: 'number'
+                }
+            },
+            required: [
+                'Quadratic',
+                'Hyperbolic',
+                'Gaussian',
+                'LeftTrend',
+                'RightTrend'
+            ]
         }
     },
     required: ['Filter', 'Fittings']

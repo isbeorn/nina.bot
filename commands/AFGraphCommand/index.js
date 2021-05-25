@@ -201,7 +201,7 @@ class AFGraphCommand extends BaseCommand {
             }
         }
 
-        /*if (
+        if (
             report.Fitting === 'TRENDLINES' ||
             report.Fitting === 'TRENDHYPERBOLIC' ||
             report.Fitting === 'TRENDPARABOLIC'
@@ -222,7 +222,7 @@ class AFGraphCommand extends BaseCommand {
                     `- R² is low for right trend fitting (${report.RightTrendFitting.RSquared})`
                 );
             }
-        }*/
+        }
 
         return analysis;
     }
@@ -277,7 +277,7 @@ class AFGraphCommand extends BaseCommand {
 
             rSquares.push(`Quadratic: ${report.QuadraticFitting.RSquared}`);
             rSquares.push(`Hyperbolic: ${report.HyperbolicFitting.RSquared}`);
-            /*rSquares.push(
+            rSquares.push(
                 `Left Trend: ${
                     isNaN(report.LeftTrendFitting.RSquared)
                         ? 'Unknown'
@@ -287,7 +287,7 @@ class AFGraphCommand extends BaseCommand {
                         ? 'Unknown'
                         : report.RightTrendFitting.RSquared
                 }`
-            );*/
+            );
 
             embed.addField(
                 'R² - Coefficient of determination',

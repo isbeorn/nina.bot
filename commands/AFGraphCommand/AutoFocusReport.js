@@ -43,12 +43,14 @@ class AutoFocusReport {
         this.quadraticFitting = new Fitting(
             _.get(data, 'Fittings.Quadratic'),
             data.Intersections.QuadraticMinimum,
-            this.measurePoints
+            this.measurePoints,
+            _.get(data, 'RSquares.Quadratic')
         );
         this.hyperbolicFitting = new Fitting(
             _.get(data, 'Fittings.Hyperbolic'),
             data.Intersections.HyperbolicMinimum,
-            this.measurePoints
+            this.measurePoints,
+            _.get(data, 'RSquares.Hyperbolic')
         );
         this.gaussianFitting = new Fitting(
             _.get(data, 'Fittings.Gaussian'),
@@ -63,12 +65,14 @@ class AutoFocusReport {
         this.leftTrendFitting = new Fitting(
             _.get(data, 'Fittings.LeftTrend'),
             data.Intersections.TrendLineIntersection,
-            left
+            left,
+            _.get(data, 'RSquares.LeftTrend')
         );
         this.rightTrendFitting = new Fitting(
             _.get(data, 'Fittings.RightTrend'),
             data.Intersections.TrendLineIntersection,
-            right
+            right,
+            _.get(data, 'RSquares.RightTrend')
         );
 
         if(data.BacklashCompensation) {
