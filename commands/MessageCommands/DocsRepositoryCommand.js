@@ -3,7 +3,11 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DocsRepositoryCommand extends MessageCommand {
     constructor() {
-        super(['!nina.docs']);
+        super(
+            ['!nina.docs'],
+            'ninadocs',
+            'Repository for the N.I.N.A. documentation'
+        );
     }
 
     async process(message) {

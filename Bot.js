@@ -1,4 +1,4 @@
-const { Client, Intents }  = require('discord.js');
+const { Client, Intents, Interaction } = require('discord.js');
 const log4js = require('log4js');
 log4js.configure({
     appenders: { console: { type: 'console' } },
@@ -15,9 +15,19 @@ const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 class Bot {
     constructor(token) {
         this.token = token;
-        this.client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]});
+        this.client = new Client({
+            intents: [
+                Intents.FLAGS.GUILDS,
+                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+                Intents.FLAGS.GUILD_MESSAGES,
+                Intents.FLAGS.DIRECT_MESSAGES,
+                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+            ]
+        });
         this.client.on('ready', this.onReady.bind(this));
         this.client.on('messageCreate', this.onMessage.bind(this));
+        this.client.on('interactionCreate', this.onInteraction.bind(this));
+
         this.client.on(
             'messageReactionAdd',
             this.onMessageReactionAdd.bind(this)
@@ -64,6 +74,18 @@ class Bot {
 
     registerCommand(command) {
         this.getCommands().push(command);
+
+        if (command.interactionMessage && command.interactionHelp) {
+            this.client.api
+                .applications(process.env.CLIENT_ID)
+                .guilds(process.env.GUILD_ID)
+                .commands.post({
+                    data: {
+                        name: command.interactionMessage,
+                        description: command.interactionHelp
+                    }
+                });
+        }
     }
 
     async onReady() {
@@ -102,7 +124,7 @@ class Bot {
             //     This server is for support and general discussion about the open source astrophotography alternative.
             //     If you have questions, suggestions or want to chitchat about the software in general feel free to use the appropriate channels.
 
-            //     Please keep the discussion friendly and civil. NSFW content is not allowed.                
+            //     Please keep the discussion friendly and civil. NSFW content is not allowed.
             // `)
             //   .addField('__**Rules**__', `
             //   1. Treat everyone with respect. Absolutely no harassment, witch hunting, sexism, racism, or hate speech will be tolerated.
@@ -129,9 +151,7 @@ class Bot {
             const message = await channel.messages.fetch(messageId);
             //const reactions = await message.reactions.fetch();
 
-            logger.info(
-                'Checking message for reactions'
-            );
+            logger.info('Checking message for reactions');
             for (const [, reaction] of message.reactions.cache) {
                 const users = await reaction.users.fetch();
                 for (const [, user] of users) {
@@ -156,7 +176,7 @@ class Bot {
 
     async onMessage(message) {
         try {
-            const promises = this.getCommands().map(command => {
+            const promises = this.getCommands().map((command) => {
                 return command.execute(message);
             });
 
@@ -166,17 +186,34 @@ class Bot {
         }
     }
 
+    async onInteraction(interaction) {
+        if (!interaction.isCommand()) return;
+
+        for (let cmd of this.getCommands()) {
+            if (cmd.interactionMessage) {
+                if (interaction.commandName === cmd.interactionMessage) {
+                    await cmd.process(interaction);
+                }
+            }
+        }
+    }
+
     async assignMemberRole(message, user) {
         logger.info(`Assigning member role to user ${user.tag}`);
 
         const memberRoleId = process.env.MEMBER_ROLE;
         const role = await message.guild.roles.fetch(memberRoleId);
-        const member = await message.guild.members.fetch({ user, cache: false });
+        const member = await message.guild.members.fetch({
+            user,
+            cache: false
+        });
 
         try {
             await member.roles.add(role);
         } catch (e) {
-            logger.error(`Failed to assign role to user ${user.tag} due to ${e.message}`);
+            logger.error(
+                `Failed to assign role to user ${user.tag} due to ${e.message}`
+            );
         }
     }
 

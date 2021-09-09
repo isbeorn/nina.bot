@@ -1,8 +1,8 @@
-const _ = require('lodash');
-
 class MessageCommand {
-    constructor(triggerMessages) {
+    constructor(triggerMessages, interactionMessage, interactionHelp) {
         this.triggerMessages = triggerMessages;
+        this.interactionMessage = interactionMessage;
+        this.interactionHelp = interactionHelp;
     }
 
     get TriggerMessages() {
@@ -15,7 +15,7 @@ class MessageCommand {
             if (start.length > 1) {
                 let lower = start.toLowerCase();
                 if (
-                    this.TriggerMessages.findIndex(x => x.startsWith(lower)) >
+                    this.TriggerMessages.findIndex((x) => x.startsWith(lower)) >
                     -1
                 ) {
                     return this.process(message);

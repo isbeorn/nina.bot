@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class OvershootCommand extends MessageCommand {
     constructor() {
-        super(['!overshoot']);
+        super(['!overshoot'], 'overshoot', 'A short clip to show how focuser overshoot is working');
     }
 
     async process(message) {

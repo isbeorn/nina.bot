@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class SupportCommand extends MessageCommand {
     constructor() {
-        super(['!support']);
+        super(['!support'], 'support', 'Information is lacking for a support request. Generate a guideline here');
     }
 
     async process(message) {

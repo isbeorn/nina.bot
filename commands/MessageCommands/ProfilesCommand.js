@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class ProfilesCommand extends MessageCommand {
     constructor() {
-        super(['!profile', '!profiles']);
+        super(['!profile', '!profiles'], 'profiles', 'Where to find the profile files written by N.I.N.A.');
     }
 
     async process(message) {

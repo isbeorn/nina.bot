@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DockCommand extends MessageCommand {
     constructor() {
-        super(['!dock']);
+        super(['!dock'], 'dock', 'Need help with the imaging dock panels?');
     }
 
     async process(message) {

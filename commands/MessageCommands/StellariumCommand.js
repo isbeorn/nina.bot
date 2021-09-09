@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class StellariumCommand extends MessageCommand {
     constructor() {
-        super(['!stellarium']);
+        super(['!stellarium'], 'stellarium', 'How to setup stellarium with N.I.N.A.');
     }
 
     async process(message) {

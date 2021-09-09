@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class LogsCommand extends MessageCommand {
     constructor() {
-        super(['!logs']);
+        super(['!logs'], 'logs', 'Where to find N.I.N.A. logs');
     }
 
     async process(message) {

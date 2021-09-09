@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class QHYDriverCommand extends MessageCommand {
     constructor() {
-        super(['!qhydriver']);
+        super(['!qhydriver'], 'qhydriver', 'Got a message to update your QHY driver? Find help here');
     }
 
     async process(message) {

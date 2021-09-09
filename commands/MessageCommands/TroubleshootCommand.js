@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class TroubleshootCommand extends MessageCommand {
     constructor() {
-        super(['!troubleshoot']);
+        super(['!troubleshoot'], 'troubleshoot', 'Troubleshoot guide for common problems');
     }
 
     async process(message) {

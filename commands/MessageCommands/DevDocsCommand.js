@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DevDocsCommand extends MessageCommand {
     constructor() {
-        super(['!devdocs']);
+        super(['!devdocs'], 'devdocs', 'Documentation for nightlies');
     }
 
     async process(message) {

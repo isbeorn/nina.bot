@@ -2,7 +2,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DonateCommand extends MessageCommand {
     constructor() {
-        super(['!donate']);
+        super(['!donate'], 'donate', 'How to support the project');
     }
 
     async process(message) {

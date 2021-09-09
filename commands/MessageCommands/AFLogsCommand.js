@@ -3,7 +3,11 @@ const { MessageCommand } = require('./MessageCommand');
 
 class AFLogsCommand extends MessageCommand {
     constructor() {
-        super(['!aflogs', '!afreport']);
+        super(
+            ['!aflogs', '!afreport'],
+            'afreport',
+            'How to generate autofocus reports'
+        );
     }
 
     async process(message) {

@@ -3,7 +3,11 @@ const { MessageCommand } = require('./MessageCommand');
 
 class BitAscomCommand extends MessageCommand {
     constructor() {
-        super(['!32bitascom']);
+        super(
+            ['!32bitascom'],
+            '32bitascom',
+            'How to get 32bit ASCOM drivers to work with 64bit software'
+        );
     }
 
     async process(message) {

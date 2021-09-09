@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class StarsCommand extends MessageCommand {
     constructor() {
-        super(['!stars']);
+        super(['!stars'], 'stars', 'Cannot find stars in the app? Check this command to find out where to find them!');
     }
 
     async process(message) {

@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DiscordPatreonCommand extends MessageCommand {
     constructor() {
-        super(['!discord.patreon']);
+        super(['!discord.patreon'], 'discordpatreon', 'How to link discord with patreon');
     }
 
     async process(message) {

@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class TrackerCommand extends MessageCommand {
     constructor() {
-        super(['!tracker', '!issue', '!issues']);
+        super(['!tracker', '!issue', '!issues'], 'issues', 'Where to find the issue tracker');
     }
 
     async process(message) {

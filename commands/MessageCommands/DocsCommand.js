@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DocsCommand extends MessageCommand {
     constructor() {
-        super(['!docs']);
+        super(['!docs'],'docs', 'Link to the documentation page');
     }
 
     async process(message) {
