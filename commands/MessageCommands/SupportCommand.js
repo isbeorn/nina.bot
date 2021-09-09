@@ -18,10 +18,11 @@ class SupportCommand extends MessageCommand {
                 `
                 To better help with your issue, some more details are required       
   
-                1. Please describe what the issue is in detail
-                2. Give a detailed description on how to reproduce the problem step-by-step
+                1. Please describe the issue you are facing as detailed as possible
+                2. Provide a step-by-step description on how to reproduce the problem 
                 3. Describe what the expected behavior should be and what the actual behavior is
-                4. Share your log file (located at "%LOCALAPPDATA%\\NINA\\Logs")
+                4. Post a screenshot of the problem if applicable
+                5. Share your log file (located at "%LOCALAPPDATA%\\NINA\\Logs")
                   
                 Thank you.                
                 `
