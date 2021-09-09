@@ -16,7 +16,7 @@ class BitAscomCommand extends MessageCommand {
             .setColor('0x00AE86').setDescription(`
                 Some ASCOM drivers are only provided as 32bit. Using the above linked method it is possible to make this 32bit ASCOM driver accessible to a 64bit N.I.N.A. application.
             `);
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

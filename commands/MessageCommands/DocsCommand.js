@@ -20,7 +20,7 @@ class DocsCommand extends MessageCommand {
                 `
             )
             .setFooter('This documentation covers the current release build');
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

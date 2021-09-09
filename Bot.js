@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const { Client, Intents }  = require('discord.js');
 const log4js = require('log4js');
 log4js.configure({
     appenders: { console: { type: 'console' } },
@@ -15,9 +15,9 @@ const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 class Bot {
     constructor(token) {
         this.token = token;
-        this.client = new Discord.Client();
+        this.client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.DIRECT_MESSAGE_REACTIONS]});
         this.client.on('ready', this.onReady.bind(this));
-        this.client.on('message', this.onMessage.bind(this));
+        this.client.on('messageCreate', this.onMessage.bind(this));
         this.client.on(
             'messageReactionAdd',
             this.onMessageReactionAdd.bind(this)

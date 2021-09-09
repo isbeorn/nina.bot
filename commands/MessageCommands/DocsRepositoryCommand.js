@@ -16,7 +16,7 @@ class DocsRepositoryCommand extends MessageCommand {
             .setColor('0x00AE86').setDescription(`
                 This repository covers the source code for the N.I.N.A. documentation. If you want to improve the documentation, this is the place to go to.        
             `);
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

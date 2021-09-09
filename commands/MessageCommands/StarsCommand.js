@@ -29,7 +29,7 @@ class StarsCommand extends MessageCommand {
             .setImage(
                 'https://nighttime-imaging.eu/wp-content/uploads/2020/06/stars.png'
             );
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

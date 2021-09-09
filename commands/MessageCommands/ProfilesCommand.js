@@ -20,7 +20,7 @@ class ProfilesCommand extends MessageCommand {
                 Furthermore it is safe to update the application and the profiles will be kept.
                 `
             );
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

@@ -24,7 +24,7 @@ class ConformCommand extends MessageCommand {
             .setFooter(
                 'Make sure to select the correct driver prior to testing under Options->Select Driver'
             );
-        await message.reply(embed);        
+        await message.reply({ embeds: [embed] });        
     }
 }
 

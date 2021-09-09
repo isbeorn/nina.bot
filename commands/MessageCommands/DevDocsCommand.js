@@ -20,7 +20,7 @@ class DevDocsCommand extends MessageCommand {
                 `
             )
             .setFooter('This documentation covers the current nightly build');
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

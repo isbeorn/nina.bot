@@ -5,6 +5,10 @@ const Discord = require('discord.js');
 const mathjs = require('mathjs');
 const _ = require('lodash');
 
+global.window = {
+    addEventListener() {}
+};
+
 const BaseCommand = require('../BaseCommand');
 
 const baseSchema = require('./Schemas/AFGraphSchema');
@@ -246,14 +250,13 @@ class AFGraphCommand extends BaseCommand {
     async sendMessage(message, report, analysis) {
         const embed = new Discord.MessageEmbed();
         embed
-            .attachFiles(['./output.png'])
             .addField('Method', report.Method, true)
             .addField('Fitting', report.Fitting, true)
-            .addField('Temperature', report.Temperature, true)
-            .addField('Step Size', report.StepSize, true)
+            .addField('Temperature', report.Temperature.toString(), true)
+            .addField('Step Size', report.StepSize.toString(), true)
             .addField(
                 'Calculated Focus Position',
-                report.FocusPoint.Position,
+                report.FocusPoint.Position.toString(),
                 true
             )
             .addField('Filter', report.Filter, true);
@@ -265,8 +268,8 @@ class AFGraphCommand extends BaseCommand {
                     report.BacklashCompensationModel,
                     true
                 )
-                .addField('BacklashIN', report.BacklashIN, true)
-                .addField('BacklashOUT', report.BacklashOUT, true);
+                .addField('BacklashIN', report.BacklashIN.toString(), true)
+                .addField('BacklashOUT', report.BacklashOUT.toString(), true);
         }
 
         if (
@@ -275,8 +278,8 @@ class AFGraphCommand extends BaseCommand {
         ) {
             const rSquares = [];
 
-            rSquares.push(`Quadratic: ${report.QuadraticFitting.RSquared}`);
-            rSquares.push(`Hyperbolic: ${report.HyperbolicFitting.RSquared}`);
+            rSquares.push(`Quadratic: ${report.QuadraticFitting.RSquared.toString()}`);
+            rSquares.push(`Hyperbolic: ${report.HyperbolicFitting.RSquared.toString()}`);
             rSquares.push(
                 `Left Trend: ${
                     isNaN(report.LeftTrendFitting.RSquared)
@@ -299,7 +302,7 @@ class AFGraphCommand extends BaseCommand {
             embed.addField('Potential Issues', analysis.join('\n'));
         }
 
-        await message.channel.send(embed);
+        await message.channel.send({ embeds: [embed], files: ['./output.png'] });
     }
 
     destroy() {

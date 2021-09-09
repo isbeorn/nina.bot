@@ -26,7 +26,7 @@ class SupportCommand extends MessageCommand {
                 Thank you.                
                 `
             );
-        await message.reply(embed);   
+        await message.reply({ embeds: [embed] });   
     }
 }
 

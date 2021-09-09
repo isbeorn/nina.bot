@@ -16,7 +16,7 @@ class RepositoryCommand extends MessageCommand {
             .setColor('0x00AE86').setDescription(`
                 This repository covers the source code for the N.I.N.A. project.
             `);
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

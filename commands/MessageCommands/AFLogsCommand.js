@@ -20,7 +20,7 @@ class AFLogsCommand extends MessageCommand {
                 These logs can be dragged into discord and the bot will generate a visual representation of the autofocus run
                 `
             );
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

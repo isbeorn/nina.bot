@@ -22,7 +22,7 @@ class LogsCommand extends MessageCommand {
             .setFooter(
                 'You can drag and drop the log file into N.I.N.A. discord to report problems'
             );
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 

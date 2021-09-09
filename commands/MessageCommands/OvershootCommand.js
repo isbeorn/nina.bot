@@ -25,7 +25,7 @@ class OvershootCommand extends MessageCommand {
             .setImage(
                 'https://media.discordapp.net/attachments/437173823675170816/717152179151962172/nina-af.gif'
             );
-        await message.reply(embed);
+        await message.reply({ embeds: [embed] });
     }
 }
 
