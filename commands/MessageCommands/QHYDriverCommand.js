@@ -7,7 +7,7 @@ class QHYDriverCommand extends MessageCommand {
     }
 
     async process(message) {
-        await message.reply('https://daleghent.com/2021/02/1q2021-qhy-native-driver#Important_SDK_and_driver_notice');
+        await message.reply('https://nighttime-imaging.eu/docs/develop/site/troubleshooting/qhy_driver_update/#in-case-of-usb-driver-update-problems');
     }
 }
 
