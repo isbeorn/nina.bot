@@ -16,7 +16,7 @@ class DomeShutterCommand extends MessageCommand {
                 From N.I.N.A.'s perspective, we can't tell if a lack of progress is a failure or if it's going to eventually start.
 
 Please report this issue to your Dome vendor so they can fix the driver.  
-More additional info can be found below: `
+Further info about this topic can be found below: `
             )
             .addField('ASCOM principles','[https://ascom-standards.org/Developer/Principles.htm](https://ascom-standards.org/Developer/Principles.htm)')
             .addField('Dome Shutter on Groups.IO', '[https://ascomtalk.groups.io/g/Developer/message/3579](https://ascomtalk.groups.io/g/Developer/message/3579)')
