@@ -18,6 +18,7 @@ const { ProfilesCommand } = require('./ProfilesCommand');
 const { StellariumCommand } = require('./StellariumCommand');
 const { QHYDriverCommand } = require('./QHYDriverCommand');
 const { SupportCommand } = require('./SupportCommand');
+const { DomeShutterCommand } = require('./DomeShutterCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -39,5 +40,6 @@ module.exports = {
     ProfilesCommand,
     StellariumCommand,
     QHYDriverCommand,
-    SupportCommand
+    SupportCommand,
+    DomeShutterCommand
 };
