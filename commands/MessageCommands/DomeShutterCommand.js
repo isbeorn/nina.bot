@@ -8,7 +8,7 @@ class DomeShutterCommand extends MessageCommand {
 
     async process(message) {
         const embed = new Discord.MessageEmbed()
-            .setTitle('Incompliant Dome Shutter')
+            .setTitle('Non-Compliant Dome Shutter')
             .setDescription(
                 `
                 When an ASCOM Dome receives a request to open or close the shutter, it's supposed to wait for the shutter to actually start moving or report a failure if it doesn't.  
