@@ -18,7 +18,8 @@ class BitAscomCommand extends MessageCommand {
                 'https://www.techtalk.gfi.com/wp-content/uploads/2009/09/Using-32bit-COM-in-64bit-environment-300x300.jpg'
             )
             .setColor('0x00AE86').setDescription(`
-                Some ASCOM drivers are only provided as 32bit. Using the above linked method it is possible to make this 32bit ASCOM driver accessible to a 64bit N.I.N.A. application.
+                Some ASCOM drivers are only provided as 32bit. Using the above linked method it is possible to make this 32bit ASCOM driver accessible to a 64bit N.I.N.A. application.  
+                Another option that doesn't require diving into the registry is offered by using the ASCOM Device Hub. Simply link your equipment in the hub's setup screen and connect to the hub instead.
             `);
         await message.reply({ embeds: [embed] });
     }
