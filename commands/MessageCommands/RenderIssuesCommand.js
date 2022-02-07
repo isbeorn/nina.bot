@@ -9,6 +9,7 @@ class RenderIssuesCommand extends MessageCommand {
     async process(message) {
         const embed = new Discord.MessageEmbed()
             .setTitle('In case of render issues like icons disappearing')
+            .setURL('https://nighttime-imaging.eu/docs/develop/site/troubleshooting/render_issues/')
             .setAuthor(
                 'Isbeorn',
                 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
