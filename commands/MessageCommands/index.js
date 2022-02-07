@@ -20,6 +20,7 @@ const { QHYDriverCommand } = require('./QHYDriverCommand');
 const { SupportCommand } = require('./SupportCommand');
 const { DomeShutterCommand } = require('./DomeShutterCommand');
 const { ShutdownScriptCommand } = require('./ShutdownScriptCommand');
+const { RenderIssuesCommand } = require('./RenderIssuesCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -43,5 +44,6 @@ module.exports = {
     QHYDriverCommand,
     SupportCommand,
     DomeShutterCommand,
-    ShutdownScriptCommand
+    ShutdownScriptCommand,
+    RenderIssuesCommand
 };
