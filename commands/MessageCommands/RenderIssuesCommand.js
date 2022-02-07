@@ -3,7 +3,7 @@ const { MessageCommand } = require('./MessageCommand');
 
 class RenderIssuesCommand extends MessageCommand {
     constructor() {
-        super(['!renderissues'], 'renderissues', 'In case of render issues like icons disappearing');
+        super(['!renderissues', "!nahimic"], 'renderissues', 'In case of render issues like icons disappearing');
     }
 
     async process(message) {
