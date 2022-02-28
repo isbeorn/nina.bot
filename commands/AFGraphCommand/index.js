@@ -272,14 +272,34 @@ class AFGraphCommand extends BaseCommand {
                 .addField('BacklashOUT', report.BacklashOUT.toString(), true);
         }
 
+        const rSquares = [];
         if (
+            report.HyperbolicFitting &&
             report.HyperbolicFitting.RSquared &&
             !isNaN(report.HyperbolicFitting.RSquared)
         ) {
-            const rSquares = [];
+            rSquares.push(
+                `Hyperbolic: ${report.HyperbolicFitting.RSquared.toString()}`
+            );
+        }
 
-            rSquares.push(`Quadratic: ${report.QuadraticFitting.RSquared.toString()}`);
-            rSquares.push(`Hyperbolic: ${report.HyperbolicFitting.RSquared.toString()}`);
+        if (
+            report.QuadraticFitting &&
+            report.QuadraticFitting.RSquared &&
+            !isNaN(report.QuadraticFitting.RSquared)
+        ) {
+            rSquares.push(
+                `Quadratic: ${report.QuadraticFitting.RSquared.toString()}`
+            );
+        }
+        if (
+            report.LeftTrendFitting &&
+            report.LeftTrendFitting.RSquared &&
+            !isNaN(report.LeftTrendFitting.RSquared) &&
+            report.RightTrendFitting &&
+            report.RightTrendFitting.RSquared &&
+            !isNaN(report.RightTrendFitting.RSquared)
+        ) {
             rSquares.push(
                 `Left Trend: ${
                     isNaN(report.LeftTrendFitting.RSquared)
@@ -291,7 +311,8 @@ class AFGraphCommand extends BaseCommand {
                         : report.RightTrendFitting.RSquared
                 }`
             );
-
+        }
+        if (rSquares.length > 0) {
             embed.addField(
                 'R² - Coefficient of determination',
                 rSquares.join('\n')
@@ -302,7 +323,10 @@ class AFGraphCommand extends BaseCommand {
             embed.addField('Potential Issues', analysis.join('\n'));
         }
 
-        await message.channel.send({ embeds: [embed], files: ['./output.png'] });
+        await message.channel.send({
+            embeds: [embed],
+            files: ['./output.png']
+        });
     }
 
     destroy() {
@@ -328,69 +352,80 @@ class AFGraphCommand extends BaseCommand {
         });
 
         if (report.Method === 'STARHFR') {
-            let data = report.QuadraticFitting.getPoints(
-                report.MinimumStep,
-                report.MaximumStep
-            );
-            config.data.datasets.push({
-                label: 'Quadratic',
-                pointBackgroundColor:
-                    data.length > 1 ? 'transparent' : 'rgba(75, 192, 192, 1)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                data: data,
-                borderDash: [5, 5],
-                borderWidth: 1,
-                fill: false,
-                pointRadius: 3,
-                pointBorderColor: 'transparent'
-            });
-
-            data = report.HyperbolicFitting.getPoints(
-                report.MinimumStep,
-                report.MaximumStep
-            );
-            config.data.datasets.push({
-                label: 'Hyperbolic',
-                pointBackgroundColor:
-                    data.length > 1 ? 'transparent' : 'rgba(153, 102, 255, 1)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                data: data,
-                borderDash: [5, 5],
-                borderWidth: 1,
-                fill: false,
-                pointRadius: 3,
-                pointBorderColor: 'transparent'
-            });
-
-            data = [
-                ...report.LeftTrendFitting.getPoints(
+            let data;
+            if (report.QuadraticFitting) {
+                data = report.QuadraticFitting.getPoints(
                     report.MinimumStep,
-                    report.LeftTrendFitting.PointOfInterest.Position +
-                        report.StepSize
-                ),
-                {
-                    x: report.LeftTrendFitting.PointOfInterest.Position,
-                    y: report.LeftTrendFitting.PointOfInterest.Value
-                },
-                ...report.RightTrendFitting.getPoints(
-                    report.LeftTrendFitting.PointOfInterest.Position -
-                        report.StepSize,
                     report.MaximumStep
-                )
-            ];
-            config.data.datasets.push({
-                label: 'Trendlines',
-                pointBackgroundColor:
-                    data.length > 1 ? 'transparent' : 'rgba(255, 159, 64, 1)',
-                borderColor: 'rgba(255, 159, 64, 1)',
-                data: data,
-                borderDash: [2, 2],
-                borderWidth: 1,
-                lineTension: 0,
-                fill: false,
-                pointRadius: 3,
-                pointBorderColor: 'transparent'
-            });
+                );
+                config.data.datasets.push({
+                    label: 'Quadratic',
+                    pointBackgroundColor:
+                        data.length > 1
+                            ? 'transparent'
+                            : 'rgba(75, 192, 192, 1)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    data: data,
+                    borderDash: [5, 5],
+                    borderWidth: 1,
+                    fill: false,
+                    pointRadius: 3,
+                    pointBorderColor: 'transparent'
+                });
+            }
+            if (report.HyperbolicFitting) {
+                data = report.HyperbolicFitting.getPoints(
+                    report.MinimumStep,
+                    report.MaximumStep
+                );
+                config.data.datasets.push({
+                    label: 'Hyperbolic',
+                    pointBackgroundColor:
+                        data.length > 1
+                            ? 'transparent'
+                            : 'rgba(153, 102, 255, 1)',
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    data: data,
+                    borderDash: [5, 5],
+                    borderWidth: 1,
+                    fill: false,
+                    pointRadius: 3,
+                    pointBorderColor: 'transparent'
+                });
+            }
+            if (report.LeftTrendFitting) {
+                data = [
+                    ...report.LeftTrendFitting.getPoints(
+                        report.MinimumStep,
+                        report.LeftTrendFitting.PointOfInterest.Position +
+                            report.StepSize
+                    ),
+                    {
+                        x: report.LeftTrendFitting.PointOfInterest.Position,
+                        y: report.LeftTrendFitting.PointOfInterest.Value
+                    },
+                    ...report.RightTrendFitting.getPoints(
+                        report.LeftTrendFitting.PointOfInterest.Position -
+                            report.StepSize,
+                        report.MaximumStep
+                    )
+                ];
+                config.data.datasets.push({
+                    label: 'Trendlines',
+                    pointBackgroundColor:
+                        data.length > 1
+                            ? 'transparent'
+                            : 'rgba(255, 159, 64, 1)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    data: data,
+                    borderDash: [2, 2],
+                    borderWidth: 1,
+                    lineTension: 0,
+                    fill: false,
+                    pointRadius: 3,
+                    pointBorderColor: 'transparent'
+                });
+            }
         } else {
             const data = report.GaussianFitting.getPoints(
                 report.MinimumStep,

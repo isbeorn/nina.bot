@@ -40,43 +40,56 @@ class AutoFocusReport {
 
         this.filter = data.Filter || 'n.A.';
 
-        this.quadraticFitting = new Fitting(
-            _.get(data, 'Fittings.Quadratic'),
-            data.Intersections.QuadraticMinimum,
-            this.measurePoints,
-            _.get(data, 'RSquares.Quadratic')
-        );
-        this.hyperbolicFitting = new Fitting(
-            _.get(data, 'Fittings.Hyperbolic'),
-            data.Intersections.HyperbolicMinimum,
-            this.measurePoints,
-            _.get(data, 'RSquares.Hyperbolic')
-        );
-        this.gaussianFitting = new Fitting(
-            _.get(data, 'Fittings.Gaussian'),
-            data.Intersections.GaussianMaximum,
-            this.measurePoints
-        );
+        if (data.Intersections.QuadraticMinimum) {
+            this.quadraticFitting = new Fitting(
+                _.get(data, 'Fittings.Quadratic'),
+                data.Intersections.QuadraticMinimum,
+                this.measurePoints,
+                _.get(data, 'RSquares.Quadratic')
+            );
+        }
+        if (data.Intersections.HyperbolicMinimum) {
+            this.hyperbolicFitting = new Fitting(
+                _.get(data, 'Fittings.Hyperbolic'),
+                data.Intersections.HyperbolicMinimum,
+                this.measurePoints,
+                _.get(data, 'RSquares.Hyperbolic')
+            );
+        }
+        if (data.Intersections.GaussianMaximum) {
+            this.gaussianFitting = new Fitting(
+                _.get(data, 'Fittings.Gaussian'),
+                data.Intersections.GaussianMaximum,
+                this.measurePoints
+            );
+        }
 
         const min = _.minBy(points, (x) => x.Value);
-        const left = this.measurePoints.filter(x => x.Position < min.Position && x.Value > (min.Value + 0.1));
-        const right = this.measurePoints.filter(x => x.Position > min.Position && x.Value > (min.Value + 0.1));
-
-        this.leftTrendFitting = new Fitting(
-            _.get(data, 'Fittings.LeftTrend'),
-            data.Intersections.TrendLineIntersection,
-            left,
-            _.get(data, 'RSquares.LeftTrend')
+        const left = this.measurePoints.filter(
+            (x) => x.Position < min.Position && x.Value > min.Value + 0.1
         );
-        this.rightTrendFitting = new Fitting(
-            _.get(data, 'Fittings.RightTrend'),
-            data.Intersections.TrendLineIntersection,
-            right,
-            _.get(data, 'RSquares.RightTrend')
+        const right = this.measurePoints.filter(
+            (x) => x.Position > min.Position && x.Value > min.Value + 0.1
         );
 
-        if(data.BacklashCompensation) {
-            this.backlashCompensationModel = data.BacklashCompensation.BacklashCompensationModel;
+        if (data.Intersections.TrendLineIntersection) {
+            this.leftTrendFitting = new Fitting(
+                _.get(data, 'Fittings.LeftTrend'),
+                data.Intersections.TrendLineIntersection,
+                left,
+                _.get(data, 'RSquares.LeftTrend')
+            );
+            this.rightTrendFitting = new Fitting(
+                _.get(data, 'Fittings.RightTrend'),
+                data.Intersections.TrendLineIntersection,
+                right,
+                _.get(data, 'RSquares.RightTrend')
+            );
+        }
+
+        if (data.BacklashCompensation) {
+            this.backlashCompensationModel =
+                data.BacklashCompensation.BacklashCompensationModel;
             this.backlashIN = data.BacklashCompensation.BacklashIN;
             this.backlashOUT = data.BacklashCompensation.BacklashOUT;
         }
@@ -140,17 +153,14 @@ class AutoFocusReport {
 
     get BacklashCompensationModel() {
         return this.backlashCompensationModel;
-
     }
 
     get BacklashIN() {
         return this.backlashIN;
-
     }
-    
+
     get BacklashOUT() {
         return this.backlashOUT;
-
     }
 }
 

@@ -6,7 +6,7 @@ module.exports = {
 
     definitions: {
         point: {
-            type: 'object',
+            type: ['object', 'null'],
             properties: {
                 Position: {
                     type: 'number'

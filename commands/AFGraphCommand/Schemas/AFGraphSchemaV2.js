@@ -42,16 +42,16 @@ module.exports = {
             type: 'object',
             properties: {
                 Quadratic: {
-                    type: 'number'
+                    type: ['number', 'null']
                 },
                 Hyperbolic: {
-                    type: 'number'
+                    type: ['number', 'null']
                 },
                 LeftTrend: {
-                    type: 'number'
+                    type: ['number', 'null']
                 },
                 RightTrend: {
-                    type: 'number'
+                    type: ['number', 'null']
                 }
             },
             required: [
