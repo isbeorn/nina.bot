@@ -6,7 +6,7 @@ class Fitting {
 
         if (formula) {
             this.formula = formula;
-            this.fn = mathjs.compile(formula);
+            this.fn = mathjs.compile(formula.replace(/²/g, '^2').replace(/³/g, '^3'));
 
             const actualXs = measurePoints.map((x) => x.Position);
             const actualYs = measurePoints.map((x) => x.Value);
