@@ -114,31 +114,32 @@ const getChartConfig = (yAxisLabel) => {
 class AFGraphCommand extends BaseCommand {
     async process(message) {
         if (message.attachments.size > 0) {
-            const attachment = message.attachments.first();
-            if (attachment.attachment.endsWith('.json')) {
-                const response = await fetch(attachment.url, { method: 'Get' });
-                const autoFocusData = await response.json();
-
-                const valid =
-                    validateV1Schema(autoFocusData) ||
-                    validateV2Schema(autoFocusData);
-
-                if (valid) {
-                    try {
-                        const report = new AutoFocusReport(autoFocusData);
-
-                        const config = this.generateGraphConfiguration(report);
-
-                        await this.render(config);
-
-                        const analysis = this.analyze(report);
-
-                        await this.sendMessage(message, report, analysis);
-                    } finally {
-                        this.destroy();
+            for(const [,attachment] of message.attachments) {
+                if (attachment.attachment.endsWith('.json')) {
+                    const response = await fetch(attachment.url, { method: 'Get' });
+                    const autoFocusData = await response.json();
+    
+                    const valid =
+                        validateV1Schema(autoFocusData) ||
+                        validateV2Schema(autoFocusData);
+    
+                    if (valid) {
+                        try {
+                            const report = new AutoFocusReport(autoFocusData);
+    
+                            const config = this.generateGraphConfiguration(report);
+    
+                            await this.render(config);
+    
+                            const analysis = this.analyze(report);
+    
+                            await this.sendMessage(message, report, analysis);
+                        } finally {
+                            this.destroy();
+                        }
+                    } else {
+                        console.log('Invalid JSON for auto focus report');
                     }
-                } else {
-                    console.log('Invalid JSON for auto focus report');
                 }
             }
         }
