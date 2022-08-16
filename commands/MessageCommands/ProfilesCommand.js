@@ -7,7 +7,7 @@ class ProfilesCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Profiles')
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'

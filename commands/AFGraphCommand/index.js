@@ -249,23 +249,23 @@ class AFGraphCommand extends BaseCommand {
     }
 
     async sendMessage(message, report, analysis) {
-        const embed = new Discord.MessageEmbed();
+        const embed = new Discord.EmbedBuilder();
         embed
-            .addFields(
+            .addFields([
                 { name: 'Method', value: report.Method, inline: true },
                 { name: 'Fitting', value: report.Fitting, inline: true },
                 { name: 'Temperature', value: report.Temperature.toString(), inline: true },
                 { name: 'Step Size', value: report.StepSize.toString(), inline: true },
                 { name: 'Calculated Focus Position', value: report.FocusPoint.Position.toString(), inline: true },
                 { name: 'Filter', value: report.Filter, inline: true }
-            )
+            ])
         if (report.BacklashCompensationModel) {
             embed
-                .addFields(
+                .addFields([
                     { name: 'Backlash Method', value: report.BacklashCompensationModel, inline: true },
                     { name: 'BacklashIN', value: report.BacklashIN.toString(), inline: true },
                     { name: 'BacklashOUT', value: report.BacklashOUT.toString(), inline: true }
-                )
+                ])
         }
 
         const rSquares = [];
@@ -309,15 +309,15 @@ class AFGraphCommand extends BaseCommand {
             );
         }
         if (rSquares.length > 0) {
-            embed.addFields(
+            embed.addFields([
                 { name: 'R² - Coefficient of determination', value: rSquares.join('\n') }
-            );
+            ]);
         }
 
         if (analysis.length > 0) {
-            embed.addFields(
+            embed.addFields([
                 { name: 'Potential Issues', value: analysis.join('\n') }
-            );
+            ]);
         }
 
         await message.channel.send({

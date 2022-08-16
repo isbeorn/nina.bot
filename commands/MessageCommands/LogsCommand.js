@@ -7,7 +7,7 @@ class LogsCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Logs')
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
@@ -19,9 +19,9 @@ class LogsCommand extends MessageCommand {
                 Furthermore the logs can be opened directly inside the application via the button next to Options->Log Level
                 `
             )
-            .setFooter(
-                'You can drag and drop the log file into N.I.N.A. discord to report problems'
-            );
+            .setFooter({
+                text: 'You can drag and drop the log file into N.I.N.A. discord to report problems'
+            });
         await message.reply({ embeds: [embed] });
     }
 }

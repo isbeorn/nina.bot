@@ -3,11 +3,11 @@ const { MessageCommand } = require('./MessageCommand');
 
 class DocsCommand extends MessageCommand {
     constructor() {
-        super(['!docs'],'docs', 'Link to the documentation page');
+        super(['!docs'], 'docs', 'Link to the documentation page');
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Documentation')
             .setURL('https://nighttime-imaging.eu/docs/master/site/')
             .setThumbnail(
@@ -19,7 +19,9 @@ class DocsCommand extends MessageCommand {
                 Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
                 `
             )
-            .setFooter('This documentation covers the current release build');
+            .setFooter({
+                text: 'This documentation covers the current release build'
+            });
         await message.reply({ embeds: [embed] });
     }
 }

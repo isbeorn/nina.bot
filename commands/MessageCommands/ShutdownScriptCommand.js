@@ -7,15 +7,16 @@ class ShutdownScriptCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('How to shutdown the pc using the advanced sequencer')
             .setURL(
                 'https://discord.com/channels/436650817295089664/436650965446426625/934707064297631764'
             )
-            .setAuthor(
-                'Isbeorn',
-                'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
-            )
+            .setAuthor({
+                name: 'Isbeorn',
+                iconUrl:
+                    'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
+            })
             .setDescription(
                 `With the external script instrution it is possible to call external tools.
                 One of these is the windows built-in shutdown command. Just reference this command and the desired parameters and the external script will call it.`

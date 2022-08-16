@@ -7,7 +7,7 @@ class DevDocsCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Documentation')
             .setURL('https://nighttime-imaging.eu/docs/develop/site/')
             .setThumbnail(
@@ -19,7 +19,9 @@ class DevDocsCommand extends MessageCommand {
                 Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
                 `
             )
-            .setFooter('This documentation covers the current nightly build');
+            .setFooter({
+                text: 'This documentation covers the current nightly build'
+            });
         await message.reply({ embeds: [embed] });
     }
 }

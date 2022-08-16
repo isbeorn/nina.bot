@@ -7,7 +7,7 @@ class SupportCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Support')
             .setURL('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open')
             .setThumbnail(

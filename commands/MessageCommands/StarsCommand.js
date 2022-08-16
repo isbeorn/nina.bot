@@ -7,15 +7,16 @@ class StarsCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('Where to find stars in N.I.N.A.?')
             .setURL(
                 'https://nighttime-imaging.eu/docs/develop/site/tabs/imaging/'
             )
-            .setAuthor(
-                'Isbeorn',
-                'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
-            )
+            .setAuthor({
+                name: 'Isbeorn',
+                iconUrl:
+                    'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
+            })
             .setThumbnail(
                 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
             )

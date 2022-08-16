@@ -3,19 +3,24 @@ const { MessageCommand } = require('./MessageCommand');
 
 class OvershootCommand extends MessageCommand {
     constructor() {
-        super(['!overshoot'], 'overshoot', 'A short clip to show how focuser overshoot is working');
+        super(
+            ['!overshoot'],
+            'overshoot',
+            'A short clip to show how focuser overshoot is working'
+        );
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('How does overshoot backlash compensation work?')
             .setURL(
                 'https://nighttime-imaging.eu/docs/develop/site/tabs/imaging/'
             )
-            .setAuthor(
-                'Isbeorn',
-                'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
-            )
+            .setAuthor({
+                name: 'Isbeorn',
+                iconUrl:
+                    'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
+            })
             .setDescription(
                 `
                 This method will compensate for backlash by overshooting the target focuser position by a large amount and then moving the focuser back to the initially requested target position.

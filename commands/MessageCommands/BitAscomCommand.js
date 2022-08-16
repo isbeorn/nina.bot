@@ -11,7 +11,7 @@ class BitAscomCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('How to use 32bit COM objects in 64bit environments')
             .setURL('https://techtalk.gfi.com/32bit-object-64bit-environment/')
             .setThumbnail(

@@ -7,13 +7,14 @@ class RenderIssuesCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('In case of render issues like icons disappearing')
             .setURL('https://nighttime-imaging.eu/docs/develop/site/troubleshooting/render_issues/')
-            .setAuthor(
-                'Isbeorn',
-                'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
-            )
+            .setAuthor({
+                name: 'Isbeorn',
+                iconUrl:
+                    'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png'
+            })
             .setDescription(
                 `Check if you have a windows service called "Nahimic Service" running. This service is known to cause rendering issues on WPF apps. Once this service is disabled the problem should be gone.
                 To disable the service you can go to the Services window using "⊞ Win" + "r" -> Enter "services.msc" and follow the steps in the screenshot below.`

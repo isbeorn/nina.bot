@@ -7,7 +7,7 @@ class TrackerCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Issue Tracker')
             .setURL(
                 'https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open'

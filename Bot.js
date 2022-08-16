@@ -1,4 +1,4 @@
-const { Client, Intents, Interaction } = require('discord.js');
+const { Client, GatewayIntentBits, Routes, SlashCommandBuilder } = require('discord.js');
 const log4js = require('log4js');
 log4js.configure({
     appenders: { console: { type: 'console' } },
@@ -13,15 +13,17 @@ const { HelpCommand } = require('./commands/HelpCommand');
 const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
-    constructor(token) {
+    constructor(token, rest) {
+        this.rest = rest;
         this.token = token;
         this.client = new Client({
             intents: [
-                Intents.FLAGS.GUILDS,
-                Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-                Intents.FLAGS.GUILD_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGES,
-                Intents.FLAGS.DIRECT_MESSAGE_REACTIONS
+                GatewayIntentBits.Guilds,
+                GatewayIntentBits.GuildEmojisAndStickers,
+                GatewayIntentBits.GuildMessages,
+                GatewayIntentBits.DirectMessages,
+                GatewayIntentBits.DirectMessageReactions,
+                GatewayIntentBits.MessageContent
             ]
         });
         this.client.on('ready', this.onReady.bind(this));
@@ -35,7 +37,7 @@ class Bot {
         //this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
 
         // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
-
+        this.slashCommands = [];
         this.registerCommand(new GalleryWatchdogCommand(this.client));
         //this.registerCommand(new HelpCommand(this.client));
         this.registerCommand(new AFGraphCommand(this.client));
@@ -44,6 +46,16 @@ class Bot {
         for (const key in MessageCommands) {
             this.registerCommand(new MessageCommands[key]());
         }
+
+        this.rest.put(
+            Routes.applicationGuildCommands(
+                process.env.CLIENT_ID,
+                process.env.GUILD_ID
+            ),
+            {
+                body: this.slashCommands.map(x => x.toJSON())
+            }
+        );
     }
 
     getToken() {
@@ -76,15 +88,17 @@ class Bot {
         this.getCommands().push(command);
 
         if (command.interactionMessage && command.interactionHelp) {
-            this.client.api
-                .applications(process.env.CLIENT_ID)
-                .guilds(process.env.GUILD_ID)
-                .commands.post({
-                    data: {
-                        name: command.interactionMessage,
-                        description: command.interactionHelp
-                    }
-                });
+            this.slashCommands.push(new SlashCommandBuilder().setName(command.interactionMessage).setDescription(command.interactionHelp));
+            
+            // this.client.api
+            //     .applications(process.env.CLIENT_ID)
+            //     .guilds(process.env.GUILD_ID)
+            //     .commands.post({
+            //         data: {
+            //             name: command.interactionMessage,
+            //             description: command.interactionHelp
+            //         }
+            //     });
         }
     }
 
@@ -114,7 +128,7 @@ class Bot {
             //   await member.roles.add("719602376092156046");
             // }
 
-            // const embed = new Discord.MessageEmbed()
+            // const embed = new Discord.EmbedBuilder()
             //   .setTitle('Welcome to the N.I.N.A. - Nighttime Imaging \'N\' Astronomy community chat!')
             //   .setThumbnail('https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
             //   .setAuthor('Isbeorn', 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')

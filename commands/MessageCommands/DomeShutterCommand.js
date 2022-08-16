@@ -7,7 +7,7 @@ class DomeShutterCommand extends MessageCommand {
     }
 
     async process(message) {
-        const embed = new Discord.MessageEmbed()
+        const embed = new Discord.EmbedBuilder()
             .setTitle('Non-Compliant Dome Shutter')
             .setDescription(
                 `
@@ -18,12 +18,12 @@ class DomeShutterCommand extends MessageCommand {
 Please report this issue to your Dome vendor so they can fix the driver.  
 Further info about this topic can be found below: `
             )
-            .addFields(
+            .addFields([
                 { name: 'ASCOM principles', value: '[https://ascom-standards.org/Developer/Principles.htm](https://ascom-standards.org/Developer/Principles.htm)'},
                 
                 { name: 'Dome Shutter on Groups.IO', value: '[https://ascomtalk.groups.io/g/Developer/message/3579](https://ascomtalk.groups.io/g/Developer/message/3579)'},
                 { name: 'Bob Denny on Discord', value: '[https://discord.com/channels/436650817295089664/769608646215598101/812466133608300544](https://discord.com/channels/436650817295089664/769608646215598101/812466133608300544)'}
-            )
+            ])
         await message.reply({ embeds: [embed] });
     }
 }
