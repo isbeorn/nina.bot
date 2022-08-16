@@ -9,13 +9,37 @@ module.exports = {
             type: ['object', 'null'],
             properties: {
                 Position: {
-                    type: 'number'
+                    anyOf: [
+                        {
+                            type: 'string',
+                            enum: ['NaN']
+                        },
+                        {
+                            type: 'number'
+                        }
+                    ]
                 },
                 Value: {
-                    type: 'number'
+                    anyOf: [
+                        {
+                            type: 'string',
+                            enum: ['NaN']
+                        },
+                        {
+                            type: 'number'
+                        }
+                    ]
                 },
                 Error: {
-                    type: 'number'
+                    anyOf: [
+                        {
+                            type: 'string',
+                            enum: ['NaN']
+                        },
+                        {
+                            type: 'number'
+                        }
+                    ]
                 }
             },
             required: ['Position', 'Value', 'Error']
