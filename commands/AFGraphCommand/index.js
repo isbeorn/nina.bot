@@ -251,26 +251,21 @@ class AFGraphCommand extends BaseCommand {
     async sendMessage(message, report, analysis) {
         const embed = new Discord.MessageEmbed();
         embed
-            .addField('Method', report.Method, true)
-            .addField('Fitting', report.Fitting, true)
-            .addField('Temperature', report.Temperature.toString(), true)
-            .addField('Step Size', report.StepSize.toString(), true)
-            .addField(
-                'Calculated Focus Position',
-                report.FocusPoint.Position.toString(),
-                true
+            .addFields(
+                { name: 'Method', value: report.Method, inline: true },
+                { name: 'Fitting', value: report.Fitting, inline: true },
+                { name: 'Temperature', value: report.Temperature.toString(), inline: true },
+                { name: 'Step Size', value: report.StepSize.toString(), inline: true },
+                { name: 'Calculated Focus Position', value: report.FocusPoint.Position.toString(), inline: true },
+                { name: 'Filter', value: report.Filter, inline: true }
             )
-            .addField('Filter', report.Filter, true);
-
         if (report.BacklashCompensationModel) {
             embed
-                .addField(
-                    'Backlash Method',
-                    report.BacklashCompensationModel,
-                    true
+                .addFields(
+                    { name: 'Backlash Method', value: report.BacklashCompensationModel, inline: true },
+                    { name: 'BacklashIN', value: report.BacklashIN.toString(), inline: true },
+                    { name: 'BacklashOUT', value: report.BacklashOUT.toString(), inline: true }
                 )
-                .addField('BacklashIN', report.BacklashIN.toString(), true)
-                .addField('BacklashOUT', report.BacklashOUT.toString(), true);
         }
 
         const rSquares = [];
@@ -314,14 +309,15 @@ class AFGraphCommand extends BaseCommand {
             );
         }
         if (rSquares.length > 0) {
-            embed.addField(
-                'R² - Coefficient of determination',
-                rSquares.join('\n')
+            embed.addFields(
+                { name: 'R² - Coefficient of determination', value: rSquares.join('\n') }
             );
         }
 
         if (analysis.length > 0) {
-            embed.addField('Potential Issues', analysis.join('\n'));
+            embed.addFields(
+                { name: 'Potential Issues', value: analysis.join('\n') }
+            );
         }
 
         await message.channel.send({
