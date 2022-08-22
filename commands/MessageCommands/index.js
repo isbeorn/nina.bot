@@ -21,6 +21,8 @@ const { SupportCommand } = require('./SupportCommand');
 const { DomeShutterCommand } = require('./DomeShutterCommand');
 const { ShutdownScriptCommand } = require('./ShutdownScriptCommand');
 const { RenderIssuesCommand } = require('./RenderIssuesCommand');
+const { InstallerIssuesCommand } = require('./InstallerIssuesCommand');
+const { GuiderSettleCommand } = require('./GuiderSettleCommand');
 
 module.exports = {
     BitAscomCommand,
@@ -45,5 +47,7 @@ module.exports = {
     SupportCommand,
     DomeShutterCommand,
     ShutdownScriptCommand,
-    RenderIssuesCommand
+    RenderIssuesCommand,
+    InstallerIssuesCommand,
+    GuiderSettleCommand
 };

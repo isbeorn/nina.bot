@@ -37,7 +37,6 @@ class Bot {
         //this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
 
         // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
-        this.slashCommands = [];
         this.registerCommand(new GalleryWatchdogCommand(this.client));
         //this.registerCommand(new HelpCommand(this.client));
         this.registerCommand(new AFGraphCommand(this.client));
@@ -53,7 +52,7 @@ class Bot {
                 process.env.GUILD_ID
             ),
             {
-                body: this.slashCommands.map(x => x.toJSON())
+                body: this.getSlashCommands().map(x => x.toJSON())
             }
         );
     }
@@ -73,6 +72,13 @@ class Bot {
         return this.commands;
     }
 
+    getSlashCommands() {
+        if (!this.slashCommands) {
+            this.slashCommands = [];
+        }
+        return this.slashCommands;
+    }
+
     async connect() {
         try {
             const client = this.getClient();
@@ -88,17 +94,7 @@ class Bot {
         this.getCommands().push(command);
 
         if (command.interactionMessage && command.interactionHelp) {
-            this.slashCommands.push(new SlashCommandBuilder().setName(command.interactionMessage).setDescription(command.interactionHelp));
-            
-            // this.client.api
-            //     .applications(process.env.CLIENT_ID)
-            //     .guilds(process.env.GUILD_ID)
-            //     .commands.post({
-            //         data: {
-            //             name: command.interactionMessage,
-            //             description: command.interactionHelp
-            //         }
-            //     });
+            this.getSlashCommands().push(new SlashCommandBuilder().setName(command.interactionMessage).setDescription(command.interactionHelp));
         }
     }
 
