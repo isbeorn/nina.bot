@@ -9,7 +9,7 @@ class ConformCommand extends MessageCommand {
     async process(message) {
         const embed = new Discord.EmbedBuilder()
             .setTitle('ASCOM Conformance check')
-            .setURL('https://github.com/ASCOMInitiative/Conform/releases/')
+            .setURL('https://github.com/ASCOMInitiative/ConformU/releases')
             .setThumbnail(
                 'https://avatars3.githubusercontent.com/u/38851363?s=400&v=4'
             )
