@@ -14,7 +14,7 @@ class OvershootCommand extends MessageCommand {
         const embed = new Discord.EmbedBuilder()
             .setTitle('How does overshoot backlash compensation work?')
             .setURL(
-                'https://nighttime-imaging.eu/docs/develop/site/tabs/imaging/'
+                'https://nighttime-imaging.eu/docs/master/site/tabs/options/autofocus/#backlash-compensation-method'
             )
             .setAuthor({
                 name: 'Isbeorn',
