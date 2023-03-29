@@ -6,7 +6,7 @@ const mathjs = require('mathjs');
 const _ = require('lodash');
 
 global.window = {
-    addEventListener() {}
+    addEventListener() { }
 };
 
 const BaseCommand = require('../BaseCommand');
@@ -114,28 +114,38 @@ const getChartConfig = (yAxisLabel) => {
 class AFGraphCommand extends BaseCommand {
     async process(message) {
         if (message.attachments.size > 0) {
-            for(const [,attachment] of message.attachments) {
+            for (const [, attachment] of message.attachments) {
                 if (attachment.attachment.endsWith('.json')) {
                     const response = await fetch(attachment.url, { method: 'Get' });
                     const autoFocusData = await response.json();
-    
+
                     const valid =
                         validateV1Schema(autoFocusData) ||
                         validateV2Schema(autoFocusData);
-    
+
                     if (valid) {
                         try {
                             const report = new AutoFocusReport(autoFocusData);
-    
+
                             const config = this.generateGraphConfiguration(report);
-    
+
                             await this.render(config);
-    
+
                             const analysis = this.analyze(report);
-    
+
                             await this.sendMessage(message, report, analysis);
+                        }
+                        catch (e) {
+                            console.log(e);
+                            if (e instanceof SyntaxError) {
+                                message.channel.send("Unable to process the autofocus report. The formulas to render the fitting lines could not be parsed.");
+                            } else {
+                                message.channel.send("Unable to process the autofocus report due to an unexpected error.");
+                            }
                         } finally {
-                            this.destroy();
+                            try {
+                                this.destroy();
+                            } catch { }
                         }
                     } else {
                         console.log('Invalid JSON for auto focus report');
@@ -297,14 +307,12 @@ class AFGraphCommand extends BaseCommand {
             !isNaN(report.RightTrendFitting.RSquared)
         ) {
             rSquares.push(
-                `Left Trend: ${
-                    isNaN(report.LeftTrendFitting.RSquared)
-                        ? 'Unknown'
-                        : report.LeftTrendFitting.RSquared
-                } | Right Trend: ${
-                    isNaN(report.RightTrendFitting.RSquared)
-                        ? 'Unknown'
-                        : report.RightTrendFitting.RSquared
+                `Left Trend: ${isNaN(report.LeftTrendFitting.RSquared)
+                    ? 'Unknown'
+                    : report.LeftTrendFitting.RSquared
+                } | Right Trend: ${isNaN(report.RightTrendFitting.RSquared)
+                    ? 'Unknown'
+                    : report.RightTrendFitting.RSquared
                 }`
             );
         }
@@ -395,7 +403,7 @@ class AFGraphCommand extends BaseCommand {
                     ...report.LeftTrendFitting.getPoints(
                         report.MinimumStep,
                         report.LeftTrendFitting.PointOfInterest.Position +
-                            report.StepSize
+                        report.StepSize
                     ),
                     {
                         x: report.LeftTrendFitting.PointOfInterest.Position,
@@ -403,7 +411,7 @@ class AFGraphCommand extends BaseCommand {
                     },
                     ...report.RightTrendFitting.getPoints(
                         report.LeftTrendFitting.PointOfInterest.Position -
-                            report.StepSize,
+                        report.StepSize,
                         report.MaximumStep
                     )
                 ];
