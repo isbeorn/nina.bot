@@ -23,6 +23,8 @@ const { ShutdownScriptCommand } = require('./ShutdownScriptCommand');
 const { RenderIssuesCommand } = require('./RenderIssuesCommand');
 const { InstallerIssuesCommand } = require('./InstallerIssuesCommand');
 const { GuiderSettleCommand } = require('./GuiderSettleCommand');
+const { NetCoreCommand } = require('./NetCoreCommand');
+
 
 module.exports = {
     BitAscomCommand,
@@ -49,5 +51,6 @@ module.exports = {
     ShutdownScriptCommand,
     RenderIssuesCommand,
     InstallerIssuesCommand,
-    GuiderSettleCommand
+    GuiderSettleCommand,
+    NetCoreCommand
 };
