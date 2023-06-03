@@ -13,7 +13,7 @@ class RepositoryCommand extends MessageCommand {
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
-            .setColor('0x00AE86').setDescription(`
+            .setDescription(`
                 This repository covers the source code for the N.I.N.A. project.
             `);
         await message.reply({ embeds: [embed] });

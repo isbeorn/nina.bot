@@ -15,7 +15,7 @@ class TrackerCommand extends MessageCommand {
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
-            .setColor('0x00AE86').setDescription(`
+            .setDescription(`
                 Please use the issue tracker for bug reports. The more details you put into the report, the more likely it is that someone can fix it quickly.
                 Furthermore the tracker can be used for suggestions and improvements.
             `);

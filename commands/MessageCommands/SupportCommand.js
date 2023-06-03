@@ -13,7 +13,6 @@ class SupportCommand extends MessageCommand {
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
-            .setColor('0x00AE86')
             .setDescription(
                 `
                 To better help with your issue, some more details are required       

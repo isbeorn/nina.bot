@@ -13,7 +13,6 @@ class ConformCommand extends MessageCommand {
             .setThumbnail(
                 'https://avatars3.githubusercontent.com/u/38851363?s=400&v=4'
             )
-            .setColor('0x00AE86')
             .setDescription(
                 `
                 Some ASCOM drivers do not conform to the ASCOM interface.          

@@ -13,7 +13,6 @@ class DevDocsCommand extends MessageCommand {
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
-            .setColor('0x00AE86')
             .setDescription(
                 `
                 Detailed manual about the application as well as some tipps and tricks and how to contribute to the project

@@ -16,7 +16,6 @@ class AFLogsCommand extends MessageCommand {
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
-            .setColor('0x00AE86')
             .setDescription(
                 `
                 Each time an auto focus is completed it will generate a json log about the complete run.

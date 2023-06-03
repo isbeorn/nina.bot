@@ -12,7 +12,6 @@ class LogsCommand extends MessageCommand {
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
-            .setColor('0x00AE86')
             .setDescription(
                 `
                 The logs written by N.I.N.A. can be found at "%LOCALAPPDATA%\\NINA\\Logs".

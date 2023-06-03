@@ -9,8 +9,7 @@ class NetCoreCommand extends MessageCommand {
     async process(message) {
         const embed = new Discord.EmbedBuilder()
             .setTitle('.NET 7.0')
-            .setURL('https://dotnet.microsoft.com/en-us/download/dotnet/7.0')            
-            .setColor('0x00AE86')
+            .setURL('https://dotnet.microsoft.com/en-us/download/dotnet/7.0')                        
             .setDescription(
                 `
                 Starting with Version 3.x of N.I.N.A. you will need to install the .NET 7 framework.

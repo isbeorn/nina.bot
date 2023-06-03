@@ -129,7 +129,6 @@ class Bot {
             //   .setThumbnail('https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
             //   .setAuthor('Isbeorn', 'https://nighttime-imaging.eu/wp-content/uploads/2019/02/Logo_Nina.png')
             //   .setURL('https://nighttime-imaging.eu')
-            //   .setColor('0x00AE86')
             //   .setDescription(`
             //     This server is for support and general discussion about the open source astrophotography alternative.
             //     If you have questions, suggestions or want to chitchat about the software in general feel free to use the appropriate channels.
