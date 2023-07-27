@@ -13,14 +13,13 @@ class NetCoreCommand extends MessageCommand {
             .setDescription(
                 `
                 Starting with Version 3.x of N.I.N.A. you will need to install the .NET 7 framework.
-                Go to the highlighted link and install the two required components:
+                Go to the highlighted link and install the required component:
 
 - .NET Desktop Runtime 7.x
-- ASP.NET Core Runtime 7.x
                 `
             )
             .setImage(
-                'https://cdn.discordapp.com/attachments/1114146364897628254/1114245343740186724/image.png'
+                'https://cdn.discordapp.com/attachments/1075489594184847410/1133956497932558397/image.png'
             );
         await message.reply({ embeds: [embed] });
     }
