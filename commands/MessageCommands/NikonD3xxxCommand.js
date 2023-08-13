@@ -8,7 +8,7 @@ class NikonD3xxxCommand extends MessageCommand {
 
     async process(message) {
         const embed = new Discord.EmbedBuilder()
-            .setTitle('N.I.N.A. Logs')
+            .setTitle('Nikon D3xxx series support')
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
