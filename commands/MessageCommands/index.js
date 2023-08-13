@@ -24,6 +24,7 @@ const { RenderIssuesCommand } = require('./RenderIssuesCommand');
 const { InstallerIssuesCommand } = require('./InstallerIssuesCommand');
 const { GuiderSettleCommand } = require('./GuiderSettleCommand');
 const { NetCoreCommand } = require('./NetCoreCommand');
+const { NikonD3xxxCommand } = require('./NikonD3xxxCommand');
 
 
 module.exports = {
@@ -52,5 +53,6 @@ module.exports = {
     RenderIssuesCommand,
     InstallerIssuesCommand,
     GuiderSettleCommand,
-    NetCoreCommand
+    NetCoreCommand,
+    NikonD3xxxCommand
 };
