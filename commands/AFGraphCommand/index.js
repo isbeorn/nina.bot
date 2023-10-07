@@ -115,7 +115,7 @@ class AFGraphCommand extends BaseCommand {
     async process(message) {
         if (message.attachments.size > 0) {
             for (const [, attachment] of message.attachments) {
-                if (attachment.attachment.endsWith('.json')) {
+                if (attachment.attachment.split('?')[0].endsWith('.json')) {
                     const response = await fetch(attachment.url, { method: 'Get' });
                     const autoFocusData = await response.json();
 
