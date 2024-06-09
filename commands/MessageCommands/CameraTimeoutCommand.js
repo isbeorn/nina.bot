@@ -15,36 +15,36 @@ class CameraTimeoutCommand extends MessageCommand {
                 `
 If you encounter image download timeout failures, follow these steps to diagnose and resolve the issue:
 
-## 1. Cable Quality  
+### 1. Cable Quality  
 - **Cause**: Poor quality or faulty USB cables can cause data transmission errors.  
 - **Solution**:  
     - Use high-quality USB cables.  
     - Avoid using excessively long cables.  
     - Avoid multiple USB cables packed together.  
 
-## 2. Power Supply  
+### 2. Power Supply  
 - **Cause**: Inadequate power supply to the camera.  
 - **Solution**:  
     - Ensure the camera is receiving adequate power, especially if it has an external power source.  
 
-## 3. USB Bandwidth Issues  
+### 3. USB Bandwidth Issues  
 - **Cause**: USB bandwidth is insufficient, especially if using multiple USB devices or a USB hub.  
 - **Solution**:  
     - Ensure the camera is connected directly to a high-speed USB 3.0 port.  
     - Reduce the number of other USB devices connected to the same hub or port.  
 
-## 4. Camera Settings  
+### 4. Camera Settings  
 - **Cause**: High frame rates or large image sizes may exceed available bandwidth or memory.  
 - **Solution**:  
     - Reduce the USB Limit setting if available.  
 
-## 5. Software Version  
+### 5. Software Version  
 - **Cause**: Using an outdated version of the camera drivers.  
 - **Solution**:  
     - Ensure you have the latest version of the camera drivers and firmware.  
     - Check the vendor's website for updates.  
 
-## 6. System Resources  
+### 6. System Resources  
 - **Cause**: Insufficient system resources (CPU, RAM) can lead to failures in image download.  
 - **Solution**:  
     - Close unnecessary applications and processes to free up system resources.  
