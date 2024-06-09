@@ -3,7 +3,7 @@ const Discord = require('discord.js');
 const { MessageCommand } = require('./MessageCommand');
 
 
-class ConformCommand extends MessageCommand {
+class CameraTimeoutCommand extends MessageCommand {
     constructor() {
         super(['!cameratimeout'], 'cameratimeout', 'Running into camera image timeout issues?');
     }
