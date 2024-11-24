@@ -15,7 +15,7 @@ class LogsCommand extends MessageCommand {
             .setDescription(
                 `
                 The logs written by N.I.N.A. can be found at "%LOCALAPPDATA%\\NINA\\Logs".
-                Furthermore the logs can be opened directly inside the application via the button next to Options->Log Level
+                Furthermore the logs can be opened directly inside the application via the button next to Options->General->Advanced settings->Log Level
                 `
             )
             .setFooter({
