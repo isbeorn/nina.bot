@@ -10,7 +10,7 @@ const logger = log4js.getLogger();
 const MessageCommands = require('./commands/MessageCommands');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
-const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
+//const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
     constructor(token, rest) {
@@ -37,7 +37,7 @@ class Bot {
         //this.client.on('messageReactionRemove', this.onMessageReactionRemove.bind(this));
 
         // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
-        this.registerCommand(new GalleryWatchdogCommand(this.client));
+        //this.registerCommand(new GalleryWatchdogCommand(this.client));
         //this.registerCommand(new HelpCommand(this.client));
         this.registerCommand(new AFGraphCommand(this.client));
         this.registerCommand(new HelpCommand());
