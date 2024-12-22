@@ -7,7 +7,7 @@ class DonateCommand extends MessageCommand {
 
     async process(message) {
         await message.reply(
-            'Thank you for considering a donation! Please find more information about how to donate on the homepage at https://nighttime-imaging.eu/donate/'
+            'Thank you for considering a donation! To learn more about how you can contribute, please visit https://nighttime-imaging.eu/donate/.'
         );
     }
 }
