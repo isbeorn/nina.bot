@@ -26,6 +26,7 @@ const { GuiderSettleCommand } = require('./GuiderSettleCommand');
 const { NetCoreCommand } = require('./NetCoreCommand');
 const { NikonD3xxxCommand } = require('./NikonD3xxxCommand');
 const { CameraTimeoutCommand } = require('./CameraTimeoutCommand');
+const { CommandLineCommand } = require('./CommandLineCommand');
 
 
 module.exports = {
@@ -56,5 +57,6 @@ module.exports = {
     GuiderSettleCommand,
     NetCoreCommand,
     NikonD3xxxCommand,
-    CameraTimeoutCommand
+    CameraTimeoutCommand,
+    CommandLineCommand
 };
