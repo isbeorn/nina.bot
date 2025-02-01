@@ -27,6 +27,8 @@ const { NetCoreCommand } = require('./NetCoreCommand');
 const { NikonD3xxxCommand } = require('./NikonD3xxxCommand');
 const { CameraTimeoutCommand } = require('./CameraTimeoutCommand');
 const { CommandLineCommand } = require('./CommandLineCommand');
+const { MemoryDumpCommand } = requier('./MemoryDumpCommand');
+const { CrashedCommand } = requier('./CrashedCommand');
 
 
 module.exports = {
@@ -58,5 +60,7 @@ module.exports = {
     NetCoreCommand,
     NikonD3xxxCommand,
     CameraTimeoutCommand,
-    CommandLineCommand
+    CommandLineCommand,
+    MemoryDumpCommand,
+    CrashedCommand
 };
