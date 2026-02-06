@@ -13,7 +13,7 @@ class DocsRepositoryCommand extends MessageCommand {
     async process(message) {
         const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Documentation Repository')
-            .setURL('https://bitbucket.org/Isbeorn/nina.docs')
+            .setURL('https://github.com/isbeorn/nina.docs')
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )

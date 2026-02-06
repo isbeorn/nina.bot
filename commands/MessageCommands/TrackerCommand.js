@@ -10,7 +10,7 @@ class TrackerCommand extends MessageCommand {
         const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Issue Tracker')
             .setURL(
-                'https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open'
+                'https://github.com/isbeorn/nina/issues'
             )
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'

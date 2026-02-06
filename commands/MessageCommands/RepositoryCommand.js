@@ -9,7 +9,7 @@ class RepositoryCommand extends MessageCommand {
     async process(message) {
         const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Repository')
-            .setURL('https://bitbucket.org/Isbeorn/nina')
+            .setURL('https://github.com/isbeorn/nina')
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )

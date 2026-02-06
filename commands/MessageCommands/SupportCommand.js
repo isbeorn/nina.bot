@@ -9,7 +9,7 @@ class SupportCommand extends MessageCommand {
     async process(message) {
         const embed = new Discord.EmbedBuilder()
             .setTitle('N.I.N.A. Support')
-            .setURL('https://bitbucket.org/Isbeorn/nina/issues?status=new&status=open')
+            .setURL('https://github.com/isbeorn/nina/issues')
             .setThumbnail(
                 'https://nighttime-imaging.eu/docs/master/site/images/nina-icon.png'
             )
