@@ -8,7 +8,7 @@ class NotifyOutdatedRoleCommand extends BaseCommand {
         if(oldRole) {
             const member = await message.guild.member(message.author);
             if(member.roles.cache.find(r => r.id === oldRole.id)) {
-                await message.reply(`Please read and click the ☑ inside the #welcome channel. You still have the outdated member_ role which will get removed soon!`);
+                await message.reply(`Please read and click the ☑ inside the #welcome channel. You still have the outdated member role, which will be removed soon!`);
             }
         }
     }

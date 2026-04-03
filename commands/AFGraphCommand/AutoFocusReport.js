@@ -22,6 +22,11 @@ class AutoFocusReport {
         });
 
         this.measurePoints = _.uniqBy(points, (x) => x.Position);
+        if (this.measurePoints.length < 2) {
+            throw new Error(
+                'Autofocus report requires at least two unique measure points'
+            );
+        }
 
         this.stepSize =
             this.measurePoints[1].Position - this.measurePoints[0].Position;

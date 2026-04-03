@@ -15,7 +15,7 @@ class DevDocsCommand extends MessageCommand {
             )
             .setDescription(
                 `
-                Detailed manual about the application as well as some tipps and tricks and how to contribute to the project
+                Detailed manual about the application, as well as some tips and tricks, and how to contribute to the project
                 `
             )
             .setFooter({

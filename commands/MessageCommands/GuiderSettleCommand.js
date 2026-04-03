@@ -3,7 +3,11 @@ const { MessageCommand } = require('./MessageCommand');
 
 class GuiderSettleCommand extends MessageCommand {
     constructor() {
-        super(['!settlefailed'], 'settlefailed', 'Troubleshoot issues with installer being unable to install or uninstall the application');
+        super(
+            ['!settlefailed'],
+            'settlefailed',
+            'Troubleshoot settle failures during guiding and dithering'
+        );
     }
 
     async process(message) {

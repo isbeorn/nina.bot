@@ -1,4 +1,9 @@
-const { Client, GatewayIntentBits, Routes, SlashCommandBuilder } = require('discord.js');
+const {
+    Client,
+    GatewayIntentBits,
+    Routes,
+    SlashCommandBuilder
+} = require('discord.js');
 const log4js = require('log4js');
 log4js.configure({
     appenders: { console: { type: 'console' } },
@@ -26,7 +31,7 @@ class Bot {
                 GatewayIntentBits.MessageContent
             ]
         });
-        this.client.on('ready', this.onReady.bind(this));
+        this.client.on('clientReady', this.onReady.bind(this));
         this.client.on('messageCreate', this.onMessage.bind(this));
         this.client.on('interactionCreate', this.onInteraction.bind(this));
 
@@ -45,16 +50,6 @@ class Bot {
         for (const key in MessageCommands) {
             this.registerCommand(new MessageCommands[key]());
         }
-
-        this.rest.put(
-            Routes.applicationGuildCommands(
-                process.env.CLIENT_ID,
-                process.env.GUILD_ID
-            ),
-            {
-                body: this.getSlashCommands().map(x => x.toJSON())
-            }
-        );
     }
 
     getToken() {
@@ -100,10 +95,28 @@ class Bot {
 
     async onReady() {
         logger.info('Client ready');
+        await this.registerSlashCommands();
 
         //await this.initializeRoleManager();
 
         //setInterval(this.initializeRoleManager.bind(this), 5*60*1000);
+    }
+
+    async registerSlashCommands() {
+        try {
+            await this.rest.put(
+                Routes.applicationGuildCommands(
+                    process.env.CLIENT_ID,
+                    process.env.GUILD_ID
+                ),
+                {
+                    body: this.getSlashCommands().map((x) => x.toJSON())
+                }
+            );
+            logger.info('Slash commands registered');
+        } catch (ex) {
+            logger.error(`Slash command registration failed: ${ex.message}`);
+        }
     }
 
     async initializeRoleManager() {
@@ -145,7 +158,7 @@ class Bot {
             //   .addField('__**About N.I.N.A.**__', `N.I.N.A. is a free open source project dedicated to deep sky astrophotography.
             //   The software is created and maintained by me (Isbeorn aka Stefan Berg) and the community on a volunteer basis.
             //   Everybody is welcome to participate and have an impact on the project.
-            //   Suggestions and feedback for improval are appreciated, but please be constructive with your request and don't expect something be worked upon right away.`)
+            //   Suggestions and feedback for improvement are appreciated, but please be constructive with your request and don't expect something to be worked on right away.`)
             //   .addField('__**Project Homepage**__', 'https://nighttime-imaging.eu')
             //   .addField('__**Donate**__', 'If N.I.N.A. helps you on your journey for amazing images, please consider a [donation](https://nighttime-imaging.eu/donate/)')
             //   .addField('__**Download**__', 'The latest official builds can be found at the [download page](https://nighttime-imaging.eu/download/)')
@@ -196,9 +209,9 @@ class Bot {
     }
 
     async onInteraction(interaction) {
-        if (!interaction.isCommand()) return;
+        if (!interaction.isChatInputCommand()) return;
 
-        for (let cmd of this.getCommands()) {
+        for (const cmd of this.getCommands()) {
             if (cmd.interactionMessage) {
                 if (interaction.commandName === cmd.interactionMessage) {
                     await cmd.process(interaction);

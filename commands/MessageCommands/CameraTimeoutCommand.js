@@ -50,7 +50,7 @@ If you encounter image download timeout failures, follow these steps to diagnose
     - Close unnecessary applications and processes to free up system resources.  
     - Ensure your system meets the recommended specifications for the camera.  
 
-If the problem persists after following these steps, please reach out for further assistance. Provide detailed information about your setup, the circumstances under which the error occurs, steps to reproduce the issue and a log file where the issue occurred.  
+If the problem persists after following these steps, please reach out for further assistance. Provide detailed information about your setup, the circumstances under which the error occurs, steps to reproduce the issue, and a log file where the issue occurred.  
 Thank you.  
                 `
             );

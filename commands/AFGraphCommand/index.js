@@ -1,12 +1,12 @@
-const fetch = require('node-fetch');
 const Ajv = require('ajv');
-const fs = require('fs');
-const Discord = require('discord.js');
+const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+const http = require('node:http');
+const https = require('node:https');
 const mathjs = require('mathjs');
 const _ = require('lodash');
 
 global.window = {
-    addEventListener() { }
+    addEventListener() {}
 };
 
 const BaseCommand = require('../BaseCommand');
@@ -17,32 +17,21 @@ const v2Schema = require('./Schemas/AFGraphSchemaV2');
 
 const { AutoFocusReport } = require('./AutoFocusReport');
 
-const { CanvasRenderService } = require('chartjs-node-canvas');
+const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 
 const width = 400;
 const height = 300;
 const chartCallback = (ChartJS) => {
-    // Global config example: https://www.chartjs.org/docs/latest/configuration/
-    ChartJS.defaults.global.elements.rectangle.borderWidth = 2;
-    ChartJS.defaults.global.defaultColor = 'rgba(54, 162, 235, 1)';
-
-    // Global plugin example: https://www.chartjs.org/docs/latest/developers/plugins.html
-    ChartJS.plugins.register({
-        // plugin implementation
-        beforeDraw: function (chartInstance) {
-            var ctx = chartInstance.chart.ctx;
+    ChartJS.defaults.color = 'rgba(54, 162, 235, 1)';
+    ChartJS.register({
+        id: 'customCanvasBackgroundColor',
+        beforeDraw(chart) {
+            const { ctx, width: chartWidth, height: chartHeight } = chart;
+            ctx.save();
             ctx.fillStyle = '#37393f';
-            ctx.fillRect(
-                0,
-                0,
-                chartInstance.chart.width,
-                chartInstance.chart.height
-            );
+            ctx.fillRect(0, 0, chartWidth, chartHeight);
+            ctx.restore();
         }
-    });
-    // New chart type example: https://www.chartjs.org/docs/latest/developers/charts.html
-    ChartJS.controllers.MyType = ChartJS.DatasetController.extend({
-        // chart implementation
     });
 };
 
@@ -60,96 +49,138 @@ const validateSchema = (schema, json) => {
     return validate(json);
 };
 
+const downloadJson = (url) => {
+    return new Promise((resolve, reject) => {
+        const client = url.startsWith('https:') ? https : http;
+        const request = client.get(url, (response) => {
+            if (
+                response.statusCode &&
+                response.statusCode >= 300 &&
+                response.statusCode < 400 &&
+                response.headers.location
+            ) {
+                response.resume();
+                resolve(downloadJson(response.headers.location));
+                return;
+            }
+
+            if (
+                !response.statusCode ||
+                response.statusCode < 200 ||
+                response.statusCode >= 300
+            ) {
+                response.resume();
+                reject(
+                    new Error(
+                        `Failed to download autofocus report: ${response.statusCode || 'unknown'}`
+                    )
+                );
+                return;
+            }
+
+            const chunks = [];
+            response.on('data', (chunk) => chunks.push(chunk));
+            response.on('end', () => {
+                try {
+                    const body = Buffer.concat(chunks).toString('utf8');
+                    resolve(JSON.parse(body));
+                } catch (error) {
+                    reject(error);
+                }
+            });
+            response.on('error', reject);
+        });
+
+        request.on('error', reject);
+    });
+};
+
 const getChartConfig = (yAxisLabel) => {
-    //see https://www.chartjs.org/docs/latest/charts/line.html
-    const configuration = {
+    return {
         type: 'line',
         data: {
             datasets: []
         },
         options: {
-            skipLabels: true,
-            legend: {
-                labels: {
-                    fontColor: 'white'
-                },
-                position: 'bottom',
-                align: 'start',
-                fontSize: 8
+            plugins: {
+                legend: {
+                    labels: {
+                        color: 'white'
+                    },
+                    position: 'bottom',
+                    align: 'start'
+                }
             },
             scales: {
-                yAxes: [
-                    {
-                        type: 'linear',
-                        position: 'left',
-                        ticks: {
-                            fontColor: 'white',
-                            min: 0
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: yAxisLabel
-                        }
+                y: {
+                    type: 'linear',
+                    position: 'left',
+                    beginAtZero: true,
+                    ticks: {
+                        color: 'white'
+                    },
+                    title: {
+                        display: true,
+                        text: yAxisLabel
                     }
-                ],
-                xAxes: [
-                    {
-                        type: 'linear',
-                        position: 'bottom',
-                        ticks: {
-                            fontColor: 'white'
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Position'
-                        }
+                },
+                x: {
+                    type: 'linear',
+                    position: 'bottom',
+                    ticks: {
+                        color: 'white'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Position'
                     }
-                ]
+                }
             }
         }
     };
-    return configuration;
 };
 
 class AFGraphCommand extends BaseCommand {
     async process(message) {
-        if (message.attachments.size > 0) {
-            for (const [, attachment] of message.attachments) {
-                if (attachment.attachment.split('?')[0].endsWith('.json')) {
-                    const response = await fetch(attachment.url, { method: 'Get' });
-                    const autoFocusData = await response.json();
+        if (message.attachments.size === 0) {
+            return;
+        }
 
-                    const valid =
-                        validateV1Schema(autoFocusData) ||
-                        validateV2Schema(autoFocusData);
+        for (const [, attachment] of message.attachments) {
+            const attachmentName = attachment.name || attachment.url;
+            const normalizedName = attachmentName.split('?')[0].toLowerCase();
+            if (!normalizedName.endsWith('.json')) {
+                continue;
+            }
 
-                    if (valid) {
-                        try {
-                            const report = new AutoFocusReport(autoFocusData);
+            const autoFocusData = await downloadJson(attachment.url);
 
-                            const config = this.generateGraphConfiguration(report);
+            const valid =
+                validateV1Schema(autoFocusData) ||
+                validateV2Schema(autoFocusData);
 
-                            await this.render(config);
+            if (!valid) {
+                console.log('Invalid JSON for auto focus report');
+                continue;
+            }
 
-                            const analysis = this.analyze(report);
+            try {
+                const report = new AutoFocusReport(autoFocusData);
+                const config = this.generateGraphConfiguration(report);
+                const imageBuffer = await this.render(config);
+                const analysis = this.analyze(report);
 
-                            await this.sendMessage(message, report, analysis);
-                        }
-                        catch (e) {
-                            console.log(e);
-                            if (e instanceof SyntaxError) {
-                                message.channel.send("Unable to process the autofocus report. The formulas to render the fitting lines could not be parsed.");
-                            } else {
-                                message.channel.send("Unable to process the autofocus report due to an unexpected error.");
-                            }
-                        } finally {
-                            try {
-                                this.destroy();
-                            } catch { }
-                        }
-                    } else {
-                        console.log('Invalid JSON for auto focus report');
-                    }
+                await this.sendMessage(message, report, analysis, imageBuffer);
+            } catch (e) {
+                console.log(e);
+                if (e instanceof SyntaxError) {
+                    await message.channel.send(
+                        'Unable to process the autofocus report. The formulas to render the fitting lines could not be parsed.'
+                    );
+                } else {
+                    await message.channel.send(
+                        'Unable to process the autofocus report due to an unexpected error.'
+                    );
                 }
             }
         }
@@ -166,7 +197,7 @@ class AFGraphCommand extends BaseCommand {
         );
         if (hfrStdDev < 1) {
             analysis.push(
-                `- Overall HFR change is low. This indicates that the step size might be too small`
+                '- Overall HFR change is low. This indicates that the step size might be too small'
             );
         }
 
@@ -174,7 +205,7 @@ class AFGraphCommand extends BaseCommand {
             _.filter(measurePoints, (x) => x.y === 0).length > 0;
         if (hasZeroStars) {
             analysis.push(
-                `- Datapoints contain HFR values of 0. Stepsize might be too large and image getting too much out of focus or clouds prevented finding stars`
+                '- Data points contain HFR values of 0. The step size might be too large and the image may be too far out of focus, or clouds may have prevented the detection of stars'
             );
         }
 
@@ -184,7 +215,7 @@ class AFGraphCommand extends BaseCommand {
             report.BacklashOUT > 0
         ) {
             analysis.push(
-                `- Backlash compensation method is set to OVERSHOOT, but both IN and OUT values are non zero. For this backlash compensation method only one direction must be compensated!`
+                '- Backlash compensation method is set to OVERSHOOT, but both IN and OUT values are non zero. For this backlash compensation method only one direction must be compensated!'
             );
         }
 
@@ -243,39 +274,56 @@ class AFGraphCommand extends BaseCommand {
     }
 
     async render(configuration) {
-        const canvasRenderService = new CanvasRenderService(
+        const chartJSNodeCanvas = new ChartJSNodeCanvas({
             width,
             height,
             chartCallback
-        );
-        const stream = canvasRenderService.renderToStream(configuration);
-        stream.pipe(fs.createWriteStream('output.png'));
-
-        await new Promise((res) => {
-            stream.on('end', () => {
-                res();
-            });
         });
+
+        return chartJSNodeCanvas.renderToBuffer(configuration);
     }
 
-    async sendMessage(message, report, analysis) {
-        const embed = new Discord.EmbedBuilder();
-        embed
-            .addFields([
-                { name: 'Method', value: report.Method, inline: true },
-                { name: 'Fitting', value: report.Fitting, inline: true },
-                { name: 'Temperature', value: report.Temperature.toString(), inline: true },
-                { name: 'Step Size', value: report.StepSize.toString(), inline: true },
-                { name: 'Calculated Focus Position', value: report.FocusPoint.Position.toString(), inline: true },
-                { name: 'Filter', value: report.Filter, inline: true }
-            ])
+    async sendMessage(message, report, analysis, imageBuffer) {
+        const embed = new EmbedBuilder();
+        const image = new AttachmentBuilder(imageBuffer, {
+            name: 'af-report.png'
+        });
+
+        embed.addFields([
+            { name: 'Method', value: report.Method, inline: true },
+            { name: 'Fitting', value: report.Fitting, inline: true },
+            {
+                name: 'Temperature',
+                value: report.Temperature.toString(),
+                inline: true
+            },
+            { name: 'Step Size', value: report.StepSize.toString(), inline: true },
+            {
+                name: 'Calculated Focus Position',
+                value: report.FocusPoint.Position.toString(),
+                inline: true
+            },
+            { name: 'Filter', value: report.Filter, inline: true }
+        ]);
+
         if (report.BacklashCompensationModel) {
-            embed
-                .addFields([
-                    { name: 'Backlash Method', value: report.BacklashCompensationModel, inline: true },
-                    { name: 'BacklashIN', value: report.BacklashIN.toString(), inline: true },
-                    { name: 'BacklashOUT', value: report.BacklashOUT.toString(), inline: true }
-                ])
+            embed.addFields([
+                {
+                    name: 'Backlash Method',
+                    value: report.BacklashCompensationModel,
+                    inline: true
+                },
+                {
+                    name: 'BacklashIN',
+                    value: report.BacklashIN.toString(),
+                    inline: true
+                },
+                {
+                    name: 'BacklashOUT',
+                    value: report.BacklashOUT.toString(),
+                    inline: true
+                }
+            ]);
         }
 
         const rSquares = [];
@@ -298,6 +346,7 @@ class AFGraphCommand extends BaseCommand {
                 `Quadratic: ${report.QuadraticFitting.RSquared.toString()}`
             );
         }
+
         if (
             report.LeftTrendFitting &&
             report.LeftTrendFitting.RSquared &&
@@ -316,9 +365,13 @@ class AFGraphCommand extends BaseCommand {
                 }`
             );
         }
+
         if (rSquares.length > 0) {
             embed.addFields([
-                { name: 'R² - Coefficient of determination', value: rSquares.join('\n') }
+                {
+                    name: 'R² - Coefficient of determination',
+                    value: rSquares.join('\n')
+                }
             ]);
         }
 
@@ -330,12 +383,8 @@ class AFGraphCommand extends BaseCommand {
 
         await message.channel.send({
             embeds: [embed],
-            files: ['./output.png']
+            files: [image]
         });
-    }
-
-    destroy() {
-        fs.unlinkSync('output.png');
     }
 
     generateGraphConfiguration(report) {
@@ -370,7 +419,7 @@ class AFGraphCommand extends BaseCommand {
                             ? 'transparent'
                             : 'rgba(75, 192, 192, 1)',
                     borderColor: 'rgba(75, 192, 192, 1)',
-                    data: data,
+                    data,
                     borderDash: [5, 5],
                     borderWidth: 1,
                     fill: false,
@@ -390,7 +439,7 @@ class AFGraphCommand extends BaseCommand {
                             ? 'transparent'
                             : 'rgba(153, 102, 255, 1)',
                     borderColor: 'rgba(153, 102, 255, 1)',
-                    data: data,
+                    data,
                     borderDash: [5, 5],
                     borderWidth: 1,
                     fill: false,
@@ -398,12 +447,12 @@ class AFGraphCommand extends BaseCommand {
                     pointBorderColor: 'transparent'
                 });
             }
-            if (report.LeftTrendFitting) {
+            if (report.LeftTrendFitting && report.RightTrendFitting) {
                 data = [
                     ...report.LeftTrendFitting.getPoints(
                         report.MinimumStep,
                         report.LeftTrendFitting.PointOfInterest.Position +
-                        report.StepSize
+                            report.StepSize
                     ),
                     {
                         x: report.LeftTrendFitting.PointOfInterest.Position,
@@ -411,7 +460,7 @@ class AFGraphCommand extends BaseCommand {
                     },
                     ...report.RightTrendFitting.getPoints(
                         report.LeftTrendFitting.PointOfInterest.Position -
-                        report.StepSize,
+                            report.StepSize,
                         report.MaximumStep
                     )
                 ];
@@ -422,16 +471,16 @@ class AFGraphCommand extends BaseCommand {
                             ? 'transparent'
                             : 'rgba(255, 159, 64, 1)',
                     borderColor: 'rgba(255, 159, 64, 1)',
-                    data: data,
+                    data,
                     borderDash: [2, 2],
                     borderWidth: 1,
-                    lineTension: 0,
+                    tension: 0,
                     fill: false,
                     pointRadius: 3,
                     pointBorderColor: 'transparent'
                 });
             }
-        } else {
+        } else if (report.GaussianFitting) {
             const data = report.GaussianFitting.getPoints(
                 report.MinimumStep,
                 report.MaximumStep
@@ -441,10 +490,7 @@ class AFGraphCommand extends BaseCommand {
                 pointBackgroundColor:
                     data.length > 1 ? 'transparent' : 'rgba(255, 159, 64, 1)',
                 borderColor: 'rgba(255, 159, 64, 1)',
-                data: report.GaussianFitting.getPoints(
-                    report.MinimumStep,
-                    report.MaximumStep
-                ),
+                data,
                 borderDash: [5, 5],
                 borderWidth: 1,
                 fill: false,

@@ -1,4 +1,3 @@
-const Discord = require('discord.js');
 const { MessageCommand } = require('./MessageCommand');
 
 class CommandLineCommand extends MessageCommand {
@@ -24,8 +23,8 @@ class CommandLineCommand extends MessageCommand {
         --version               Display version information.
         \`\`\`
                 `;
-        
-                await message.reply(response);
+
+        await message.reply(response);
     }
 }
 

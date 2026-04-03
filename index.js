@@ -1,6 +1,6 @@
 require('dotenv').config();
 const log4js = require('log4js');
-const { REST } = require('@discordjs/rest');
+const { REST } = require('discord.js');
 
 const logger = log4js.getLogger();
 
