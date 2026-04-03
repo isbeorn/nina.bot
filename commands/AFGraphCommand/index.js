@@ -116,6 +116,7 @@ const getChartConfig = (yAxisLabel) => {
                     type: 'linear',
                     position: 'left',
                     beginAtZero: true,
+                    min: 0,
                     ticks: {
                         color: 'white'
                     },
