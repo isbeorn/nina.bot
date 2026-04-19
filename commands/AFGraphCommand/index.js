@@ -23,16 +23,63 @@ const width = 400;
 const height = 300;
 const chartCallback = (ChartJS) => {
     ChartJS.defaults.color = 'rgba(54, 162, 235, 1)';
-    ChartJS.register({
-        id: 'customCanvasBackgroundColor',
-        beforeDraw(chart) {
-            const { ctx, width: chartWidth, height: chartHeight } = chart;
-            ctx.save();
-            ctx.fillStyle = '#37393f';
-            ctx.fillRect(0, 0, chartWidth, chartHeight);
-            ctx.restore();
+    ChartJS.register(
+        {
+            id: 'customCanvasBackgroundColor',
+            beforeDraw(chart) {
+                const { ctx, width: chartWidth, height: chartHeight } = chart;
+                ctx.save();
+                ctx.fillStyle = '#37393f';
+                ctx.fillRect(0, 0, chartWidth, chartHeight);
+                ctx.restore();
+            }
+        },
+        {
+            id: 'measurePointOrderLabels',
+            afterDatasetsDraw(chart, args, pluginOptions) {
+                if (!pluginOptions || !pluginOptions.display) {
+                    return;
+                }
+
+                const datasetIndex = chart.data.datasets.findIndex(
+                    (dataset) => dataset.label === 'Focus Points'
+                );
+                if (datasetIndex === -1) {
+                    return;
+                }
+
+                const dataset = chart.data.datasets[datasetIndex];
+                const meta = chart.getDatasetMeta(datasetIndex);
+                const { chartArea, ctx } = chart;
+
+                ctx.save();
+                ctx.font = 'bold 10px sans-serif';
+                ctx.textBaseline = 'middle';
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = '#37393f';
+                ctx.fillStyle = 'white';
+
+                meta.data.forEach((element, index) => {
+                    const point = dataset.data[index];
+                    const label = (point.order || index + 1).toString();
+                    const position = element.tooltipPosition();
+                    const x = Math.min(
+                        Math.max(position.x + 5, chartArea.left + 4),
+                        chartArea.right - ctx.measureText(label).width - 4
+                    );
+                    const y = Math.min(
+                        Math.max(position.y - 9, chartArea.top + 6),
+                        chartArea.bottom - 6
+                    );
+
+                    ctx.strokeText(label, x, y);
+                    ctx.fillText(label, x, y);
+                });
+
+                ctx.restore();
+            }
         }
-    });
+    );
 };
 
 const validateV1Schema = (json) => {
@@ -103,6 +150,9 @@ const getChartConfig = (yAxisLabel) => {
         },
         options: {
             plugins: {
+                measurePointOrderLabels: {
+                    display: true
+                },
                 legend: {
                     labels: {
                         color: 'white'
@@ -393,7 +443,7 @@ class AFGraphCommand extends BaseCommand {
         const config = getChartConfig(yAxisLabel);
 
         const measurePoints = report.MeasurePoints.map((p) => {
-            return { x: p.Position, y: p.Value };
+            return { x: p.Position, y: p.Value, order: p.Order };
         });
 
         config.data.datasets.push({

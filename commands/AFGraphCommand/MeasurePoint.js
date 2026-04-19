@@ -1,8 +1,9 @@
 class MeasurePoint {
-    constructor(point) {
+    constructor(point, order) {
         this.position = point.Position;
         this.value = point.Value;
         this.error = point.Error;
+        this.order = order;
     }
 
     get Position() {
@@ -15,6 +16,10 @@ class MeasurePoint {
 
     get Error() {
         return this.error;
+    }
+
+    get Order() {
+        return this.order;
     }
 }
 
