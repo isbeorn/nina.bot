@@ -78,6 +78,65 @@ const chartCallback = (ChartJS) => {
 
                 ctx.restore();
             }
+        },
+        {
+            id: 'measurePointErrorBars',
+            beforeDatasetsDraw(chart, args, pluginOptions) {
+                if (!pluginOptions || !pluginOptions.display) {
+                    return;
+                }
+
+                const datasetIndex = chart.data.datasets.findIndex(
+                    (dataset) => dataset.label === 'Focus Points'
+                );
+                if (datasetIndex === -1) {
+                    return;
+                }
+
+                const dataset = chart.data.datasets[datasetIndex];
+                const { chartArea, ctx, scales } = chart;
+                const capWidth = pluginOptions.capWidth || 6;
+
+                ctx.save();
+                ctx.strokeStyle =
+                    pluginOptions.color || 'rgba(255, 255, 255, 0.65)';
+                ctx.lineWidth = pluginOptions.lineWidth || 1;
+
+                dataset.data.forEach((point) => {
+                    if (
+                        typeof point.y !== 'number' ||
+                        !Number.isFinite(point.y) ||
+                        typeof point.error !== 'number' ||
+                        !Number.isFinite(point.error) ||
+                        point.error <= 0
+                    ) {
+                        return;
+                    }
+
+                    const x = scales.x.getPixelForValue(point.x);
+                    const low = Math.max(point.y - point.error, 0);
+                    const high = point.y + point.error;
+                    const yLow = Math.min(
+                        scales.y.getPixelForValue(low),
+                        chartArea.bottom
+                    );
+                    const yHigh = Math.max(
+                        scales.y.getPixelForValue(high),
+                        chartArea.top
+                    );
+
+                    ctx.beginPath();
+                    ctx.moveTo(x, yHigh);
+                    ctx.lineTo(x, yLow);
+                    ctx.moveTo(x - capWidth / 2, yHigh);
+                    ctx.lineTo(x + capWidth / 2, yHigh);
+                    ctx.moveTo(x - capWidth / 2, yLow);
+                    ctx.lineTo(x + capWidth / 2, yLow);
+                    ctx.stroke();
+                });
+
+                ctx.restore();
+            }
         }
     );
 };
@@ -150,6 +209,9 @@ const getChartConfig = (yAxisLabel) => {
         },
         options: {
             plugins: {
+                measurePointErrorBars: {
+                    display: true
+                },
                 measurePointOrderLabels: {
                     display: true
                 },
@@ -443,8 +505,28 @@ class AFGraphCommand extends BaseCommand {
         const config = getChartConfig(yAxisLabel);
 
         const measurePoints = report.MeasurePoints.map((p) => {
-            return { x: p.Position, y: p.Value, order: p.Order };
+            return {
+                x: p.Position,
+                y: p.Value,
+                error: p.Error,
+                order: p.Order
+            };
         });
+        const errorBarMax = Math.max(
+            ...measurePoints
+                .filter(
+                    (point) =>
+                        typeof point.y === 'number' &&
+                        Number.isFinite(point.y) &&
+                        typeof point.error === 'number' &&
+                        Number.isFinite(point.error) &&
+                        point.error > 0
+                )
+                .map((point) => point.y + point.error)
+        );
+        if (Number.isFinite(errorBarMax)) {
+            config.options.scales.y.suggestedMax = errorBarMax;
+        }
 
         config.data.datasets.push({
             label: 'Focus Points',
