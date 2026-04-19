@@ -11,8 +11,8 @@ class AutoFocusReport {
     constructor(data) {
         const points = [];
 
-        data.MeasurePoints.forEach((p, index) => {
-            points.push(new MeasurePoint(p, index + 1));
+        data.MeasurePoints.forEach((p) => {
+            points.push(new MeasurePoint(p));
         });
 
         points.sort((a, b) => {

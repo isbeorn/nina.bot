@@ -35,51 +35,6 @@ const chartCallback = (ChartJS) => {
             }
         },
         {
-            id: 'measurePointOrderLabels',
-            afterDatasetsDraw(chart, args, pluginOptions) {
-                if (!pluginOptions || !pluginOptions.display) {
-                    return;
-                }
-
-                const datasetIndex = chart.data.datasets.findIndex(
-                    (dataset) => dataset.label === 'Focus Points'
-                );
-                if (datasetIndex === -1) {
-                    return;
-                }
-
-                const dataset = chart.data.datasets[datasetIndex];
-                const meta = chart.getDatasetMeta(datasetIndex);
-                const { chartArea, ctx } = chart;
-
-                ctx.save();
-                ctx.font = 'bold 10px sans-serif';
-                ctx.textBaseline = 'middle';
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = '#37393f';
-                ctx.fillStyle = 'white';
-
-                meta.data.forEach((element, index) => {
-                    const point = dataset.data[index];
-                    const label = (point.order || index + 1).toString();
-                    const position = element.tooltipPosition();
-                    const x = Math.min(
-                        Math.max(position.x + 5, chartArea.left + 4),
-                        chartArea.right - ctx.measureText(label).width - 4
-                    );
-                    const y = Math.min(
-                        Math.max(position.y - 9, chartArea.top + 6),
-                        chartArea.bottom - 6
-                    );
-
-                    ctx.strokeText(label, x, y);
-                    ctx.fillText(label, x, y);
-                });
-
-                ctx.restore();
-            }
-        },
-        {
             id: 'measurePointErrorBars',
             beforeDatasetsDraw(chart, args, pluginOptions) {
                 if (!pluginOptions || !pluginOptions.display) {
@@ -212,9 +167,6 @@ const getChartConfig = (yAxisLabel) => {
                 measurePointErrorBars: {
                     display: true
                 },
-                measurePointOrderLabels: {
-                    display: true
-                },
                 legend: {
                     labels: {
                         color: 'white'
@@ -302,8 +254,24 @@ class AFGraphCommand extends BaseCommand {
     analyze(report) {
         const analysis = [];
         const measurePoints = report.MeasurePoints.map((p) => {
-            return { x: p.Position, y: p.Value };
+            return {
+                x: p.Position,
+                y: p.Value,
+                error: p.Error
+            };
         });
+        const validMeasurePoints = measurePoints.filter((point) => {
+            return (
+                typeof point.y === 'number' &&
+                Number.isFinite(point.y) &&
+                (report.Method !== 'STARHFR' || point.y > 0)
+            );
+        });
+        const metricValues = validMeasurePoints.map((point) => point.y);
+        const metricSignal =
+            metricValues.length > 1
+                ? Math.max(...metricValues) - Math.min(...metricValues)
+                : 0;
 
         const hfrStdDev = mathjs.std(
             _.filter(measurePoints, (x) => x.y > 0).map((x) => x.y)
@@ -320,6 +288,61 @@ class AFGraphCommand extends BaseCommand {
             analysis.push(
                 '- Data points contain HFR values of 0. The step size might be too large and the image may be too far out of focus, or clouds may have prevented the detection of stars'
             );
+        }
+
+        const pointsWithErrors = validMeasurePoints.filter((point) => {
+            return (
+                typeof point.error === 'number' &&
+                Number.isFinite(point.error) &&
+                point.error > 0
+            );
+        });
+        if (metricSignal > 0 && pointsWithErrors.length > 0) {
+            const averageError = mathjs.mean(
+                pointsWithErrors.map((point) => point.error)
+            );
+            const errorRatio = averageError / metricSignal;
+
+            if (errorRatio > 0.35) {
+                analysis.push(
+                    `- Measurement error is high relative to the focus metric change (${Math.round(errorRatio * 100)}% of the signal range). The fitted focus position may be unreliable.`
+                );
+            }
+        }
+
+        const outlierFitting = this.getOutlierFitting(report);
+        if (metricSignal > 0 && outlierFitting) {
+            const outlierPoints = validMeasurePoints.filter((point) => {
+                const predicted = outlierFitting.predict(point.x);
+                if (
+                    typeof predicted !== 'number' ||
+                    !Number.isFinite(predicted)
+                ) {
+                    return false;
+                }
+
+                const residual = Math.abs(point.y - predicted);
+                const errorTolerance =
+                    typeof point.error === 'number' &&
+                    Number.isFinite(point.error) &&
+                    point.error > 0
+                        ? point.error * 3
+                        : 0;
+                const tolerance = Math.max(errorTolerance, metricSignal * 0.2);
+
+                return residual > tolerance;
+            });
+
+            if (outlierPoints.length > 0) {
+                const labels = this.formatOutlierPointLabels(outlierPoints);
+                const subject =
+                    outlierPoints.length === 1
+                        ? `Focus point at position ${labels} deviates`
+                        : `Focus points at positions ${labels} deviate`;
+                analysis.push(
+                    `- ${subject} strongly from the ${outlierFitting.label} fit. Clouds, seeing, or star detection noise may have affected the run.`
+                );
+            }
         }
 
         if (
@@ -384,6 +407,88 @@ class AFGraphCommand extends BaseCommand {
         }
 
         return analysis;
+    }
+
+    getOutlierFitting(report) {
+        if (report.Method !== 'STARHFR') {
+            return this.getFittingPredictor(report.GaussianFitting, 'Gaussian');
+        }
+
+        if (
+            report.Fitting === 'HYPERBOLIC' ||
+            report.Fitting === 'TRENDHYPERBOLIC'
+        ) {
+            return this.getFittingPredictor(
+                report.HyperbolicFitting,
+                'hyperbolic'
+            );
+        }
+
+        if (
+            report.Fitting === 'PARABOLIC' ||
+            report.Fitting === 'TRENDPARABOLIC'
+        ) {
+            return this.getFittingPredictor(
+                report.QuadraticFitting,
+                'parabolic'
+            );
+        }
+
+        if (
+            report.Fitting === 'TRENDLINES' &&
+            this.hasFittingFormula(report.LeftTrendFitting) &&
+            this.hasFittingFormula(report.RightTrendFitting)
+        ) {
+            const intersection =
+                report.LeftTrendFitting.PointOfInterest.Position;
+            return {
+                label: 'trendline',
+                predict: (x) => {
+                    const fitting =
+                        x <= intersection
+                            ? report.LeftTrendFitting
+                            : report.RightTrendFitting;
+                    return fitting.f(x);
+                }
+            };
+        }
+
+        return (
+            this.getFittingPredictor(report.HyperbolicFitting, 'hyperbolic') ||
+            this.getFittingPredictor(report.QuadraticFitting, 'parabolic') ||
+            this.getFittingPredictor(report.GaussianFitting, 'Gaussian')
+        );
+    }
+
+    getFittingPredictor(fitting, label) {
+        if (!this.hasFittingFormula(fitting)) {
+            return undefined;
+        }
+
+        return {
+            label,
+            predict: (x) => fitting.f(x)
+        };
+    }
+
+    hasFittingFormula(fitting) {
+        return fitting && fitting.Formula && typeof fitting.f === 'function';
+    }
+
+    formatOutlierPointLabels(points) {
+        const displayedPoints = points.slice(0, 5);
+        const labels = displayedPoints
+            .map((point) => {
+                return point.x.toString();
+            })
+            .join(', ');
+        const hiddenPointCount = points.length - displayedPoints.length;
+
+        if (hiddenPointCount > 0) {
+            return `${labels}, and ${hiddenPointCount} more`;
+        }
+
+        return labels;
     }
 
     async render(configuration) {
@@ -508,8 +613,7 @@ class AFGraphCommand extends BaseCommand {
             return {
                 x: p.Position,
                 y: p.Value,
-                error: p.Error,
-                order: p.Order
+                error: p.Error
             };
         });
         const errorBarMax = Math.max(
