@@ -15,6 +15,7 @@ const { OvershootCommand } = require('./OvershootCommand');
 const { AFLogsCommand } = require('./AFLogsCommand');
 const { UnitConversionCommand } = require('./UnitConversionCommand');
 const { ProfilesCommand } = require('./ProfilesCommand');
+const { PrivacyCommand } = require('./PrivacyCommand');
 const { StellariumCommand } = require('./StellariumCommand');
 const { QHYDriverCommand } = require('./QHYDriverCommand');
 const { SupportCommand } = require('./SupportCommand');
@@ -49,6 +50,7 @@ module.exports = {
     AFLogsCommand,
     UnitConversionCommand,
     ProfilesCommand,
+    PrivacyCommand,
     StellariumCommand,
     QHYDriverCommand,
     SupportCommand,
