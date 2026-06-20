@@ -30,6 +30,7 @@ const { CameraTimeoutCommand } = require('./CameraTimeoutCommand');
 const { CommandLineCommand } = require('./CommandLineCommand');
 const { MemoryDumpCommand } = require('./MemoryDumpCommand');
 const { CrashedCommand } = require('./CrashedCommand');
+const { RepairCommand } = require('./RepairCommand');
 
 
 module.exports = {
@@ -64,5 +65,6 @@ module.exports = {
     CameraTimeoutCommand,
     CommandLineCommand,
     MemoryDumpCommand,
-    CrashedCommand
+    CrashedCommand,
+    RepairCommand
 };
