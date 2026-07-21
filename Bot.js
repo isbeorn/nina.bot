@@ -205,6 +205,7 @@ class Bot {
     async onInteraction(interaction) {
         try {
             if (
+                !interaction.isAutocomplete() &&
                 !interaction.isChatInputCommand() &&
                 !interaction.isMessageContextMenuCommand()
             ) {
@@ -216,6 +217,14 @@ class Bot {
                     typeof cmd.handlesInteraction === 'function' &&
                     cmd.handlesInteraction(interaction)
                 ) {
+                    if (
+                        interaction.isAutocomplete() &&
+                        typeof cmd.autocomplete === 'function'
+                    ) {
+                        await cmd.autocomplete(interaction);
+                        return;
+                    }
+
                     await cmd.process(interaction);
                     return;
                 }
