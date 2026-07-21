@@ -7,6 +7,9 @@
     "node": ">=26.5.0",
     "npm": ">=12.0.1"
   },
+  "allowScripts": {
+    "canvas@3.2.3": true
+  },
   "scripts": {
     "lint": "eslint .",
     "test": "node --test --experimental-test-coverage --test-coverage-exclude=test/** --test-coverage-lines=80 --test-coverage-functions=80 --test-coverage-branches=80"
