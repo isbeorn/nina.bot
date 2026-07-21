@@ -20,7 +20,9 @@ class AFLogsCommand extends MessageCommand {
                 `
                 Each time an auto focus is completed it will generate a json log about the complete run.
                 The report can be found at "%LOCALAPPDATA%\\NINA\\AutoFocus".
-                These logs can be dragged into discord and the bot will generate a visual representation of the autofocus run
+
+                To generate a visual representation of the autofocus run, use /afgraph and attach the json report in the report field.
+                If the json report was already posted, right-click the message, choose Apps, then select Analyze Autofocus Report.
                 `
             );
         await message.reply({ embeds: [embed] });

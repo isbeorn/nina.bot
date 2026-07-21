@@ -1,5 +1,11 @@
 const Ajv = require('ajv');
-const { AttachmentBuilder, EmbedBuilder } = require('discord.js');
+const {
+    ApplicationCommandType,
+    AttachmentBuilder,
+    ContextMenuCommandBuilder,
+    EmbedBuilder,
+    SlashCommandBuilder
+} = require('discord.js');
 const http = require('node:http');
 const https = require('node:https');
 const mathjs = require('mathjs');
@@ -20,6 +26,7 @@ const { AutoFocusReport } = require('./AutoFocusReport');
 const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
 
 const width = 400;
+const AFGRAPH_CONTEXT_MENU_NAME = 'Analyze Autofocus Report';
 const height = 300;
 const chartCallback = (ChartJS) => {
     ChartJS.defaults.color = 'rgba(54, 162, 235, 1)';
@@ -206,49 +213,110 @@ const getChartConfig = (yAxisLabel) => {
 };
 
 class AFGraphCommand extends BaseCommand {
-    async process(message) {
-        if (message.attachments.size === 0) {
+    getApplicationCommands() {
+        return [
+            new SlashCommandBuilder()
+                .setName('afgraph')
+                .setDescription('Analyze a N.I.N.A. autofocus JSON report')
+                .addAttachmentOption((option) =>
+                    option
+                        .setName('report')
+                        .setDescription('The autofocus JSON report to analyze')
+                        .setRequired(true)
+                ),
+            new ContextMenuCommandBuilder()
+                .setName(AFGRAPH_CONTEXT_MENU_NAME)
+                .setType(ApplicationCommandType.Message)
+        ];
+    }
+
+    handlesInteraction(interaction) {
+        return ['afgraph', AFGRAPH_CONTEXT_MENU_NAME].includes(
+            interaction.commandName
+        );
+    }
+
+    async process(interaction) {
+        await interaction.deferReply();
+
+        const attachment = this.getAttachment(interaction);
+        if (!attachment) {
+            await interaction.editReply(
+                'Please provide a N.I.N.A. autofocus JSON report attachment.'
+            );
             return;
         }
 
-        for (const [, attachment] of message.attachments) {
-            const attachmentName = attachment.name || attachment.url;
-            const normalizedName = attachmentName.split('?')[0].toLowerCase();
-            if (!normalizedName.endsWith('.json')) {
-                continue;
-            }
+        if (!this.isJsonAttachment(attachment)) {
+            await interaction.editReply(
+                'The autofocus report must be a .json attachment.'
+            );
+            return;
+        }
 
-            const autoFocusData = await downloadJson(attachment.url);
+        let autoFocusData;
+        try {
+            autoFocusData = await downloadJson(attachment.url);
+        } catch (e) {
+            console.log(e);
+            await interaction.editReply(
+                'Unable to download or parse the autofocus report JSON.'
+            );
+            return;
+        }
 
-            const valid =
-                validateV1Schema(autoFocusData) ||
-                validateV2Schema(autoFocusData);
+        const valid =
+            validateV1Schema(autoFocusData) || validateV2Schema(autoFocusData);
 
-            if (!valid) {
-                console.log('Invalid JSON for auto focus report');
-                continue;
-            }
+        if (!valid) {
+            console.log('Invalid JSON for auto focus report');
+            await interaction.editReply(
+                'The uploaded JSON is not a supported N.I.N.A. autofocus report.'
+            );
+            return;
+        }
 
-            try {
-                const report = new AutoFocusReport(autoFocusData);
-                const config = this.generateGraphConfiguration(report);
-                const imageBuffer = await this.render(config);
-                const analysis = this.analyze(report);
+        try {
+            const report = new AutoFocusReport(autoFocusData);
+            const config = this.generateGraphConfiguration(report);
+            const imageBuffer = await this.render(config);
+            const analysis = this.analyze(report);
 
-                await this.sendMessage(message, report, analysis, imageBuffer);
-            } catch (e) {
-                console.log(e);
-                if (e instanceof SyntaxError) {
-                    await message.channel.send(
-                        'Unable to process the autofocus report. The formulas to render the fitting lines could not be parsed.'
-                    );
-                } else {
-                    await message.channel.send(
-                        'Unable to process the autofocus report due to an unexpected error.'
-                    );
-                }
+            await interaction.editReply(
+                this.createResponse(report, analysis, imageBuffer)
+            );
+        } catch (e) {
+            console.log(e);
+            if (e instanceof SyntaxError) {
+                await interaction.editReply(
+                    'Unable to process the autofocus report. The formulas to render the fitting lines could not be parsed.'
+                );
+            } else {
+                await interaction.editReply(
+                    'Unable to process the autofocus report due to an unexpected error.'
+                );
             }
         }
+    }
+
+    getAttachment(interaction) {
+        if (interaction.isChatInputCommand()) {
+            return interaction.options.getAttachment('report');
+        }
+
+        if (interaction.isMessageContextMenuCommand()) {
+            return interaction.targetMessage.attachments.find((attachment) =>
+                this.isJsonAttachment(attachment)
+            );
+        }
+
+        return undefined;
+    }
+
+    isJsonAttachment(attachment) {
+        const attachmentName = attachment.name || attachment.url;
+        const normalizedName = attachmentName.split('?')[0].toLowerCase();
+        return normalizedName.endsWith('.json');
     }
 
     analyze(report) {
@@ -501,7 +569,7 @@ class AFGraphCommand extends BaseCommand {
         return chartJSNodeCanvas.renderToBuffer(configuration);
     }
 
-    async sendMessage(message, report, analysis, imageBuffer) {
+    createResponse(report, analysis, imageBuffer) {
         const embed = new EmbedBuilder();
         const image = new AttachmentBuilder(imageBuffer, {
             name: 'af-report.png'
@@ -599,10 +667,10 @@ class AFGraphCommand extends BaseCommand {
             ]);
         }
 
-        await message.channel.send({
+        return {
             embeds: [embed],
             files: [image]
-        });
+        };
     }
 
     generateGraphConfiguration(report) {

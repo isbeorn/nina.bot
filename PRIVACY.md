@@ -16,9 +16,9 @@ where the bot is installed:
 
 - Discord user identifiers, usernames, and message metadata needed to respond to
   commands and Discord events.
-- Message content when required for legacy text commands and support automation.
-- Message attachment metadata and uploaded autofocus report files when users post
-  N.I.N.A. autofocus JSON reports for analysis.
+- Message attachment metadata and uploaded autofocus report files when users
+  explicitly submit N.I.N.A. autofocus JSON reports for analysis through a bot
+  command.
 - Discord reaction events used for server workflows such as assigning a member
   role after a user reacts to the welcome message.
 - Operational logs needed to run, debug, and maintain the bot.
@@ -36,26 +36,16 @@ features, including:
 - Supporting welcome and role-assignment workflows based on user reactions.
 - Maintaining and debugging the bot service.
 
-NINA.Bot does not use message content, attachments, or user data for advertising,
-profiling, resale, or broad analytics.
+NINA.Bot does not use attachments or user data for advertising, profiling,
+resale, or broad analytics.
 
-## Message Content and Attachments
+## Attachments
 
-NINA.Bot uses Discord's Message Content privileged intent for support workflows
-that require access to normal Discord messages or attachments.
-
-For autofocus report analysis, uploaded JSON attachments are downloaded and
-processed to generate a diagnostic response in Discord. The report data is used
-only for that support workflow.
-
-Legacy text commands may require reading message content to determine whether a
-message invokes a bot command. Where possible, command-style interactions may be
-migrated to Discord slash commands over time.
+For autofocus report analysis, JSON attachments submitted through the bot's
+commands are downloaded and processed to generate a diagnostic response in
+Discord. The report data is used only for that support workflow.
 
 ## Data Retention
-
-NINA.Bot does not intentionally maintain a long-term archive of Discord message
-content.
 
 Autofocus report attachments are processed to generate the bot response and are
 not retained by the bot as a permanent data store.

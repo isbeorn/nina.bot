@@ -1,3 +1,5 @@
+const { SlashCommandBuilder } = require('discord.js');
+
 class MessageCommand {
     constructor(triggerMessages, interactionMessage, interactionHelp) {
         this.triggerMessages = triggerMessages;
@@ -9,19 +11,16 @@ class MessageCommand {
         return this.triggerMessages;
     }
 
-    async execute(message) {
-        if (typeof message.content === 'string') {
-            const start = message.content.split(' ')[0];
-            if (start.length > 1) {
-                const lower = start.toLowerCase();
-                if (this.TriggerMessages.includes(lower)) {
-                    return this.process(message);
-                }
-            }
-            // if (_.includes(this.TriggerMessages, message.content)) {
-            //     return this.process(message);
-            // }
+    getApplicationCommands() {
+        if (!this.interactionMessage || !this.interactionHelp) {
+            return [];
         }
+
+        return [
+            new SlashCommandBuilder()
+                .setName(this.interactionMessage)
+                .setDescription(this.interactionHelp)
+        ];
     }
 
     async process(message) {

@@ -9,6 +9,7 @@ module.exports = [
                 Buffer: 'readonly',
                 console: 'readonly',
                 fetch: 'readonly',
+                __dirname: 'readonly',
                 process: 'readonly'
             }
         },

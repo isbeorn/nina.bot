@@ -1,4 +1,5 @@
 const mathjs = require('mathjs');
+const { SlashCommandBuilder } = require('discord.js');
 const { MessageCommand } = require('./MessageCommand');
 
 class UnitConversionCommand extends MessageCommand {
@@ -6,38 +7,56 @@ class UnitConversionCommand extends MessageCommand {
         super(['!lbs', '!kg']);
     }
 
-    async process(message) {        
-        const parts = message.content.split(' ');
-        if(parts.length > 1) {
-            const value = parseFloat(parts[1]);
-            let translated = NaN;
-            let baseUnit;
-            let translatedUnit;
-            switch(parts[0]) {
-                case '!lbs': {
-                    const factor = 1/2.2046;
-                    baseUnit = 'lbs';
-                    translatedUnit = 'kg'
-                    translated = this.translateByFactor(value, factor);
-                    break;
-                }
-                case '!kg': {
-                    const factor = 2.2046;
-                    baseUnit = 'kg';
-                    translatedUnit = 'lbs'
-                    translated = this.translateByFactor(value, factor);
-                    break;
-                }
-            }
+    getApplicationCommands() {
+        return [
+            new SlashCommandBuilder()
+                .setName('lbs')
+                .setDescription('Convert pounds to kilograms')
+                .addNumberOption((option) =>
+                    option
+                        .setName('value')
+                        .setDescription('Pounds to convert')
+                        .setRequired(true)
+                ),
+            new SlashCommandBuilder()
+                .setName('kg')
+                .setDescription('Convert kilograms to pounds')
+                .addNumberOption((option) =>
+                    option
+                        .setName('value')
+                        .setDescription('Kilograms to convert')
+                        .setRequired(true)
+                )
+        ];
+    }
 
-            if(!isNaN(translated)) {
-                await message.reply(`${value}${baseUnit} = ${translated}${translatedUnit}`)
-            }
+    handlesInteraction(interaction) {
+        return ['lbs', 'kg'].includes(interaction.commandName);
+    }
+
+    async process(interaction) {
+        const value = interaction.options.getNumber('value');
+        let translated;
+        let baseUnit;
+        let translatedUnit;
+
+        if (interaction.commandName === 'lbs') {
+            baseUnit = 'lbs';
+            translatedUnit = 'kg';
+            translated = this.translateByFactor(value, 1 / 2.2046);
+        } else {
+            baseUnit = 'kg';
+            translatedUnit = 'lbs';
+            translated = this.translateByFactor(value, 2.2046);
         }
+
+        await interaction.reply(
+            `${value}${baseUnit} = ${translated}${translatedUnit}`
+        );
     }
 
     translateByFactor(value, factor, addition = 0) {
-        return mathjs.round(value * factor + addition,2);
+        return mathjs.round(value * factor + addition, 2);
     }
 }
 

@@ -26,13 +26,10 @@ class Bot {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildEmojisAndStickers,
                 GatewayIntentBits.GuildMessages,
-                GatewayIntentBits.DirectMessages,
-                GatewayIntentBits.DirectMessageReactions,
-                GatewayIntentBits.MessageContent
+                GatewayIntentBits.GuildMessageReactions
             ]
         });
         this.client.on('clientReady', this.onReady.bind(this));
-        this.client.on('messageCreate', this.onMessage.bind(this));
         this.client.on('interactionCreate', this.onInteraction.bind(this));
 
         this.client.on(
@@ -88,8 +85,17 @@ class Bot {
     registerCommand(command) {
         this.getCommands().push(command);
 
+        if (typeof command.getApplicationCommands === 'function') {
+            this.getSlashCommands().push(...command.getApplicationCommands());
+            return;
+        }
+
         if (command.interactionMessage && command.interactionHelp) {
-            this.getSlashCommands().push(new SlashCommandBuilder().setName(command.interactionMessage).setDescription(command.interactionHelp));
+            this.getSlashCommands().push(
+                new SlashCommandBuilder()
+                    .setName(command.interactionMessage)
+                    .setDescription(command.interactionHelp)
+            );
         }
     }
 
@@ -196,26 +202,46 @@ class Bot {
         }
     }
 
-    async onMessage(message) {
+    async onInteraction(interaction) {
         try {
-            const promises = this.getCommands().map((command) => {
-                return command.execute(message);
-            });
+            if (
+                !interaction.isChatInputCommand() &&
+                !interaction.isMessageContextMenuCommand()
+            ) {
+                return;
+            }
 
-            await Promise.all(promises);
+            for (const cmd of this.getCommands()) {
+                if (
+                    typeof cmd.handlesInteraction === 'function' &&
+                    cmd.handlesInteraction(interaction)
+                ) {
+                    await cmd.process(interaction);
+                    return;
+                }
+
+                if (cmd.interactionMessage) {
+                    if (interaction.commandName === cmd.interactionMessage) {
+                        await cmd.process(interaction);
+                        return;
+                    }
+                }
+            }
         } catch (ex) {
             logger.error(ex.message);
-        }
-    }
 
-    async onInteraction(interaction) {
-        if (!interaction.isChatInputCommand()) return;
-
-        for (const cmd of this.getCommands()) {
-            if (cmd.interactionMessage) {
-                if (interaction.commandName === cmd.interactionMessage) {
-                    await cmd.process(interaction);
+            try {
+                if (interaction.deferred || interaction.replied) {
+                    await interaction.editReply(
+                        'Unable to process the command due to an unexpected error.'
+                    );
+                } else {
+                    await interaction.reply(
+                        'Unable to process the command due to an unexpected error.'
+                    );
                 }
+            } catch (replyEx) {
+                logger.error(replyEx.message);
             }
         }
     }

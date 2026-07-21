@@ -7,14 +7,8 @@ class BaseCommand {
         return this.client;
     }
 
-    async execute(message) {
-        if(message.author.tag !== 'NINA.Bot#9210') {
-            await this.process(message);
-        }
-    }
-
-    async process(message) {
-        this.currentMessage = message.content;
+    async process() {
+        throw new Error('Command processing is not implemented');
     }
 }
 
