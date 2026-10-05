@@ -1,0 +1,244 @@
+[
+  {
+    "options": [],
+    "name": "32bitascom",
+    "description": "How to get 32bit ASCOM drivers to work with 64bit software",
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "name": "report",
+        "description": "The autofocus JSON report to analyze",
+        "required": true,
+        "type": 11
+      }
+    ],
+    "name": "afgraph",
+    "description": "Analyze a N.I.N.A. autofocus JSON report",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "afreport",
+    "description": "How to generate autofocus reports",
+    "type": 1
+  },
+  {
+    "name": "Analyze Autofocus Report",
+    "type": 3
+  },
+  {
+    "options": [],
+    "name": "cameratimeout",
+    "description": "Running into camera image timeout issues?",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "cmd",
+    "description": "N.I.N.A. Command Line Arguments",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "conform",
+    "description": "How to check ASCOM conformance",
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 10,
+        "name": "value",
+        "description": "Value to convert",
+        "required": true
+      },
+      {
+        "autocomplete": true,
+        "type": 3,
+        "name": "from",
+        "description": "Source unit",
+        "required": true
+      },
+      {
+        "autocomplete": true,
+        "type": 3,
+        "name": "to",
+        "description": "Target unit",
+        "required": true
+      }
+    ],
+    "name": "convert",
+    "description": "Convert common astronomy units",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "crash",
+    "description": "In case of application crashes",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "d3xxx",
+    "description": "Nikon D3xxx series support",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "devdocs",
+    "description": "Documentation for nightlies",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "discordpatreon",
+    "description": "How to link discord with patreon",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "dock",
+    "description": "Need help with the imaging dock panels?",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "docs",
+    "description": "Link to the documentation page",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "domeshutter",
+    "description": "Dome Shutter conformance issue",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "donate",
+    "description": "How to support the project",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "help",
+    "description": "List available NINA.Bot commands",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "installertroubleshoot",
+    "description": "Troubleshoot issues with installer being unable to install or uninstall the application",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "issues",
+    "description": "Where to find the issue tracker",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "logs",
+    "description": "Where to find N.I.N.A. logs",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "memorydump",
+    "description": "How to create a memory dump",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "net7",
+    "description": "How to install .NET 7",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "ninadocs",
+    "description": "Repository for the N.I.N.A. documentation",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "overshoot",
+    "description": "A short clip to show how focuser overshoot is working",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "privacy",
+    "description": "Show NINA.Bot privacy and data usage information",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "profiles",
+    "description": "Where to find the profile files written by N.I.N.A.",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "qhydriver",
+    "description": "Got a message to update your QHY driver? Find help here",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "renderissues",
+    "description": "In case of render issues like icons disappearing",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "repair",
+    "description": "How to repair a N.I.N.A. installation",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "repository",
+    "description": "The main N.I.N.A. repository",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "settlefailed",
+    "description": "Troubleshoot settle failures during guiding and dithering",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "shutdown",
+    "description": "A short clip showing how to shut down the PC with the external script instruction",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "stars",
+    "description": "Cannot find stars in the app? Check this command to find out where to find them!",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "stellarium",
+    "description": "How to setup stellarium with N.I.N.A.",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "support",
+    "description": "Information is lacking for a support request. Generate a guideline here",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "troubleshoot",
+    "description": "Troubleshoot guide for common problems",
+    "type": 1
+  }
+]

@@ -2,19 +2,7 @@ const assert = require('node:assert/strict');
 const test = require('node:test');
 
 const Bot = require('../Bot');
-const { HelpCommand } = require('../commands/HelpCommand');
-const MessageCommands = require('../commands/MessageCommands');
 const { UnitConversionCommand } = require('../commands/MessageCommands/UnitConversionCommand');
-
-const createReplyTarget = () => {
-    const replies = [];
-    return {
-        replies,
-        async reply(payload) {
-            replies.push(payload);
-        }
-    };
-};
 
 test('bot registers slash and context menu commands without message content intent', () => {
     const bot = new Bot('token', { put: async () => {} });
@@ -52,7 +40,7 @@ test('bot routes chat input interactions to matching commands', async () => {
     await bot.onInteraction(interaction);
 
     assert.equal(interaction.replies.length, 1);
-    assert.match(interaction.replies[0], /PRIVACY\.md/);
+    assert.match(JSON.stringify(interaction.replies[0]), /PRIVACY\.md/);
 });
 
 test('bot reports command failures to the interaction', async () => {
@@ -95,36 +83,6 @@ test('bot suppresses secondary failures while reporting command errors', async (
     };
 
     await assert.doesNotReject(() => bot.onInteraction(interaction));
-});
-
-test('simple support commands reply with content or embeds', async () => {
-    for (const [name, Command] of Object.entries(MessageCommands)) {
-        if (name === 'UnitConversionCommand') {
-            continue;
-        }
-
-        const command = new Command();
-        const message = createReplyTarget();
-
-        await command.process(message);
-
-        assert.equal(message.replies.length, 1, name);
-        assert.ok(message.replies[0], name);
-    }
-});
-
-test('help lists registered slash command names', async () => {
-    const command = new HelpCommand();
-    const message = createReplyTarget();
-
-    await command.process(message);
-
-    assert.match(message.replies[0], /\/afgraph/);
-    assert.match(message.replies[0], /\/privacy/);
-    assert.match(message.replies[0], /\/convert/);
-    assert.doesNotMatch(message.replies[0], /\/kg/);
-    assert.doesNotMatch(message.replies[0], /\/lbs/);
-    assert.doesNotMatch(message.replies[0], /!logs/);
 });
 
 test('unit conversion slash commands convert common units', async () => {

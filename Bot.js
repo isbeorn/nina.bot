@@ -1,6 +1,7 @@
 const {
     Client,
     GatewayIntentBits,
+    MessageFlags,
     Routes,
     SlashCommandBuilder
 } = require('discord.js');
@@ -12,7 +13,10 @@ log4js.configure({
 
 const logger = log4js.getLogger();
 
-const MessageCommands = require('./commands/MessageCommands');
+const { createGeneralCommands } = require('./commands/MessageCommands');
+const {
+    UnitConversionCommand
+} = require('./commands/MessageCommands/UnitConversionCommand');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
 //const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
@@ -41,11 +45,12 @@ class Bot {
         // this.client.on('guildMemberAdd'), this.onGuildMemberAdd.bind(this));
         //this.registerCommand(new GalleryWatchdogCommand(this.client));
         //this.registerCommand(new HelpCommand(this.client));
-        this.registerCommand(new AFGraphCommand(this.client));
-        this.registerCommand(new HelpCommand());
+        this.registerCommand(new AFGraphCommand(this.client), 'autofocus');
+        this.registerCommand(new UnitConversionCommand(), 'guides');
+        this.registerCommand(new HelpCommand(() => this.getCommands()));
 
-        for (const key in MessageCommands) {
-            this.registerCommand(new MessageCommands[key]());
+        for (const command of createGeneralCommands()) {
+            this.registerCommand(command);
         }
     }
 
@@ -82,7 +87,8 @@ class Bot {
         }
     }
 
-    registerCommand(command) {
+    registerCommand(command, category = command.category) {
+        command.category = category;
         this.getCommands().push(command);
 
         if (typeof command.getApplicationCommands === 'function') {
@@ -207,7 +213,8 @@ class Bot {
             if (
                 !interaction.isAutocomplete() &&
                 !interaction.isChatInputCommand() &&
-                !interaction.isMessageContextMenuCommand()
+                !interaction.isMessageContextMenuCommand() &&
+                !interaction.isStringSelectMenu?.()
             ) {
                 return;
             }
@@ -240,14 +247,24 @@ class Bot {
             logger.error(ex.message);
 
             try {
-                if (interaction.deferred || interaction.replied) {
-                    await interaction.editReply(
-                        'Unable to process the command due to an unexpected error.'
-                    );
+                const content =
+                    'Unable to process the command due to an unexpected error.';
+                const privateError = {
+                    content,
+                    flags: MessageFlags.Ephemeral,
+                    allowedMentions: { parse: [] }
+                };
+                if (interaction.isAutocomplete()) {
+                    await interaction.respond([]);
+                } else if (
+                    interaction.replied ||
+                    (interaction.deferred && interaction.isStringSelectMenu?.())
+                ) {
+                    await interaction.followUp(privateError);
+                } else if (interaction.deferred) {
+                    await interaction.editReply(content);
                 } else {
-                    await interaction.reply(
-                        'Unable to process the command due to an unexpected error.'
-                    );
+                    await interaction.reply(privateError);
                 }
             } catch (replyEx) {
                 logger.error(replyEx.message);

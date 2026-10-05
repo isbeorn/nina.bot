@@ -1,70 +1,21 @@
-const { BitAscomCommand } = require('./BitAscomCommand');
-const { ConformCommand } = require('./ConformCommand');
-const { DevDocsCommand } = require('./DevDocsCommand');
-const { DiscordPatreonCommand } = require('./DiscordPatreonCommand');
-const { DockCommand } = require('./DockCommand');
-const { DocsRepositoryCommand } = require('./DocsRepositoryCommand');
-const { DocsCommand } = require('./DocsCommand');
-const { DonateCommand } = require('./DonateCommand');
-const { LogsCommand } = require('./LogsCommand');
-const { RepositoryCommand } = require('./RepositoryCommand');
-const { StarsCommand } = require('./StarsCommand');
-const { TrackerCommand } = require('./TrackerCommand');
-const { TroubleshootCommand } = require('./TroubleshootCommand');
-const { OvershootCommand } = require('./OvershootCommand');
-const { AFLogsCommand } = require('./AFLogsCommand');
-const { UnitConversionCommand } = require('./UnitConversionCommand');
-const { ProfilesCommand } = require('./ProfilesCommand');
-const { PrivacyCommand } = require('./PrivacyCommand');
-const { StellariumCommand } = require('./StellariumCommand');
-const { QHYDriverCommand } = require('./QHYDriverCommand');
-const { SupportCommand } = require('./SupportCommand');
-const { DomeShutterCommand } = require('./DomeShutterCommand');
-const { ShutdownScriptCommand } = require('./ShutdownScriptCommand');
-const { RenderIssuesCommand } = require('./RenderIssuesCommand');
-const { InstallerIssuesCommand } = require('./InstallerIssuesCommand');
-const { GuiderSettleCommand } = require('./GuiderSettleCommand');
-const { NetCoreCommand } = require('./NetCoreCommand');
-const { NikonD3xxxCommand } = require('./NikonD3xxxCommand');
-const { CameraTimeoutCommand } = require('./CameraTimeoutCommand');
-const { CommandLineCommand } = require('./CommandLineCommand');
-const { MemoryDumpCommand } = require('./MemoryDumpCommand');
-const { CrashedCommand } = require('./CrashedCommand');
-const { RepairCommand } = require('./RepairCommand');
+const { GeneralReplyCommand } = require('./GeneralReplyCommand');
 
+const groups = [
+    require('./content/guides'),
+    require('./content/troubleshooting'),
+    require('./content/equipment'),
+    require('./content/autofocus'),
+    require('./content/community')
+];
 
-module.exports = {
-    BitAscomCommand,
-    ConformCommand,
-    DiscordPatreonCommand,
-    DocsCommand,
-    DevDocsCommand,
-    DockCommand,
-    DocsRepositoryCommand,
-    DonateCommand,
-    LogsCommand,
-    RepositoryCommand,
-    StarsCommand,
-    TrackerCommand,
-    TroubleshootCommand,
-    OvershootCommand,
-    AFLogsCommand,
-    UnitConversionCommand,
-    ProfilesCommand,
-    PrivacyCommand,
-    StellariumCommand,
-    QHYDriverCommand,
-    SupportCommand,
-    DomeShutterCommand,
-    ShutdownScriptCommand,
-    RenderIssuesCommand,
-    InstallerIssuesCommand,
-    GuiderSettleCommand,
-    NetCoreCommand,
-    NikonD3xxxCommand,
-    CameraTimeoutCommand,
-    CommandLineCommand,
-    MemoryDumpCommand,
-    CrashedCommand,
-    RepairCommand
-};
+const categories = groups.map(({ id, label }) => ({ id, label }));
+
+function createGeneralCommands() {
+    return groups.flatMap((group) =>
+        group.replies.map(
+            (definition) => new GeneralReplyCommand(definition, group.id)
+        )
+    );
+}
+
+module.exports = { categories, createGeneralCommands };
