@@ -30,6 +30,18 @@
   },
   {
     "options": [],
+    "name": "autofocus",
+    "description": "Understand autofocus curves, setup and failed runs",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "backup",
+    "description": "Back up and restore profiles, sequences, templates and targets",
+    "type": 1
+  },
+  {
+    "options": [],
     "name": "cameratimeout",
     "description": "Running into camera image timeout issues?",
     "type": 1
@@ -99,6 +111,12 @@
   },
   {
     "options": [],
+    "name": "dither",
+    "description": "Configure PHD2 dithering and understand settling",
+    "type": 1
+  },
+  {
+    "options": [],
     "name": "dock",
     "description": "Need help with the imaging dock panels?",
     "type": 1
@@ -123,8 +141,53 @@
   },
   {
     "options": [],
+    "name": "download",
+    "description": "Choose a N.I.N.A. release and find its requirements",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "flats",
+    "description": "Configure Flat Wizard and troubleshoot flat exposures",
+    "type": 1
+  },
+  {
+    "options": [],
     "name": "help",
     "description": "List available NINA.Bot commands",
+    "type": 1
+  },
+  {
+    "options": [
+      {
+        "type": 10,
+        "name": "pixelsize",
+        "description": "Unbinned sensor pixel size in micrometers (positive)",
+        "required": true
+      },
+      {
+        "type": 10,
+        "name": "focallength",
+        "description": "Effective focal length in millimeters, including reducers or Barlows (positive)",
+        "required": true
+      },
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "width",
+        "description": "Native sensor width in pixels; also provide height",
+        "required": false
+      },
+      {
+        "min_value": 1,
+        "type": 4,
+        "name": "height",
+        "description": "Native sensor height in pixels; also provide width",
+        "required": false
+      }
+    ],
+    "name": "imagescale",
+    "description": "Calculate image scale and optional field of view",
     "type": 1
   },
   {
@@ -153,6 +216,12 @@
   },
   {
     "options": [],
+    "name": "meridianflip",
+    "description": "Configure and troubleshoot automated meridian flips",
+    "type": 1
+  },
+  {
+    "options": [],
     "name": "net7",
     "description": "How to install .NET 7",
     "type": 1
@@ -167,6 +236,18 @@
     "options": [],
     "name": "overshoot",
     "description": "A short clip to show how focuser overshoot is working",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "platesolve",
+    "description": "Set up plate solving and troubleshoot failed solves",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "plugins",
+    "description": "Install, update and troubleshoot N.I.N.A. plugins",
     "type": 1
   },
   {
@@ -203,6 +284,12 @@
     "options": [],
     "name": "repository",
     "description": "The main N.I.N.A. repository",
+    "type": 1
+  },
+  {
+    "options": [],
+    "name": "sequencer",
+    "description": "Understand advanced sequencer instructions, loops and triggers",
     "type": 1
   },
   {

@@ -3,6 +3,35 @@ module.exports = {
     label: 'Troubleshooting',
     replies: [
         {
+            name: 'platesolve',
+            description: 'Set up plate solving and troubleshoot failed solves',
+            card: {
+                title: 'N.I.N.A. plate solving',
+                introduction:
+                    'A plate solve identifies where an image points in the sky. Start with the solver installation and your optical settings.',
+                sections: [
+                    {
+                        heading: 'Check the setup',
+                        text: '1. Install your solver and its required star catalogs. ASTAP needs both the application and a star database. Select its executable in **Options > Plate Solving**.\n2. In **Options > Equipment**, check the camera pixel size in micrometers and telescope focal length in millimeters. Use the **effective focal length**, including reducers or Barlows.\n3. Configure the primary solver and blind solver. The blind solver is a fallback when the initial solve fails; its own setup must also be complete.'
+                    },
+                    {
+                        heading: 'If solving fails',
+                        text: '**Stars:** Check focus, exposure and filter choice so enough stars are visible.\n**Settings:** Recheck the solver executable, catalogs, pixel size and focal length.\n**Evidence:** Share the failed image and solver output from this folder, plus the session log from `/logs`:\n```text\n%LOCALAPPDATA%\\NINA\\PlateSolver\\Failed\n```'
+                    },
+                    {
+                        heading: 'Solve, sync and center',
+                        text: '**Solve** measures the pointing position. **Sync** tells the mount that position. **Reslew To Target** moves back to the requested target; **Repeat until error <** repeats centering to the chosen tolerance. A successful solve alone does not move the mount.'
+                    }
+                ],
+                links: [
+                    {
+                        label: 'Plate solving guide',
+                        url: 'https://nighttime-imaging.eu/docs/master/site/advanced/platesolving/'
+                    }
+                ]
+            }
+        },
+        {
             name: 'support',
             description:
                 'Information is lacking for a support request. Generate a guideline here',

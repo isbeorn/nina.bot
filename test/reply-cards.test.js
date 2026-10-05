@@ -19,6 +19,10 @@ const categories = {
         'profiles',
         'cmd',
         'convert',
+        'imagescale',
+        'plugins',
+        'backup',
+        'download',
         'help'
     ],
     troubleshooting: [
@@ -30,7 +34,8 @@ const categories = {
         'repair',
         'renderissues',
         'installertroubleshoot',
-        'net7'
+        'net7',
+        'platesolve'
     ],
     equipment: [
         '32bitascom',
@@ -39,9 +44,19 @@ const categories = {
         'd3xxx',
         'qhydriver',
         'cameratimeout',
-        'settlefailed'
+        'settlefailed',
+        'dither',
+        'flats'
     ],
-    autofocus: ['afreport', 'afgraph', 'overshoot', 'shutdown'],
+    autofocus: [
+        'afreport',
+        'afgraph',
+        'overshoot',
+        'shutdown',
+        'autofocus',
+        'meridianflip',
+        'sequencer'
+    ],
     community: [
         'repository',
         'ninadocs',
@@ -53,7 +68,9 @@ const categories = {
 };
 const generalNames = Object.values(categories)
     .flat()
-    .filter((name) => !['convert', 'help', 'afgraph'].includes(name));
+    .filter(
+        (name) => !['convert', 'help', 'afgraph', 'imagescale'].includes(name)
+    );
 const makeBot = () => new Bot('token', { put: async () => {} });
 const serialize = (payload) => JSON.parse(JSON.stringify(payload));
 const descendants = (components) =>
@@ -105,7 +122,9 @@ test('registration preserves the complete slash and context command contract', (
         a.name.localeCompare(b.name)
     );
     assert.deepEqual(actual, registeredCommands);
-    assert.equal(actual.filter((command) => command.type === 1).length, 35);
+    assert.equal(actual.filter((command) => command.type === 1).length, 45);
+    assert.equal(actual.filter((command) => command.type === 3).length, 1);
+    assert.equal(new Set(Object.values(categories).flat()).size, 45);
     assert.equal(bot.getClient().options.intents.has('MessageContent'), false);
     assert.equal(bot.getClient().listenerCount('messageCreate'), 0);
 });
@@ -257,6 +276,133 @@ test('representative cards retain paths, steps, technical details and resources'
     }
 });
 
+test('new guidance cards cover setup, troubleshooting and official resources', async () => {
+    const expectations = {
+        platesolve: [
+            /star database/i,
+            /effective focal length/i,
+            /blind solver/i,
+            /focus/i,
+            /exposure/i,
+            /```text\n%LOCALAPPDATA%\\NINA\\PlateSolver\\Failed\n```/,
+            /Sync/,
+            /Reslew To Target/,
+            /advanced\/platesolving/
+        ],
+        autofocus: [
+            /built-in.*Star HFR/,
+            /plugins/i,
+            /Horizontal axis/,
+            /Vertical axis/,
+            /fitted minimum/i,
+            /Step Size/,
+            /Initial Offset Steps/,
+            /R-squared/,
+            /final HFR/,
+            /\/afreport/,
+            /\/afgraph/,
+            /\/overshoot/,
+            /advanced\/autofocus/
+        ],
+        meridianflip: [
+            /Meridian Flip.*trigger/,
+            /Max\. minutes after meridian/i,
+            /Pause before meridian/,
+            /mount driver/i,
+            /clearance/,
+            /recenter/i,
+            /advanced\/meridianflip/
+        ],
+        plugins: [
+            /Plugins > Available/,
+            /Install/,
+            /Update/,
+            /Restart/,
+            /compatible/i,
+            /uninstall/i,
+            /maintainer/,
+            /tabs\/plugins\/installed/
+        ],
+        dither: [
+            /Enable Server/,
+            /guide-camera pixels/,
+            /imaging-camera pixels/,
+            /Scale/,
+            /Pixel tolerance/,
+            /Minimum settle time/,
+            /Settle timeout/,
+            /\/settlefailed/,
+            /advanced\/dithering/
+        ],
+        flats: [
+            /Dynamic Exposure/,
+            /Dynamic Brightness/,
+            /Sky Flats/,
+            /Histogram Mean Target/,
+            /Mean Tolerance/,
+            /minimum.*maximum/,
+            /Too bright/,
+            /Too dark/,
+            /dark-flat capture is unavailable/,
+            /tabs\/flatwizard/
+        ],
+        sequencer: [
+            /Instructions/,
+            /Loop conditions/,
+            /Triggers/,
+            /Parent conditions/,
+            /invalid instructions are skipped/,
+            /```text\nDeep Sky Object instruction set/,
+            /Loop condition:.*\n.*Trigger:.*\n.*Instruction:/,
+            /sequencer\/advanced\/advanced/
+        ],
+        backup: [
+            /close N.I.N.A./i,
+            /```text\n%LOCALAPPDATA%\\NINA\\Profiles\n```/,
+            /configurable/,
+            /separate files/,
+            /Restore/,
+            /destination files/,
+            /verify folder paths/,
+            /tabs\/options\/imaging/
+        ],
+        download: [
+            /Stable release/,
+            /Beta.*release candidate/,
+            /Nightly/,
+            /version you are installing/,
+            /\.NET Desktop Runtime version and architecture/,
+            /\/backup/,
+            /\/docs\/master\/site\/requirements\//,
+            /\/docs\/develop\/site\/requirements\//
+        ]
+    };
+    const bot = makeBot();
+    for (const [name, patterns] of Object.entries(expectations)) {
+        const interaction = interactionFor(name);
+        await bot.onInteraction(interaction);
+        const payload = interaction.replies[0];
+        const visible =
+            textOf(payload) + '\n' + JSON.stringify(payload.components);
+        for (const pattern of patterns) assert.match(visible, pattern, name);
+        const buttons = descendants(payload.components).filter(
+            (component) => component.type === ComponentType.Button
+        );
+        assert.ok(buttons.length > 0, name);
+        for (const button of buttons)
+            assert.equal(new URL(button.url).hostname, 'nighttime-imaging.eu');
+        if (name === 'download') {
+            assert.ok(
+                buttons.some(
+                    (button) =>
+                        button.url === 'https://nighttime-imaging.eu/download/'
+                )
+            );
+            assert.doesNotMatch(visible, /\.exe|\.msi|Version \d|Runtime \d/);
+        }
+    }
+});
+
 test('privacy resolves the configured URL on every request', async () => {
     const original = process.env.PRIVACY_POLICY_URL;
     const bot = makeBot();
@@ -318,6 +464,8 @@ test('help opens privately and navigates every category in both directions and b
         assert.equal(payload.content, undefined);
         assert.equal(payload.embeds, undefined);
         const text = textOf(payload);
+        assert.ok(text.length <= 4000);
+        assert.ok(descendants(payload.components).length <= 40);
         if (category !== 'overview') {
             const names = [...text.matchAll(/`\/([a-z0-9]+)`/g)].map(
                 (match) => match[1]
@@ -381,9 +529,13 @@ test('unrelated selectors are ignored', async () => {
 });
 
 test('card and menu failures use private replies or follow-ups without editing cards', async () => {
-    for (const selection of [undefined, 'guides']) {
+    for (const [commandName, selection] of [
+        ['help', undefined],
+        ['help', 'guides'],
+        ['platesolve', undefined]
+    ]) {
         for (const acknowledged of [false, true]) {
-            const interaction = interactionFor('help', selection);
+            const interaction = interactionFor(commandName, selection);
             interaction[selection === undefined ? 'reply' : 'update'] =
                 async function (payload) {
                     if (payload.content) {

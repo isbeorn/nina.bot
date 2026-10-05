@@ -17,6 +17,9 @@ const { createGeneralCommands } = require('./commands/MessageCommands');
 const {
     UnitConversionCommand
 } = require('./commands/MessageCommands/UnitConversionCommand');
+const {
+    ImageScaleCommand
+} = require('./commands/MessageCommands/ImageScaleCommand');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
 //const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
@@ -47,6 +50,7 @@ class Bot {
         //this.registerCommand(new HelpCommand(this.client));
         this.registerCommand(new AFGraphCommand(this.client), 'autofocus');
         this.registerCommand(new UnitConversionCommand(), 'guides');
+        this.registerCommand(new ImageScaleCommand(), 'guides');
         this.registerCommand(new HelpCommand(() => this.getCommands()));
 
         for (const command of createGeneralCommands()) {

@@ -1,6 +1,25 @@
 # NINA.Bot
 
-Discord support commands for N.I.N.A., plus autofocus report analysis and unit conversion.
+Discord support commands for N.I.N.A., plus autofocus report analysis, unit conversion and image-scale calculations. Registers 45 slash commands and the **Analyze Autofocus Report** message action.
+
+## Imaging workflow commands
+
+| Category | Commands |
+| --- | --- |
+| Guides and tools | `/plugins`, `/backup`, `/download`, `/imagescale` |
+| Troubleshooting | `/platesolve` |
+| Equipment | `/dither`, `/flats` |
+| Autofocus and sequencing | `/autofocus`, `/meridianflip`, `/sequencer` |
+
+These additions use public reply cards and appear in the existing private `/help` category browser. `/download` links to current official downloads and version-specific requirements without fetching release information at runtime.
+
+### Image scale
+
+Use `/imagescale pixelsize:3.76 focallength:800` for **0.9694 arcsec/pixel**. Pixel size is in micrometers and effective focal length is in millimeters, including reducers or Barlows. Inputs describe an unbinned sensor.
+
+Provide both native sensor dimensions in pixels to include approximate horizontal and vertical field of view: `/imagescale pixelsize:3.76 focallength:800 width:6248 height:4176` produces **100.9515 x 67.4733 arcmin**. Results are rounded to four decimal places. Invalid inputs receive a private explanation.
+
+The calculator matches N.I.N.A.'s `AstroUtil.ArcsecPerPixel`: `(180 / Math.PI) * 3600 / 1000 * (pixelSize / focalLength)`. Field of view uses the small-angle approximation, `scale * dimension / 60`, in arcminutes.
 
 ## Development
 
@@ -32,6 +51,8 @@ Custom commands such as conversion and autofocus keep their own implementations.
 - Keep the command registration fixture in `test/fixtures/application-commands.json` unchanged unless a command contract intentionally changes.
 - In a test Discord server, check `/docs`, `/logs`, `/support`, `/cameratimeout`, `/cmd`, `/stars`, `/overshoot` and `/shutdown` on desktop and mobile. Verify readable spacing, copyable paths, usable links and visible media.
 - With a second account, confirm general replies are public while `/help` and its updates are visible only to the requester. Browse every category and return to Overview.
+- Check the nine imaging workflow guidance cards listed above on desktop and mobile, including their documentation buttons and the `/sequencer` example. Confirm all ten new commands appear once in their assigned help categories.
+- Check `/imagescale` with and without both sensor dimensions. Confirm a public result card, readable units and private validation errors when only one dimension is supplied or a required number is zero.
 - Check `/privacy` with and without the override, `/convert` autocomplete and both autofocus entry points before deploying.
 
 Local payload tests cannot verify Discord client rendering or the availability of remote media.

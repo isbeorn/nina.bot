@@ -3,6 +3,65 @@ module.exports = {
     label: 'Equipment',
     replies: [
         {
+            name: 'dither',
+            description: 'Configure PHD2 dithering and understand settling',
+            card: {
+                title: 'Dithering with N.I.N.A. and PHD2',
+                introduction:
+                    'Dithering shifts the pointing position between exposures. N.I.N.A. requests the move from PHD2 and waits for settling before continuing imaging.',
+                sections: [
+                    {
+                        heading: 'Connect and enable',
+                        text: '1. Start PHD2 and select **Tools > Enable Server**. Connect the guide equipment and establish guiding.\n2. Connect PHD2 in **Equipment > Guider** in N.I.N.A. and review its settings using the gear button.\n3. Add **Dither After Exposures** to the appropriate Advanced Sequencer instruction set, or enable dithering in the legacy sequence.'
+                    },
+                    {
+                        heading: 'Choose the dither amount',
+                        text: '**PHD2 Dither Pixels** is measured in guide-camera pixels. The movement in imaging-camera pixels depends on the ratio of the two image scales; use `/imagescale` for each optical train.\nPHD2 multiplies the requested amount by its own **Scale** setting. Keep that at 1 if you want to control the amount entirely in N.I.N.A.'
+                    },
+                    {
+                        heading: 'Understand settling',
+                        text: '**Pixel tolerance:** The allowed guiding error, in guide-camera pixels.\n**Minimum settle time:** How long guiding must remain within that tolerance; leaving it restarts the timer.\n**Settle timeout:** The maximum wait before settling is declared failed. These are separate settings, not interchangeable delays.\nIf settling fails, use `/settlefailed` and inspect the N.I.N.A. and PHD2 logs before changing the limits.'
+                    }
+                ],
+                links: [
+                    {
+                        label: 'Dithering and PHD2 settings',
+                        url: 'https://nighttime-imaging.eu/docs/master/site/advanced/dithering/'
+                    }
+                ]
+            }
+        },
+        {
+            name: 'flats',
+            description:
+                'Configure Flat Wizard and troubleshoot flat exposures',
+            card: {
+                title: 'N.I.N.A. Flat Wizard',
+                introduction:
+                    'Flat Wizard takes test exposures to find settings that reach your chosen histogram mean, then captures the requested flats.',
+                sections: [
+                    {
+                        heading: 'Choose the mode',
+                        text: "**Dynamic Exposure:** Adjust exposure time with a fixed light-source brightness.\n**Dynamic Brightness:** Keep exposure time fixed and adjust a compatible flat panel's brightness.\n**Sky Flats:** Recalculate exposure as the sky brightness changes. Automatic dark-flat capture is unavailable in this mode because flat exposure times vary."
+                    },
+                    {
+                        heading: 'Set the target and limits',
+                        text: "1. Select the filter, gain, offset and binning appropriate for the images you will calibrate.\n2. Set **Histogram Mean Target** and **Mean Tolerance**. The mean target is a percentage of the camera's full-scale value, not a fixed ADU value shared by every camera.\n3. Set minimum and maximum exposure times or panel brightness, according to the mode. Start the wizard and check the test result."
+                    },
+                    {
+                        heading: 'If the target cannot be reached',
+                        text: '**Too bright at the minimum:** Dim the panel or light source, or lower the allowed exposure if suitable for your camera.\n**Too dark at the maximum:** Increase illumination or the allowed exposure.\n**Changing brightness:** Check panel stability, obstructions and the selected filter. For sky flats, use Sky Flats mode.\nWhen capturing dark flats in a supported mode, fully block the light as prompted.'
+                    }
+                ],
+                links: [
+                    {
+                        label: 'Flat Wizard guide',
+                        url: 'https://nighttime-imaging.eu/docs/master/site/tabs/flatwizard/'
+                    }
+                ]
+            }
+        },
+        {
             name: '32bitascom',
             description:
                 'How to get 32bit ASCOM drivers to work with 64bit software',
