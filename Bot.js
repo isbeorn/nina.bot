@@ -22,6 +22,7 @@ const {
 } = require('./commands/MessageCommands/ImageScaleCommand');
 const AFGraphCommand = require('./commands/AFGraphCommand');
 const { HelpCommand } = require('./commands/HelpCommand');
+const { ExpressionGuideCommand } = require('./commands/ExpressionGuide');
 //const GalleryWatchdogCommand = require('./commands/GalleryWatchdogCommand');
 
 class Bot {
@@ -52,6 +53,7 @@ class Bot {
         this.registerCommand(new UnitConversionCommand(), 'guides');
         this.registerCommand(new ImageScaleCommand(), 'guides');
         this.registerCommand(new HelpCommand(() => this.getCommands()));
+        this.registerCommand(new ExpressionGuideCommand(), 'autofocus');
 
         for (const command of createGeneralCommands()) {
             this.registerCommand(command);
@@ -218,7 +220,8 @@ class Bot {
                 !interaction.isAutocomplete() &&
                 !interaction.isChatInputCommand() &&
                 !interaction.isMessageContextMenuCommand() &&
-                !interaction.isStringSelectMenu?.()
+                !interaction.isStringSelectMenu?.() &&
+                !interaction.isButton?.()
             ) {
                 return;
             }
@@ -262,7 +265,9 @@ class Bot {
                     await interaction.respond([]);
                 } else if (
                     interaction.replied ||
-                    (interaction.deferred && interaction.isStringSelectMenu?.())
+                    (interaction.deferred &&
+                        (interaction.isStringSelectMenu?.() ||
+                            interaction.isButton?.()))
                 ) {
                     await interaction.followUp(privateError);
                 } else if (interaction.deferred) {

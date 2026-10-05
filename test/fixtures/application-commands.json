@@ -147,6 +147,12 @@
   },
   {
     "options": [],
+    "name": "expressions",
+    "description": "Learn N.I.N.A. 3.3 expressions in a private step-by-step guide",
+    "type": 1
+  },
+  {
+    "options": [],
     "name": "flats",
     "description": "Configure Flat Wizard and troubleshoot flat exposures",
     "type": 1

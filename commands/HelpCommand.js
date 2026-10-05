@@ -105,7 +105,7 @@ class HelpCommand extends MessageCommand {
         const response = createReplyCard({
             title: overview ? 'NINA.Bot help' : category.label,
             introduction:
-                'Choose a category to browse commands privately. Run a slash command separately to post its answer in the channel.',
+                'Choose a category to browse commands privately. Run a slash command separately to use it. Support replies are public; /expressions opens a private learning guide.',
             sections
         });
         response.components.push(

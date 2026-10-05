@@ -1,15 +1,15 @@
 # NINA.Bot
 
-Discord support commands for N.I.N.A., plus autofocus report analysis, unit conversion and image-scale calculations. Registers 45 slash commands and the **Analyze Autofocus Report** message action.
+Discord support commands for N.I.N.A., plus autofocus report analysis, unit conversion, image-scale calculations and a private expression guide. Registers 46 slash commands and the **Analyze Autofocus Report** message action.
 
 ## Imaging workflow commands
 
-| Category | Commands |
-| --- | --- |
-| Guides and tools | `/plugins`, `/backup`, `/download`, `/imagescale` |
-| Troubleshooting | `/platesolve` |
-| Equipment | `/dither`, `/flats` |
-| Autofocus and sequencing | `/autofocus`, `/meridianflip`, `/sequencer` |
+| Category                 | Commands                                          |
+| ------------------------ | ------------------------------------------------- |
+| Guides and tools         | `/plugins`, `/backup`, `/download`, `/imagescale` |
+| Troubleshooting          | `/platesolve`                                     |
+| Equipment                | `/dither`, `/flats`                               |
+| Autofocus and sequencing | `/autofocus`, `/meridianflip`, `/sequencer`       |
 
 These additions use public reply cards and appear in the existing private `/help` category browser. `/download` links to current official downloads and version-specific requirements without fetching release information at runtime.
 
@@ -20,6 +20,18 @@ Use `/imagescale pixelsize:3.76 focallength:800` for **0.9694 arcsec/pixel**. Pi
 Provide both native sensor dimensions in pixels to include approximate horizontal and vertical field of view: `/imagescale pixelsize:3.76 focallength:800 width:6248 height:4176` produces **100.9515 x 67.4733 arcmin**. Results are rounded to four decimal places. Invalid inputs receive a private explanation.
 
 The calculator matches N.I.N.A.'s `AstroUtil.ArcsecPerPixel`: `(180 / Math.PI) * 3600 / 1000 * (pixelSize / focalLength)`. Field of view uses the small-angle approximation, `scale * dimension / 60`, in arcminutes.
+
+### Expression guide
+
+`/expressions` opens a private self-service tutorial for **N.I.N.A. 3.3** under the Autofocus and sequencing help category. Its ten lessons cover first expressions, symbols and constants, variables, scope, functions, decisions, time, complete recipes and troubleshooting. Each practical lesson explains setup, where to enter an example, expected behavior and a change to try. It teaches selected functions through use rather than providing an exhaustive reference.
+
+Use the topic selector or Previous, Next and Overview buttons to update the same private message. The bot does not evaluate expressions or control N.I.N.A. Navigation has no stored sessions or collectors, so separate guide messages remain independent.
+
+Content lives in `commands/ExpressionGuide/lessons.js`, separate from builders and navigation in `commands/ExpressionGuide/index.js`. Use stable lesson IDs, keep every page self-contained and verify instructional changes against the corresponding N.I.N.A. source. The examples were reviewed against `NINA.Sequencer/Logic/Expression.cs`, `UserSymbol.cs`, `SymbolFunctions`, the expression instructions, `ConditionalStrategy` and `LoopWhile`, plus the existing symbol/function tests. Bot tests validate delivery and instructional content; they do not execute N.I.N.A.'s expression engine.
+
+The selector uses `expressions:topic:v1`. Buttons use `expressions:page:v1:<lesson-id>:<action>`, where the action is `previous`, `next` or `overview`. The suffix keeps control IDs unique when two buttons target the same lesson. Destinations are checked against the lesson definitions. Updates preserve the original message's private visibility and errors never replace its card with plain text.
+
+The guide links to the working nightly documentation landing page. The dedicated published expression-guide URL returned HTTP 404 during development and is intentionally omitted.
 
 ## Development
 
@@ -53,6 +65,8 @@ Custom commands such as conversion and autofocus keep their own implementations.
 - With a second account, confirm general replies are public while `/help` and its updates are visible only to the requester. Browse every category and return to Overview.
 - Check the nine imaging workflow guidance cards listed above on desktop and mobile, including their documentation buttons and the `/sequencer` example. Confirm all ten new commands appear once in their assigned help categories.
 - Check `/imagescale` with and without both sensor dimensions. Confirm a public result card, readable units and private validation errors when only one dimension is supplied or a required number is zero.
+- Check `/expressions` on desktop and mobile with a second account to confirm it stays private. Visit every lesson through the selector and buttons, traverse in both directions and return to Overview. Check disabled boundary buttons, copyable snippets, readable sequence layouts and independent navigation in two guide messages.
+- Try the guide's examples in N.I.N.A. 3.3 with a practice sequence and camera simulator where required. Confirm the displayed results, variable initialization, scoped values, captured timestamps and conditional versus Loop While behavior against your installed build.
 - Check `/privacy` with and without the override, `/convert` autocomplete and both autofocus entry points before deploying.
 
 Local payload tests cannot verify Discord client rendering or the availability of remote media.

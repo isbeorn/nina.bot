@@ -55,7 +55,8 @@ const categories = {
         'shutdown',
         'autofocus',
         'meridianflip',
-        'sequencer'
+        'sequencer',
+        'expressions'
     ],
     community: [
         'repository',
@@ -69,7 +70,14 @@ const categories = {
 const generalNames = Object.values(categories)
     .flat()
     .filter(
-        (name) => !['convert', 'help', 'afgraph', 'imagescale'].includes(name)
+        (name) =>
+            ![
+                'convert',
+                'help',
+                'afgraph',
+                'imagescale',
+                'expressions'
+            ].includes(name)
     );
 const makeBot = () => new Bot('token', { put: async () => {} });
 const serialize = (payload) => JSON.parse(JSON.stringify(payload));
@@ -122,9 +130,9 @@ test('registration preserves the complete slash and context command contract', (
         a.name.localeCompare(b.name)
     );
     assert.deepEqual(actual, registeredCommands);
-    assert.equal(actual.filter((command) => command.type === 1).length, 45);
+    assert.equal(actual.filter((command) => command.type === 1).length, 46);
     assert.equal(actual.filter((command) => command.type === 3).length, 1);
-    assert.equal(new Set(Object.values(categories).flat()).size, 45);
+    assert.equal(new Set(Object.values(categories).flat()).size, 46);
     assert.equal(bot.getClient().options.intents.has('MessageContent'), false);
     assert.equal(bot.getClient().listenerCount('messageCreate'), 0);
 });
@@ -347,6 +355,7 @@ test('new guidance cards cover setup, troubleshooting and official resources', a
             /tabs\/flatwizard/
         ],
         sequencer: [
+            /\/expressions/,
             /Instructions/,
             /Loop conditions/,
             /Triggers/,
@@ -442,6 +451,10 @@ test('help opens privately and navigates every category in both directions and b
     );
     assert.match(textOf(initial.replies[0]), /\/logs/);
     assert.match(textOf(initial.replies[0]), /\/support/);
+    assert.match(
+        textOf(initial.replies[0]),
+        /\/expressions opens a private learning guide/
+    );
     assert.equal(menuOf(initial.replies[0]).custom_id, 'help:category:v1');
     assert.deepEqual(
         menuOf(initial.replies[0]).options.map((option) => option.value),

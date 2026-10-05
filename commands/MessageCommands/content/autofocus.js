@@ -71,7 +71,7 @@ module.exports = {
             card: {
                 title: 'N.I.N.A. advanced sequencer',
                 introduction:
-                    'Build an imaging run from instruction sets, then attach loop conditions and triggers to the set they should control.',
+                    'Build an imaging run from instruction sets, then attach loop conditions and triggers to the set they should control. Use `/expressions` for a private, step-by-step guide to expressions, symbols and functions in N.I.N.A. 3.3.',
                 sections: [
                     {
                         heading: 'Three building blocks',
