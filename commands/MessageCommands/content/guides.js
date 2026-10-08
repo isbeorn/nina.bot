@@ -211,7 +211,7 @@ module.exports = {
                     },
                     {
                         heading: 'Run and exit',
-                        text: '```text\n-r, --runsequence\n-x, --exitaftersequence\n```\n`-r` starts the sequence loaded with `-s` and switches to the Imaging tab. `-x` exits N.I.N.A. when the sequence finishes. Both default to false.'
+                        text: '```text\n-r, --runsequence\n-x, --exitaftersequence\n```\n`-r` starts the sequence loaded with `-s` and switches to the Imaging tab. **Starting a sequence with `-r` does not show the sequencer startup validation prompt.** `-x` exits N.I.N.A. when the sequence finishes. Both default to false.'
                     },
                     {
                         heading: 'Diagnostics',
